@@ -21,3 +21,11 @@ out
 # Redis
 *.rdb
 
+Thumbs.db
+.DS_Store
+target/
+.project
+.settings
+.classpath
+.factorypath
+
