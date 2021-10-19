@@ -1,0 +1,23 @@
+
+# Gradle
+build/
+.gradle/
+
+# IDEs
+
+*.c9
+*.iml
+*.ipr
+*.iws
+*.vscode
+.idea/
+.asscache
+MANIFEST.MF
+out
+
+# PAW
+*.paw
+
+# Redis
+*.rdb
+
