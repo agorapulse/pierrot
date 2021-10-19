@@ -53,6 +53,7 @@ projects {
         dirs(['libs', 'examples']) {
             id 'java-library'
             id 'groovy'
+            id 'io.micronaut.library'
         }
 
         dir('apps') {

@@ -16,6 +16,19 @@
  * limitations under the License.
  */
 
+micronaut {
+    testRuntime("spock2")
+    processing {
+        incremental(true)
+        annotations("com.agorapulse.pierrot.*")
+    }
+}
+
 dependencies {
-    // add project's dependencies
+    implementation "org.kohsuke:github-api:$githubApiVersion"
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("javax.annotation:javax.annotation-api")
+    runtimeOnly("ch.qos.logback:logback-classic")
+
+    implementation("io.micronaut:micronaut-validation")
 }

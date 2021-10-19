@@ -10,8 +10,13 @@ import picocli.CommandLine.Parameters;
 
 @Command(
     name = "pierrot",
-    description = "...",
-    mixinStandardHelpOptions = true
+    description = "the GitHub multirepository governance tool",
+    mixinStandardHelpOptions = true,
+    subcommands = {
+        PullCommand.class,
+        PushCommand.class,
+        SearchCommand.class
+    }
 )
 public class PierrotCommand implements Runnable {
 
