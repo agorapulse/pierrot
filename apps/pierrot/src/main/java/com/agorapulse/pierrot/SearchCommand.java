@@ -49,6 +49,11 @@ public class SearchCommand implements Runnable {
 
     @Override
     public void run() {
+        if (System.console() == null) {
+            System.out.println("Running in non-interactive mode, all results will be printed. If you are running inside Docker, use -i option to enable pagination.");
+            noPage = true;
+        }
+
         String query = search.getQuery();
         AtomicInteger found = new AtomicInteger();
         Scanner scanner = new Scanner(System.in);
