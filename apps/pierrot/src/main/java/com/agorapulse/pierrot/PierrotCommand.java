@@ -39,6 +39,10 @@ public class PierrotCommand implements Runnable {
             args = new String[] {"--help"};
         }
 
+        if (System.getenv("GITHUB_TOKEN") == null) {
+            System.out.println("Please, set up your GitHub token as GITHUB_TOKEN environment variable");
+        }
+
         PicocliRunner.run(PierrotCommand.class, args);
     }
 
