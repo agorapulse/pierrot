@@ -24,6 +24,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
@@ -49,6 +50,7 @@ public class SearchCommand implements Runnable {
     public void run() {
         String query = search.getQuery();
         AtomicInteger found = new AtomicInteger();
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println(DOUBLE_LINE);
         System.out.printf("Finding search results for '%s'!%n", query);
@@ -72,7 +74,7 @@ public class SearchCommand implements Runnable {
             System.out.println(LINE);
 
             if (!noPage) {
-                System.console().readLine();
+                scanner.nextLine();
             }
         });
 

@@ -22,11 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -34,8 +34,14 @@ public class PullRequestMixin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PullRequestMixin.class);
 
-    private final UnaryOperator<String> reader;
-    private final Consumer<String> writer;
+    private final Scanner scanner = new Scanner(System.in);
+
+    private UnaryOperator<String> reader = s -> {
+        System.out.print(s);
+        return scanner.nextLine();
+    };
+
+    private Consumer<String> writer = System.out::println;
 
     @CommandLine.Option(
         names = {"-b", "--branch"},
@@ -61,30 +67,12 @@ public class PullRequestMixin {
     )
     File messageFrom;
 
-    public PullRequestMixin() {
-        Console console = System.console();
-        if (console != null) {
-            this.reader = console::readLine;
-            this.writer = console::printf;
-        } else {
-            this.reader = UnaryOperator.identity();
-            this.writer = s -> {};
-        }
-    }
+    public PullRequestMixin() { }
 
     public PullRequestMixin(String branch, String title, String message) {
         this.branch = branch;
         this.title = title;
         this.message = message;
-
-        Console console = System.console();
-        if (console != null) {
-            this.reader = console::readLine;
-            this.writer = console::printf;
-        } else {
-            this.reader = UnaryOperator.identity();
-            this.writer = s -> {};
-        }
     }
 
     public PullRequestMixin(UnaryOperator<String> reader, Consumer<String> writer) {
