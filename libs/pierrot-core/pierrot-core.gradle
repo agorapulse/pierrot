@@ -25,6 +25,8 @@ micronaut {
 }
 
 dependencies {
+    annotationProcessor("io.micronaut:micronaut-graal")
+
     implementation "org.kohsuke:github-api:$githubApiVersion"
     implementation("io.micronaut:micronaut-runtime")
     implementation("javax.annotation:javax.annotation-api")

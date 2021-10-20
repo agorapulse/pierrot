@@ -26,6 +26,7 @@ micronaut {
 dependencies {
     implementation project(':pierrot-core')
 
+    annotationProcessor("io.micronaut:micronaut-graal")
     annotationProcessor("info.picocli:picocli-codegen")
     implementation("info.picocli:picocli")
     implementation("io.micronaut:micronaut-runtime")
