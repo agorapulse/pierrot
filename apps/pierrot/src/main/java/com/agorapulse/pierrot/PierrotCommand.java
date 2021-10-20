@@ -2,31 +2,30 @@ package com.agorapulse.pierrot;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 @Command(
     name = "pierrot",
-    description = "the GitHub multirepository governance tool",
+    description = "the GitHub cross-repository governance tool",
     mixinStandardHelpOptions = true,
     subcommands = {
+        DeleteCommand.class,
         PullCommand.class,
         PushCommand.class,
-        SearchCommand.class
+        ReplaceCommand.class,
+        SearchCommand.class,
     }
 )
 public class PierrotCommand implements Runnable {
 
-    @Option(names = {"-v", "--verbose"}, description = "...")
-    boolean verbose;
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            args = new String[] { "--help" };
+        }
 
-    public static void main(String[] args) throws Exception {
         PicocliRunner.run(PierrotCommand.class, args);
     }
 
     public void run() {
-        // business logic here
-        if (verbose) {
-            System.out.println("Hi!");
-        }
+        System.out.println("Use 'pierrot --help' for help");
     }
 }

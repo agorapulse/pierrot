@@ -1,12 +1,12 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
@@ -18,18 +18,7 @@ public class SearchCommand implements Runnable {
     private static final String LINE = "-".repeat(80);
     private static final String DOUBLE_LINE = "=".repeat(80);
 
-    @Parameters(
-        arity = "1",
-        description = "search term such as 'org:agorapulse filename:build.gradle'",
-        paramLabel = "QUERY"
-    )
-    List<String> queries;
-
-    @Option(
-        names = {"-a", "--all"},
-        description = "include archived repositories"
-    )
-    boolean all;
+    @Mixin SearchMixin search;
 
     @Option(
         names = {"-P", "--no-page"},
@@ -37,12 +26,11 @@ public class SearchCommand implements Runnable {
     )
     boolean noPage;
 
-
     @Inject GitHubService service;
 
     @Override
     public void run() {
-        String query = String.join(" ", queries);
+        String query = search.getQuery();
         AtomicInteger found = new AtomicInteger();
 
         System.out.println(DOUBLE_LINE);
@@ -53,7 +41,7 @@ public class SearchCommand implements Runnable {
         }
 
         service.search(query).forEach(content -> {
-            if (!all && content.getRepository().isArchived()) {
+            if (!search.isAll() && content.getRepository().isArchived()) {
                 return;
             }
 

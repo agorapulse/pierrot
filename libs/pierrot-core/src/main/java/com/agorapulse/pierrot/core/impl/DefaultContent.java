@@ -4,6 +4,7 @@ import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.Repository;
 import org.kohsuke.github.GHContent;
+import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
@@ -65,21 +66,36 @@ public class DefaultContent implements Content {
     }
 
     @Override
-    public void delete(String branchName, String message) {
+    public boolean delete(String branchName, String message) {
         try {
-            content.delete(branchName, message);
+            content.delete(message, branchName);
+            return true;
+        } catch (GHFileNotFoundException e) {
+            LOGGER.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
+            return false;
         } catch (IOException e) {
             LOGGER.error("Exception deleting " + getRepository().getFullName() + "/" + getPath(), e);
+            return false;
         }
     }
 
     @Override
-    public void update(String branchName, String message, String regexp, String replacement) {
+    public boolean replace(String branchName, String message, String regexp, String replacement) {
         try {
-            content.update(getTextContent().replaceAll(regexp, replacement), message, branchName);
+            String text = getTextContent();
+            String newText = text.replaceAll(regexp, replacement);
+
+            if (newText.equals(text)) {
+                LOGGER.info("The content of {} is still the same after replacement", getPath());
+                return false;
+            }
+
+            content.update(newText, message, branchName);
+            return true;
         } catch (IOException e) {
             LOGGER.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);
         }
+        return false;
     }
 
     @Override

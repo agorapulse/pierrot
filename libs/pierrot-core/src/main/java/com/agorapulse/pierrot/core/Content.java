@@ -2,7 +2,6 @@ package com.agorapulse.pierrot.core;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 public interface Content {
 
@@ -13,8 +12,8 @@ public interface Content {
     String getTextContent();
     String getSha();
 
-    void delete(String branchName, String message);
-    void update(String branchName, String message, String regexp, String replacement);
+    boolean delete(String branchName, String message);
+    boolean replace(String branchName, String message, String regexp, String replacement);
 
     void writeTo(File toPath);
 

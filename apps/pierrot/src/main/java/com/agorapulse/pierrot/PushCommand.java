@@ -3,14 +3,11 @@ package com.agorapulse.pierrot;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.ws.Workspace;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
+import com.agorapulse.pierrot.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Option;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
@@ -19,30 +16,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 )
 public class PushCommand implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PushCommand.class);
-
-    @Option(
-        names = {"-w", "--workspace"},
-        description = "the working directory to pull found files",
-        defaultValue = "."
-    )
-    File workspace;
-
+    @Mixin WorkspaceMixin workspace;
     @Mixin PullRequestMixin pullRequest;
 
     @Inject GitHubService service;
 
     @Override
     public void run() {
-        Workspace ws = new Workspace(this.workspace);
+        Workspace ws = new Workspace(workspace.getWorkspace());
         ws.visitRepositories(r -> service.getRepository(r.getName()).ifPresent(ghr -> {
             if (ghr.isArchived()) {
-                LOGGER.info("Repository {} is archived. Nothing will be pushed.", r.getName());
+                System.out.printf("Repository %s is archived. Nothing will be pushed.%n", r.getName());
                 return;
             }
 
             if (!ghr.canWrite()) {
-                LOGGER.info("Current user does not have write rights to the repository {}. Nothing will be pushed.", r.getName());
+                System.out.printf("Current user does not have write rights to the repository %s. Nothing will be pushed.%n", r.getName());
                 return;
             }
 
@@ -53,7 +42,7 @@ public class PushCommand implements Runnable {
 
             if (changed.get()) {
                 ghr.createPullRequest(pullRequest.readBranch(), pullRequest.readTitle(), pullRequest.readMessage()).ifPresent(url ->
-                    LOGGER.info("PR for {} available at {}", r.getName(), url)
+                    System.out.printf("PR for %s available at %s%n", r.getName(), url)
                 );
             }
         }));
