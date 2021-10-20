@@ -41,14 +41,14 @@ public class ReplaceCommand implements Runnable {
 
     @Option(
         names = {"-p", "--pattern"},
-        description = "Java-style regular expression pattern to execute on the matched files",
+        description = "The Java-style regular expression pattern to execute on the matched files",
         required = true
     )
     String pattern;
 
     @Option(
         names = {"-r", "--replacement"},
-        description = "Java-style regular expression replacement",
+        description = "The Java-style regular expression replacement",
         required = true
     )
     String replacement;

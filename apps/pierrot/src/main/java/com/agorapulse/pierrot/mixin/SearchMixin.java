@@ -26,14 +26,14 @@ public class SearchMixin {
 
     @Parameters(
         arity = "1",
-        description = "search term such as 'org:agorapulse filename:build.gradle'",
+        description = "The search term such as 'org:agorapulse filename:build.gradle'",
         paramLabel = "QUERY"
     )
     List<String> queries;
 
     @Option(
         names = {"-a", "--all"},
-        description = "include archived repositories"
+        description = "Include archived repositories"
     )
     boolean all;
 

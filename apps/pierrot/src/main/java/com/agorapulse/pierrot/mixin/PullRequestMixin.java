@@ -45,25 +45,25 @@ public class PullRequestMixin {
 
     @CommandLine.Option(
         names = {"-b", "--branch"},
-        description = "the pull request branch"
+        description = "The pull request branch"
     )
     String branch;
 
     @CommandLine.Option(
         names = {"-t", "--title"},
-        description = "the pull request title"
+        description = "The pull request title"
     )
     String title;
 
     @CommandLine.Option(
         names = {"-m", "--message"},
-        description = "the pull request message"
+        description = "The pull request message"
     )
     String message;
 
     @CommandLine.Option(
         names = {"-f", "--message-from"},
-        description = "the file containing the pull request message"
+        description = "The file containing the pull request message"
     )
     File messageFrom;
 

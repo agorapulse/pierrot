@@ -41,7 +41,7 @@ public class SearchCommand implements Runnable {
 
     @Option(
         names = {"-P", "--no-page"},
-        description = "include archived repositories"
+        description = "Include archived repositories"
     )
     boolean noPage;
 

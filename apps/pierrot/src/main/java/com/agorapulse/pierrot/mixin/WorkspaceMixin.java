@@ -25,7 +25,7 @@ public class WorkspaceMixin {
 
     @Option(
         names = {"-w", "--workspace"},
-        description = "the working directory to pull found files",
+        description = "The working directory to pull found files",
         defaultValue = "."
     )
     File workspace;

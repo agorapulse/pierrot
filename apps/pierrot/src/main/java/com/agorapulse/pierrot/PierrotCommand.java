@@ -22,7 +22,7 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "pierrot",
-    description = "the GitHub cross-repository governance tool",
+    description = "The GitHub cross-repository governance tool",
     mixinStandardHelpOptions = true,
     subcommands = {
         DeleteCommand.class,
