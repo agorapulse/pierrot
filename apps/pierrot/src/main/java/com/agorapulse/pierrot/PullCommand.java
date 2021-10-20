@@ -2,15 +2,11 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
 import jakarta.inject.Inject;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
     description = "searches GitHub and pulls the matching files locally"
 )
 public class PullCommand implements Runnable {
+
+    private static final String DOUBLE_LINE = "=".repeat(80);
 
     @Parameters(
         arity = "1",
@@ -46,9 +44,8 @@ public class PullCommand implements Runnable {
     public void run() {
         String query = String.join(" ", queries);
         AtomicInteger found = new AtomicInteger();
-        String doubleLine = "=".repeat(80);
 
-        System.out.println(doubleLine);
+        System.out.println(DOUBLE_LINE);
         System.out.printf("Finding search results for '%s'!%n", query);
         service.search(query).forEach(content -> {
             if (!all && content.getRepository().isArchived()) {
@@ -57,12 +54,9 @@ public class PullCommand implements Runnable {
 
             found.incrementAndGet();
 
-            System.out.println(doubleLine);
-            System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
-            System.out.println(doubleLine);
-
             File location = new File(workspace, String.format("%s/%s", content.getRepository().getFullName(), content.getPath()));
             content.writeTo(location);
+            System.out.printf("Fetched %s/%s%n", content.getRepository().getFullName(), content.getPath());
         });
 
         System.out.printf("Found %d results!%n", found.get());

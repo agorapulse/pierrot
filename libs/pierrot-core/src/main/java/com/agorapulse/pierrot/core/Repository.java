@@ -7,6 +7,7 @@ public interface Repository {
 
     String getFullName();
     boolean isArchived();
+    boolean canWrite();
     boolean createBranch(String name);
     Optional<URL> createPullRequest(String branch, String title, String message);
     boolean writeFile(String branch, String message, String path, String text);

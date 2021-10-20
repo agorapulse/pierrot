@@ -5,12 +5,12 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.Repository;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 public class DefaultContent implements Content {
 
@@ -19,9 +19,9 @@ public class DefaultContent implements Content {
     private final GHContent content;
     private final Repository repositoryWrapper;
 
-    public DefaultContent(GHContent content, GHRepository repository, GitHubConfiguration configuration) {
+    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
         this.content = content;
-        this.repositoryWrapper = new DefaultRepository(repository, configuration);
+        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration);
     }
 
     @Override

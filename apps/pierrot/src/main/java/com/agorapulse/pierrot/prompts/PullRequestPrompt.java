@@ -41,7 +41,7 @@ public class PullRequestPrompt {
             this.title = console.readLine("Pull Request Title: ");
         }
         while (StringUtils.isEmpty(message)) {
-            console.printf("Pull Request Message:%n");
+            console.printf("Pull Request Message (Markdown format, use triple new line to submit):%n");
 
             StringWriter writer = new StringWriter();
 
