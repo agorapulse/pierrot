@@ -1,3 +1,20 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2021 Vladimir Orany.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.agorapulse.pierrot.mixin;
 
 import io.micronaut.core.util.StringUtils;
@@ -5,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -16,8 +34,8 @@ public class PullRequestMixin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PullRequestMixin.class);
 
-    private UnaryOperator<String> reader = System.console()::readLine;
-    private Consumer<String> writer = System.console()::printf;
+    private final UnaryOperator<String> reader;
+    private final Consumer<String> writer;
 
     @CommandLine.Option(
         names = {"-b", "--branch"},
@@ -43,12 +61,30 @@ public class PullRequestMixin {
     )
     File messageFrom;
 
-    public PullRequestMixin() { }
+    public PullRequestMixin() {
+        Console console = System.console();
+        if (console != null) {
+            this.reader = console::readLine;
+            this.writer = console::printf;
+        } else {
+            this.reader = UnaryOperator.identity();
+            this.writer = s -> {};
+        }
+    }
 
     public PullRequestMixin(String branch, String title, String message) {
         this.branch = branch;
         this.title = title;
         this.message = message;
+
+        Console console = System.console();
+        if (console != null) {
+            this.reader = console::readLine;
+            this.writer = console::printf;
+        } else {
+            this.reader = UnaryOperator.identity();
+            this.writer = s -> {};
+        }
     }
 
     public PullRequestMixin(UnaryOperator<String> reader, Consumer<String> writer) {
