@@ -25,6 +25,7 @@ import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
@@ -56,10 +57,12 @@ public class SearchCommand implements Runnable {
         System.out.printf("Finding search results for '%s'!%n", query);
 
         if (!noPage) {
-            System.out.println("Hit ENTER to continue to the next result or run with '--no-page' option to print everything at once");
+            System.out.println("The results will be paginated. Use '--no-page' option to print everything at once.");
         }
 
-        service.search(query).forEach(content -> {
+        AtomicBoolean proceedToNextResult = new AtomicBoolean(true);
+
+        service.search(query).takeWhile(c -> proceedToNextResult.get()).forEach(content -> {
             if (!search.isAll() && content.getRepository().isArchived()) {
                 return;
             }
@@ -74,7 +77,10 @@ public class SearchCommand implements Runnable {
             System.out.println(LINE);
 
             if (!noPage) {
-                scanner.nextLine();
+                System.out.print("Hit ENTER to continue or 'q' for exit: ");
+                if ("q".equals(scanner.nextLine())) {
+                    proceedToNextResult.set(false);
+                }
             }
         });
 
