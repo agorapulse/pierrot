@@ -21,14 +21,9 @@ import com.agorapulse.pierrot.core.CheckRun;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Option;
 
-import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
