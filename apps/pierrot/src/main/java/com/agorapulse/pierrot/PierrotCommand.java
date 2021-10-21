@@ -30,6 +30,7 @@ import picocli.CommandLine.Command;
         PushCommand.class,
         ReplaceCommand.class,
         SearchCommand.class,
+        StatusCommand.class,
     }
 )
 public class PierrotCommand implements Runnable {

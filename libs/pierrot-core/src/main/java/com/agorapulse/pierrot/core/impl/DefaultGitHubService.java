@@ -17,21 +17,17 @@
  */
 package com.agorapulse.pierrot.core.impl;
 
-import com.agorapulse.pierrot.core.Content;
-import com.agorapulse.pierrot.core.GitHubConfiguration;
-import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Repository;
+import com.agorapulse.pierrot.core.*;
+import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
 import io.micronaut.core.annotation.TypeHint;
+import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
-import org.kohsuke.github.GHContent;
-import org.kohsuke.github.GHMyself;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GHUser;
-import org.kohsuke.github.GitHub;
+import org.kohsuke.github.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -314,19 +310,25 @@ public class DefaultGitHubService implements GitHubService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubService.class);
 
+    private static final String PR_URL_REPO_PREFIX = "https://api.github.com/repos/";
+    private static final String PR_URL_REPO_SUFFIX = "/issues/";
+
+
     private final GitHubConfiguration configuration;
     private final GitHub client;
+    private final GitHubHttpClient httpClient;
 
     private GHMyself myself;
 
-    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client) {
+    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client, GitHubHttpClient httpClient) {
         this.configuration = configuration;
         this.client = client;
+        this.httpClient = httpClient;
     }
 
     @Override
-    public Stream<Content> search(String query) {
-        return StreamSupport.stream(client.searchContent().q(query).list().spliterator(), false).map((GHContent content) ->
+    public Stream<Content> searchContent(String query, boolean global) {
+        return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
             new DefaultContent(content, content.getOwner(), getMyself(), configuration)
         );
     }
@@ -341,6 +343,25 @@ public class DefaultGitHubService implements GitHubService {
         }
     }
 
+    @Override
+    public Stream<? extends PullRequest> searchPullRequests(String query, boolean global) {
+        return StreamSupport
+            .stream(client.searchIssues().q(addOrg("is:pr " + query, global)).list().spliterator(), false)
+            .map(issue -> {
+                try {
+                    String url = issue.getUrl().toString();
+                    String repoFullName = url.substring(PR_URL_REPO_PREFIX.length(), url.lastIndexOf(PR_URL_REPO_SUFFIX));
+                    GHRepository repository = client.getRepository(repoFullName);
+                    GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
+                    return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
+                } catch (IOException e) {
+                    LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull);
+    }
+
     private GHUser getMyself() {
         if (myself != null) {
             return myself;
@@ -349,8 +370,25 @@ public class DefaultGitHubService implements GitHubService {
             this.myself = client.getMyself();
             return myself;
         } catch (IOException e) {
-            LOGGER.error("Exception fetching current user ", e);
+            LOGGER.error("Exception fetching current user", e);
             return new GHUser();
         }
+    }
+
+    private String addOrg(String query, boolean global) {
+        if (global) {
+            return query;
+        }
+
+        if (query != null && query.contains("org:")) {
+            return query;
+        }
+
+        if (StringUtils.isEmpty(configuration.getOrganization())) {
+            LOGGER.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
+            return query;
+        }
+
+        return "org:" + configuration.getOrganization() + " " + query;
     }
 }

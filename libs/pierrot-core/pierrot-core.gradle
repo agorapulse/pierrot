@@ -29,8 +29,14 @@ dependencies {
 
     implementation "org.kohsuke:github-api:$githubApiVersion"
     implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-http-client")
     implementation("javax.annotation:javax.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
 
     implementation("io.micronaut:micronaut-validation")
+
+    testImplementation 'com.stehno.ersatz:ersatz:1.9.0:safe@jar'
+    testImplementation 'space.jasan:groovy-closure-support:0.6.3'
+    testImplementation 'javax.activation:activation:1.1.1'
+    testImplementation 'com.agorapulse.testing:fixt:0.2.2'
 }

@@ -24,6 +24,7 @@ public interface Content {
 
     String getName();
     String getPath();
+    String getHtmlUrl();
     Repository getRepository();
     InputStream getContent();
     String getTextContent();

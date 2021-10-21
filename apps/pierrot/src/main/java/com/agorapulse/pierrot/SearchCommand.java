@@ -19,11 +19,15 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
+import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,14 +38,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 )
 public class SearchCommand implements Runnable {
 
-    private static final String LINE = "-".repeat(80);
-    private static final String DOUBLE_LINE = "=".repeat(80);
+    private static final String LINE = "-".repeat(120);
+    private static final String DOUBLE_LINE = "=".repeat(120);
 
     @Mixin SearchMixin search;
 
     @Option(
         names = {"-P", "--no-page"},
-        description = "Include archived repositories"
+        description = "Do not wait after each result"
     )
     boolean noPage;
 
@@ -59,7 +63,7 @@ public class SearchCommand implements Runnable {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println(DOUBLE_LINE);
-        System.out.printf("Finding search results for '%s'!%n", query);
+        System.out.printf("Searching results for '%s'!%n", query);
 
         if (!noPage) {
             System.out.println("The results will be paginated. Use '--no-page' option to print everything at once.");
@@ -67,7 +71,7 @@ public class SearchCommand implements Runnable {
 
         AtomicBoolean proceedToNextResult = new AtomicBoolean(true);
 
-        service.search(query).takeWhile(c -> proceedToNextResult.get()).forEach(content -> {
+        service.searchContent(query, search.isGlobal()).takeWhile(c -> proceedToNextResult.get()).forEach(content -> {
             if (!search.isAll() && content.getRepository().isArchived()) {
                 return;
             }
@@ -82,9 +86,21 @@ public class SearchCommand implements Runnable {
             System.out.println(LINE);
 
             if (!noPage) {
-                System.out.print("Hit ENTER to continue or 'q' for exit: ");
-                if ("q".equals(scanner.nextLine())) {
-                    proceedToNextResult.set(false);
+                System.out.print("Hit ENTER to continue, 'q' for exit or 'o' to open on GitHub: ");
+                String nextLine = scanner.nextLine();
+                if (StringUtils.isNotEmpty(nextLine)) {
+                    if (nextLine.contains("q")) {
+                        proceedToNextResult.set(false);
+                    }
+                    if (nextLine.contains("o")) {
+                        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                            try {
+                                Desktop.getDesktop().browse(URI.create(content.getHtmlUrl()));
+                            } catch (IOException ignored) {
+                                // ignored
+                            }
+                        }
+                    }
                 }
             }
         });

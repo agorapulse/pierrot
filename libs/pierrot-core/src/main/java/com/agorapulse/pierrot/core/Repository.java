@@ -23,6 +23,8 @@ import java.util.Optional;
 public interface Repository {
 
     String getFullName();
+    String getName();
+    String getOwnerName();
     boolean isArchived();
     boolean canWrite();
     boolean createBranch(String name);

@@ -1,3 +1,7 @@
 micronaut:
   application:
     name: pierrot
+  http:
+    services:
+      github:
+        url: https://api.github.com

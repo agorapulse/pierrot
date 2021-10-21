@@ -21,5 +21,6 @@ public interface GitHubConfiguration {
 
     String getToken();
     String getDefaultBranch();
+    String getOrganization();
 
 }

@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 )
 public class PullCommand implements Runnable {
 
-    private static final String DOUBLE_LINE = "=".repeat(80);
+    private static final String DOUBLE_LINE = "=".repeat(120);
 
     @Mixin SearchMixin search;
     @Mixin WorkspaceMixin workspace;
@@ -46,8 +46,8 @@ public class PullCommand implements Runnable {
         AtomicInteger found = new AtomicInteger();
 
         System.out.println(DOUBLE_LINE);
-        System.out.printf("Finding search results for '%s'!%n", query);
-        service.search(query).forEach(content -> {
+        System.out.printf("Searching results for '%s'!%n", query);
+        service.searchContent(query, search.isGlobal()).forEach(content -> {
             if (!search.isAll() && content.getRepository().isArchived()) {
                 return;
             }
