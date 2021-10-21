@@ -57,6 +57,16 @@ public class DefaultRepository implements Repository {
     }
 
     @Override
+    public String getName() {
+        return repository.getName();
+    }
+
+    @Override
+    public String getOwnerName() {
+        return repository.getOwnerName();
+    }
+
+    @Override
     public boolean isArchived() {
         return repository.isArchived();
     }

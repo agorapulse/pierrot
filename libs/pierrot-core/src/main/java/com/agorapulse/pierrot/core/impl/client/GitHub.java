@@ -15,24 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.core.impl.client;
 
-import java.io.File;
-import java.io.InputStream;
+import io.micronaut.http.annotation.FilterMatcher;
 
-public interface Content {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    String getName();
-    String getPath();
-    String getHtmlUrl();
-    Repository getRepository();
-    InputStream getContent();
-    String getTextContent();
-    String getSha();
-
-    boolean delete(String branchName, String message);
-    boolean replace(String branchName, String message, String regexp, String replacement);
-
-    void writeTo(File toPath);
+@Documented
+@FilterMatcher
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.PARAMETER})
+public @interface GitHub {
 
 }

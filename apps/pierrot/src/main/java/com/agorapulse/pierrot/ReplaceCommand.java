@@ -58,9 +58,9 @@ public class ReplaceCommand implements Runnable {
         String query = search.getQuery();
         AtomicInteger replaced = new AtomicInteger();
 
-        System.out.printf("Finding search results to replace for '%s'!%n", query);
+        System.out.printf("Searching results to replace for '%s'!%n", query);
 
-        service.search(query).forEach(content -> {
+        service.searchContent(query, search.isGlobal()).forEach(content -> {
             if (!search.isAll() && content.getRepository().isArchived()) {
                 return;
             }

@@ -17,22 +17,20 @@
  */
 package com.agorapulse.pierrot.core;
 
-import java.io.File;
-import java.io.InputStream;
+import java.util.stream.Stream;
 
-public interface Content {
+public interface PullRequest {
 
-    String getName();
-    String getPath();
-    String getHtmlUrl();
     Repository getRepository();
-    InputStream getContent();
-    String getTextContent();
-    String getSha();
 
-    boolean delete(String branchName, String message);
-    boolean replace(String branchName, String message, String regexp, String replacement);
+    String getTitle();
 
-    void writeTo(File toPath);
+    String getBody();
+
+    boolean isMerged();
+
+    boolean isMergeable();
+
+    Stream<? extends CheckRun> getChecks();
 
 }

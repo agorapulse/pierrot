@@ -21,7 +21,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface GitHubService {
-    Stream<Content> search(String query);
+    Stream<Content> searchContent(String query, boolean global);
 
     Optional<Repository> getRepository(String repositoryFullName);
+
+    Stream<? extends PullRequest> searchPullRequests(String query, boolean global);
 }

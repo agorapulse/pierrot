@@ -25,7 +25,9 @@ public class DefaultGitHubConfiguration implements GitHubConfiguration {
 
     private String token;
     private String defaultBranch = "master";
+    private String organization;
 
+    @Override
     public String getToken() {
         return token;
     }
@@ -34,11 +36,21 @@ public class DefaultGitHubConfiguration implements GitHubConfiguration {
         this.token = token;
     }
 
+    @Override
     public String getDefaultBranch() {
         return defaultBranch;
     }
 
     public void setDefaultBranch(String defaultBranch) {
         this.defaultBranch = defaultBranch;
+    }
+
+    @Override
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 }

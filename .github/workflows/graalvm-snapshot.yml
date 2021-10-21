@@ -1,8 +1,5 @@
 name: GraalVM Snapshot
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,7 +25,8 @@ jobs:
           registry: ${{ secrets.DOCKER_REGISTRY_URL }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build And Push Docker Image
+      - name: Build And Push Docker Image Snapshot (master only)
+        if: github.ref == 'refs/heads/master'
         env:
           DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}

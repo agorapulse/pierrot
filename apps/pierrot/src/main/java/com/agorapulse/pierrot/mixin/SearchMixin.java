@@ -33,9 +33,15 @@ public class SearchMixin {
 
     @Option(
         names = {"-a", "--all"},
-        description = "Include archived repositories"
+        description = "Include archived and closed"
     )
     boolean all;
+
+    @Option(
+        names = {"-g", "--global"},
+        description = "Do not constrain search to current organization"
+    )
+    boolean global;
 
     public SearchMixin() { }
 
@@ -56,4 +62,7 @@ public class SearchMixin {
         return all;
     }
 
+    public boolean isGlobal() {
+        return global;
+    }
 }

@@ -53,6 +53,11 @@ public class DefaultContent implements Content {
     }
 
     @Override
+    public String getHtmlUrl() {
+        return content.getHtmlUrl();
+    }
+
+    @Override
     public Repository getRepository() {
         return repositoryWrapper;
     }
