@@ -40,7 +40,7 @@ public class PushCommand implements Runnable {
 
     @Override
     public void run() {
-        System.out.printf("Pushing changes from %s", workspace.getWorkspace());
+        System.out.printf("Pushing changes from %s%n", workspace.getWorkspace());
         Workspace ws = new Workspace(workspace.getWorkspace());
         ws.visitRepositories(r ->
             pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -> {

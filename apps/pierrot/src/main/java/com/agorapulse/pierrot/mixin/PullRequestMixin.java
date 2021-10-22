@@ -39,7 +39,7 @@ public class PullRequestMixin {
 
     public interface RepositoryChange {
 
-        boolean peform(Repository repository, String branch, String message);
+        boolean perform(Repository repository, String branch, String message);
 
     }
 
@@ -112,7 +112,8 @@ public class PullRequestMixin {
 
         ghr.createBranch(readBranch());
 
-        if (withRepository.peform(ghr, readBranch(), readMessage())) {
+        if (withRepository.perform(ghr, readBranch(), readMessage())) {
+            pullRequestsCreated++;
             Optional<URL> maybeUrl = ghr.createPullRequest(readBranch(), readTitle(), readMessage());
             maybeUrl.ifPresent(url -> System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url));
             return  maybeUrl.map(SearchMixin::toSafeUri);

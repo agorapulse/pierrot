@@ -25,7 +25,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
     name = "status",

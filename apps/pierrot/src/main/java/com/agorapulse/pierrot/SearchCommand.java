@@ -25,7 +25,7 @@ import picocli.CommandLine.Mixin;
 
 import java.net.URI;
 
-import static java.util.Optional.*;
+import static java.util.Optional.of;
 
 @Command(
     name = "search",
@@ -42,18 +42,16 @@ public class SearchCommand implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(DOUBLE_LINE);
-        System.out.printf("Searching results for '%s'!%n", search.getQuery());
         search.searchContent(service, content -> {
-                System.out.println(DOUBLE_LINE);
-                System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
-                System.out.println(DOUBLE_LINE);
+            System.out.println(DOUBLE_LINE);
+            System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
+            System.out.println(DOUBLE_LINE);
 
-                System.out.println(content.getTextContent());
-                System.out.println(LINE);
+            System.out.println(content.getTextContent());
+            System.out.println(LINE);
 
-                return of(URI.create(content.getHtmlUrl()));
-            });
+            return of(URI.create(content.getHtmlUrl()));
+        });
 
         System.out.printf("Found %d results!%n", search.getProcessed());
     }

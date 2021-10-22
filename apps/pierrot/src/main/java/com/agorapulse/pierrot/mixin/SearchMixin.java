@@ -25,7 +25,7 @@ import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -81,21 +81,9 @@ public class SearchMixin {
         this.global = global;
     }
 
-    public String getQuery() {
-        return String.join(" ", queries);
-    }
-
-    public boolean isAll() {
-        return all;
-    }
-
-    public boolean isGlobal() {
-        return global;
-    }
-
     public void searchContent(GitHubService service, Function<Content, Optional<URI>> action) {
         System.out.printf("Searching content for '%s'!%n", getQuery());
-        service.searchContent(getQuery(), isGlobal())
+        service.searchContent(getQuery(), global)
             .filter(Predicate.not(this::isIgnored))
             .takeWhile(t -> this.shouldProceedToNextResult())
             .forEach(c -> paginate(action.apply(c)));
@@ -103,18 +91,22 @@ public class SearchMixin {
 
     public void searchPullRequests(GitHubService service, Function<PullRequest, Optional<URI>> action) {
         System.out.printf("Searching pull requests for '%s'!%n", getQuery());
-        service.searchPullRequests(getQuery(), !isAll(), isGlobal())
+        service.searchPullRequests(getQuery(), !all, global)
             .filter(Predicate.not(this::isIgnored))
             .takeWhile(t -> this.shouldProceedToNextResult())
             .forEach(c -> paginate(action.apply(c)));
     }
 
-    public boolean shouldProceedToNextResult() {
+    private String getQuery() {
+        return String.join(" ", queries);
+    }
+
+    private boolean shouldProceedToNextResult() {
         processed++;
         return proceedToNextResult;
     }
 
-    public boolean isIgnored(Ignorable ignorable) {
+    private boolean isIgnored(Ignorable ignorable) {
         if (all) {
             return false;
         }
@@ -127,7 +119,7 @@ public class SearchMixin {
 
     public void paginate(Optional<URI> maybeUri) {
         if (!isNoPage()) {
-            String fullPrompt = "ENTER=continue,q=quit,a=all";
+            String fullPrompt = "ENTER=continue, q=quit, a=all";
 
             if (maybeUri.isPresent()) {
                 fullPrompt += ", o=open on GitHub";
