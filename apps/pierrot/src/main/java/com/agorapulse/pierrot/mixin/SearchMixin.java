@@ -17,10 +17,17 @@
  */
 package com.agorapulse.pierrot.mixin;
 
+import com.agorapulse.pierrot.core.Content;
+import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.core.Ignorable;
+import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class SearchMixin {
 
@@ -43,15 +50,21 @@ public class SearchMixin {
     )
     boolean global;
 
+    @Option(
+        names = {"-P", "--no-page"},
+        description = "Do not wait after each result"
+    )
+    boolean noPage;
+
+    private boolean proceedToNextResult = true;
+    private int processed;
+
     public SearchMixin() { }
 
-    public SearchMixin(List<String> queries, boolean all) {
+    public SearchMixin(List<String> queries, boolean all, boolean global) {
         this.queries = queries;
         this.all = all;
-    }
-
-    public List<String> getQueries() {
-        return queries;
+        this.global = global;
     }
 
     public String getQuery() {
@@ -64,5 +77,48 @@ public class SearchMixin {
 
     public boolean isGlobal() {
         return global;
+    }
+
+    public Stream<Content> searchContent(GitHubService service) {
+        return service.searchContent(getQuery(), isGlobal())
+            .filter(Predicate.not(this::isIgnored))
+            .takeWhile(t -> this.shouldProceedToNextResult());
+    }
+
+    public boolean shouldProceedToNextResult() {
+        processed++;
+        return proceedToNextResult;
+    }
+
+    public boolean isIgnored(Ignorable ignorable) {
+        if (all) {
+            return false;
+        }
+        return ignorable.canBeIgnored();
+    }
+
+    public int getProcessed() {
+        return processed;
+    }
+
+    public void paginate(String prompt, Consumer<String> lineConsumer) {
+        if (!isNoPage()) {
+            String nextLine = System.console().readLine(prompt);
+            if (StringUtils.isNotEmpty(nextLine)) {
+                if (nextLine.contains("q")) {
+                    proceedToNextResult = false;
+                }
+                lineConsumer.accept(nextLine);
+            }
+        }
+    }
+
+    private boolean isNoPage() {
+        if (System.console() == null) {
+            System.out.println("Running in non-interactive mode, all results will be printed. If you are running inside Docker, use -i option to enable pagination.");
+            noPage = true;
+            return true;
+        }
+        return noPage;
     }
 }

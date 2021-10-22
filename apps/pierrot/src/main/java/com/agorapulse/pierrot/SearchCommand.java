@@ -19,18 +19,13 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
-import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Option;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
     name = "search",
@@ -43,68 +38,31 @@ public class SearchCommand implements Runnable {
 
     @Mixin SearchMixin search;
 
-    @Option(
-        names = {"-P", "--no-page"},
-        description = "Do not wait after each result"
-    )
-    boolean noPage;
-
     @Inject GitHubService service;
 
     @Override
     public void run() {
-        if (System.console() == null) {
-            System.out.println("Running in non-interactive mode, all results will be printed. If you are running inside Docker, use -i option to enable pagination.");
-            noPage = true;
-        }
-
-        String query = search.getQuery();
-        AtomicInteger found = new AtomicInteger();
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println(DOUBLE_LINE);
-        System.out.printf("Searching results for '%s'!%n", query);
+        System.out.printf("Searching results for '%s'!%n", search.getQuery());
+        search.searchContent(service).forEach(content -> {
+                System.out.println(DOUBLE_LINE);
+                System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
+                System.out.println(DOUBLE_LINE);
 
-        if (!noPage) {
-            System.out.println("The results will be paginated. Use '--no-page' option to print everything at once.");
-        }
+                System.out.println(content.getTextContent());
+                System.out.println(LINE);
 
-        AtomicBoolean proceedToNextResult = new AtomicBoolean(true);
-
-        service.searchContent(query, search.isGlobal()).takeWhile(c -> proceedToNextResult.get()).forEach(content -> {
-            if (!search.isAll() && content.getRepository().isArchived()) {
-                return;
-            }
-
-            found.incrementAndGet();
-
-            System.out.println(DOUBLE_LINE);
-            System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
-            System.out.println(DOUBLE_LINE);
-
-            System.out.println(content.getTextContent());
-            System.out.println(LINE);
-
-            if (!noPage) {
-                System.out.print("Hit ENTER to continue, 'q' for exit or 'o' to open on GitHub: ");
-                String nextLine = scanner.nextLine();
-                if (StringUtils.isNotEmpty(nextLine)) {
-                    if (nextLine.contains("q")) {
-                        proceedToNextResult.set(false);
-                    }
-                    if (nextLine.contains("o")) {
-                        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                            try {
-                                Desktop.getDesktop().browse(URI.create(content.getHtmlUrl()));
-                            } catch (IOException ignored) {
-                                // ignored
-                            }
+                search.paginate("Hit ENTER to continue, 'q' for exit or 'o' to open on GitHub: ", answer -> {
+                    if (answer.contains("o") && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            Desktop.getDesktop().browse(URI.create(content.getHtmlUrl()));
+                        } catch (IOException ignored) {
+                            // ignored
                         }
                     }
-                }
-            }
-        });
+                });
+            });
 
-        System.out.printf("Found %d results!%n", found.get());
+        System.out.printf("Found %d results!%n", search.getProcessed());
     }
 }

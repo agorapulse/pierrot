@@ -20,7 +20,7 @@ package com.agorapulse.pierrot.core;
 import java.io.File;
 import java.io.InputStream;
 
-public interface Content {
+public interface Content extends Ignorable {
 
     String getName();
     String getPath();
@@ -34,5 +34,11 @@ public interface Content {
     boolean replace(String branchName, String message, String regexp, String replacement);
 
     void writeTo(File toPath);
+
+
+    @Override
+    default boolean canBeIgnored() {
+        return getRepository().isArchived();
+    }
 
 }
