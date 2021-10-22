@@ -18,15 +18,12 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
     name = "replace",
@@ -55,43 +52,18 @@ public class ReplaceCommand implements Runnable {
 
     @Override
     public void run() {
-        String query = search.getQuery();
-        AtomicInteger replaced = new AtomicInteger();
-
-        System.out.printf("Searching results to replace for '%s'!%n", query);
-
-        service.searchContent(query, search.isGlobal()).forEach(content -> {
-            if (!search.isAll() && content.getRepository().isArchived()) {
-                return;
-            }
-
-            Repository ghr = service.getRepository(content.getRepository().getFullName()).get();
-
-            if (ghr.isArchived()) {
-                System.out.printf("Repository %s is archived. Nothing will be replaced.%n", ghr.getFullName());
-                return;
-            }
-
-            if (!ghr.canWrite()) {
-                System.out.printf("Current user does not have write rights to the repository %s. Nothing will be replaced.%n", ghr.getFullName());
-                return;
-            }
-
+        search.searchContent(service, content -> pullRequest.createPullRequest(service, content.getRepository().getFullName(), (repository, branch, message) -> {
             System.out.printf("Replacing %s/%s%n", content.getRepository().getFullName(), content.getPath());
 
-            ghr.createBranch(pullRequest.readBranch());
-
-            if (content.replace(pullRequest.readBranch(), pullRequest.readMessage(), pattern, replacement)) {
+            if (content.replace(branch, message, pattern, replacement)) {
                 System.out.printf("Replaced %s/%s%n", content.getRepository().getFullName(), content.getPath());
-                replaced.incrementAndGet();
-
-                ghr.createPullRequest(pullRequest.readBranch(), pullRequest.readTitle(), pullRequest.readMessage()).ifPresent(url ->
-                    System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url)
-                );
+                return true;
             }
-        });
 
-        System.out.printf("Replaced %d files%n", replaced.get());
+            return false;
+        }));
+
+        System.out.printf("Replaced text in %d files%n", pullRequest.getPullRequestsCreated());
     }
 
 }

@@ -17,28 +17,8 @@
  */
 package com.agorapulse.pierrot.core;
 
-import java.io.File;
-import java.io.InputStream;
+public interface Ignorable {
 
-public interface Content extends Ignorable {
-
-    String getName();
-    String getPath();
-    String getHtmlUrl();
-    Repository getRepository();
-    InputStream getContent();
-    String getTextContent();
-    String getSha();
-
-    boolean delete(String branchName, String message);
-    boolean replace(String branchName, String message, String regexp, String replacement);
-
-    void writeTo(File toPath);
-
-
-    @Override
-    default boolean canBeIgnored() {
-        return getRepository().isArchived();
-    }
+    boolean canBeIgnored();
 
 }

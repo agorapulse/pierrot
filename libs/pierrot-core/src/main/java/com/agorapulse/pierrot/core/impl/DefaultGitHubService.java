@@ -344,7 +344,10 @@ public class DefaultGitHubService implements GitHubService {
     }
 
     @Override
-    public Stream<? extends PullRequest> searchPullRequests(String query, boolean global) {
+    public Stream<? extends PullRequest> searchPullRequests(String query, boolean openOnly, boolean global) {
+        if (openOnly) {
+            query += " is:open";
+        }
         return StreamSupport
             .stream(client.searchIssues().q(addOrg("is:pr " + query, global)).list().spliterator(), false)
             .map(issue -> {

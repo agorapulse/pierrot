@@ -17,9 +17,10 @@
  */
 package com.agorapulse.pierrot.core;
 
+import java.net.URL;
 import java.util.stream.Stream;
 
-public interface PullRequest {
+public interface PullRequest extends Ignorable {
 
     Repository getRepository();
 
@@ -33,4 +34,10 @@ public interface PullRequest {
 
     Stream<? extends CheckRun> getChecks();
 
+    @Override
+    default boolean canBeIgnored() {
+        return isMerged();
+    }
+
+    URL getHtmlUrl();
 }

@@ -40,29 +40,15 @@ public class PushCommand implements Runnable {
 
     @Override
     public void run() {
+        System.out.printf("Pushing changes from %s%n", workspace.getWorkspace());
         Workspace ws = new Workspace(workspace.getWorkspace());
-        ws.visitRepositories(r -> service.getRepository(r.getName()).ifPresent(ghr -> {
-            if (ghr.isArchived()) {
-                System.out.printf("Repository %s is archived. Nothing will be pushed.%n", r.getName());
-                return;
-            }
-
-            if (!ghr.canWrite()) {
-                System.out.printf("Current user does not have write rights to the repository %s. Nothing will be pushed.%n", r.getName());
-                return;
-            }
-
-            ghr.createBranch(pullRequest.readBranch());
-
+        ws.visitRepositories(r ->
+            pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -> {
             AtomicBoolean changed = new AtomicBoolean(false);
-            r.visitFiles(f -> changed.set(ghr.writeFile(pullRequest.readBranch(), pullRequest.readMessage(), f.getPath(), f.getText()) || changed.get()));
-
-            if (changed.get()) {
-                ghr.createPullRequest(pullRequest.readBranch(), pullRequest.readTitle(), pullRequest.readMessage()).ifPresent(url ->
-                    System.out.printf("PR for %s available at %s%n", r.getName(), url)
-                );
-            }
+            r.visitFiles(f -> changed.set(ghr.writeFile(branch, message, f.getPath(), f.getText()) || changed.get()));
+            return changed.get();
         }));
+        System.out.printf("Opened %d pull requests %n", pullRequest.getPullRequestsCreated());
     }
 
 }
