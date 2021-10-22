@@ -24,6 +24,7 @@ import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
@@ -44,18 +45,7 @@ public class StatusCommand implements Runnable {
 
     @Override
     public void run() {
-        String query = search.getQuery();
-
-        if (!search.isAll()) {
-            query = query + " is:open";
-        }
-
-        AtomicInteger found = new AtomicInteger();
-
-        System.out.printf("Searching pull requests matching '%s'!%n", query);
-
-        service.searchPullRequests(query, search.isGlobal()).forEach(pr -> {
-            found.incrementAndGet();
+        search.searchPullRequests(service, pr -> {
             System.out.println(DOUBLE_LINE);
             System.out.printf("| %s%n", pr.getRepository().getFullName());
             System.out.println(LINE);
@@ -68,10 +58,11 @@ public class StatusCommand implements Runnable {
                     check.getName()
                 )
             );
+            return Optional.of(SearchMixin.toSafeUri(pr.getHtmlUrl()));
         });
 
         System.out.println(DOUBLE_LINE);
-        System.out.printf("Found %d pull requests!%n", found.get());
+        System.out.printf("Found %d pull requests!%n", search.getProcessed());
     }
 
     private static String getSymbolFor(CheckRun check) {

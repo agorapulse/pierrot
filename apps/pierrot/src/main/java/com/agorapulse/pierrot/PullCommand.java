@@ -25,15 +25,13 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
 
 @Command(
     name = "pull",
     description = "searches GitHub and pulls the matching files locally"
 )
 public class PullCommand implements Runnable {
-
-    private static final String DOUBLE_LINE = "=".repeat(120);
 
     @Mixin SearchMixin search;
     @Mixin WorkspaceMixin workspace;
@@ -42,23 +40,13 @@ public class PullCommand implements Runnable {
 
     @Override
     public void run() {
-        String query = search.getQuery();
-        AtomicInteger found = new AtomicInteger();
-
-        System.out.println(DOUBLE_LINE);
-        System.out.printf("Searching results for '%s'!%n", query);
-        service.searchContent(query, search.isGlobal()).forEach(content -> {
-            if (!search.isAll() && content.getRepository().isArchived()) {
-                return;
-            }
-
-            found.incrementAndGet();
-
+        search.searchContent(service, content -> {
             File location = new File(workspace.getWorkspace(), String.format("%s/%s", content.getRepository().getFullName(), content.getPath()));
             content.writeTo(location);
             System.out.printf("Fetched %s/%s%n", content.getRepository().getFullName(), content.getPath());
+            return Optional.of(location.toURI());
         });
 
-        System.out.printf("Found %d results!%n", found.get());
+        System.out.printf("Found %d results!%n", search.getProcessed());
     }
 }

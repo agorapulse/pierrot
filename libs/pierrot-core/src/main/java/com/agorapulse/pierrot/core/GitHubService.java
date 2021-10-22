@@ -25,5 +25,5 @@ public interface GitHubService {
 
     Optional<Repository> getRepository(String repositoryFullName);
 
-    Stream<? extends PullRequest> searchPullRequests(String query, boolean global);
+    Stream<? extends PullRequest> searchPullRequests(String query, boolean openOnly, boolean global);
 }

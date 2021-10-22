@@ -23,9 +23,9 @@ import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 
-import java.awt.Desktop;
-import java.io.IOException;
 import java.net.URI;
+
+import static java.util.Optional.*;
 
 @Command(
     name = "search",
@@ -44,7 +44,7 @@ public class SearchCommand implements Runnable {
     public void run() {
         System.out.println(DOUBLE_LINE);
         System.out.printf("Searching results for '%s'!%n", search.getQuery());
-        search.searchContent(service).forEach(content -> {
+        search.searchContent(service, content -> {
                 System.out.println(DOUBLE_LINE);
                 System.out.printf("| %s/%s%n", content.getRepository().getFullName(), content.getPath());
                 System.out.println(DOUBLE_LINE);
@@ -52,15 +52,7 @@ public class SearchCommand implements Runnable {
                 System.out.println(content.getTextContent());
                 System.out.println(LINE);
 
-                search.paginate("Hit ENTER to continue, 'q' for exit or 'o' to open on GitHub: ", answer -> {
-                    if (answer.contains("o") && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        try {
-                            Desktop.getDesktop().browse(URI.create(content.getHtmlUrl()));
-                        } catch (IOException ignored) {
-                            // ignored
-                        }
-                    }
-                });
+                return of(URI.create(content.getHtmlUrl()));
             });
 
         System.out.printf("Found %d results!%n", search.getProcessed());

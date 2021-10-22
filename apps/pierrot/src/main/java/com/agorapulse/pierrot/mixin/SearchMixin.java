@@ -20,16 +20,30 @@ package com.agorapulse.pierrot.mixin;
 import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.Ignorable;
+import com.agorapulse.pierrot.core.PullRequest;
 import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class SearchMixin {
+
+    public static URI toSafeUri(URL url) {
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Cannot convert " + url + " to URI");
+        }
+    }
 
     @Parameters(
         arity = "1",
@@ -79,10 +93,20 @@ public class SearchMixin {
         return global;
     }
 
-    public Stream<Content> searchContent(GitHubService service) {
-        return service.searchContent(getQuery(), isGlobal())
+    public void searchContent(GitHubService service, Function<Content, Optional<URI>> action) {
+        System.out.printf("Searching content for '%s'!%n", getQuery());
+        service.searchContent(getQuery(), isGlobal())
             .filter(Predicate.not(this::isIgnored))
-            .takeWhile(t -> this.shouldProceedToNextResult());
+            .takeWhile(t -> this.shouldProceedToNextResult())
+            .forEach(c -> paginate(action.apply(c)));
+    }
+
+    public void searchPullRequests(GitHubService service, Function<PullRequest, Optional<URI>> action) {
+        System.out.printf("Searching pull requests for '%s'!%n", getQuery());
+        service.searchPullRequests(getQuery(), !isAll(), isGlobal())
+            .filter(Predicate.not(this::isIgnored))
+            .takeWhile(t -> this.shouldProceedToNextResult())
+            .forEach(c -> paginate(action.apply(c)));
     }
 
     public boolean shouldProceedToNextResult() {
@@ -101,14 +125,27 @@ public class SearchMixin {
         return processed;
     }
 
-    public void paginate(String prompt, Consumer<String> lineConsumer) {
+    public void paginate(Optional<URI> maybeUri) {
         if (!isNoPage()) {
-            String nextLine = System.console().readLine(prompt);
+            String fullPrompt = "ENTER=continue,q=quit,a=all";
+
+            if (maybeUri.isPresent()) {
+                fullPrompt += ", o=open on GitHub";
+            }
+
+            fullPrompt += ": ";
+
+            String nextLine = System.console().readLine(fullPrompt);
             if (StringUtils.isNotEmpty(nextLine)) {
                 if (nextLine.contains("q")) {
                     proceedToNextResult = false;
                 }
-                lineConsumer.accept(nextLine);
+                if (nextLine.contains("a")) {
+                    noPage = true;
+                }
+                if (nextLine.contains("o")) {
+                    maybeUri.ifPresent(this::open);
+                }
             }
         }
     }
@@ -120,5 +157,15 @@ public class SearchMixin {
             return true;
         }
         return noPage;
+    }
+
+    private void open(URI uri) {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            try {
+                Desktop.getDesktop().browse(uri);
+            } catch (IOException ignored) {
+                // ignored
+            }
+        }
     }
 }

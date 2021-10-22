@@ -17,6 +17,7 @@
  */
 package com.agorapulse.pierrot.core;
 
+import java.net.URL;
 import java.util.stream.Stream;
 
 public interface PullRequest extends Ignorable {
@@ -37,4 +38,6 @@ public interface PullRequest extends Ignorable {
     default boolean canBeIgnored() {
         return isMerged();
     }
+
+    URL getHtmlUrl();
 }

@@ -18,14 +18,11 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Command(
     name = "delete",
@@ -33,50 +30,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 )
 public class DeleteCommand implements Runnable {
 
-    @Mixin SearchMixin search;
-    @Mixin PullRequestMixin pullRequest;
+    @Mixin
+    SearchMixin search;
+    @Mixin
+    PullRequestMixin pullRequest;
 
-    @Inject GitHubService service;
+    @Inject
+    GitHubService service;
 
     @Override
     public void run() {
-        String query = search.getQuery();
-        AtomicInteger deleted = new AtomicInteger();
-
-        System.out.printf("Searching results to delete for '%s'!%n", query);
-
-        service.searchContent(query, search.isGlobal()).forEach(content -> {
-            if (!search.isAll() && content.getRepository().isArchived()) {
-                return;
-            }
-
-            Repository ghr = service.getRepository(content.getRepository().getFullName()).get();
-
-            if (ghr.isArchived()) {
-                System.out.printf("Repository %s is archived. Nothing will be deleted.%n", ghr.getFullName());
-                return;
-            }
-
-            if (!ghr.canWrite()) {
-                System.out.printf("Current user does not have write rights to the repository %s. Nothing will be deleted.%n", ghr.getFullName());
-                return;
-            }
-
+        search.searchContent(service, content -> pullRequest.createPullRequest(service, content.getRepository().getFullName(), (r, branch, message) -> {
             System.out.printf("Deleting %s/%s%n", content.getRepository().getFullName(), content.getPath());
 
-            ghr.createBranch(pullRequest.readBranch());
-
-            if (content.delete(pullRequest.readBranch(), pullRequest.readMessage())) {
+            if (content.delete(branch, message)) {
                 System.out.printf("Deleted %s/%s%n", content.getRepository().getFullName(), content.getPath());
-                deleted.incrementAndGet();
-
-                ghr.createPullRequest(pullRequest.readBranch(), pullRequest.readTitle(), pullRequest.readMessage()).ifPresent(url ->
-                    System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url)
-                );
+                return true;
             }
-        });
 
-        System.out.printf("Deleted %d files%n", deleted.get());
+            return false;
+        }));
+
+        System.out.printf("Processed %d files%n", pullRequest.getPullRequestsCreated());
     }
 
 }

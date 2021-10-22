@@ -17,6 +17,8 @@
  */
 package com.agorapulse.pierrot.mixin;
 
+import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.core.Repository;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +27,21 @@ import picocli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class PullRequestMixin {
+
+    public interface RepositoryChange {
+
+        boolean peform(Repository repository, String branch, String message);
+
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PullRequestMixin.class);
 
@@ -67,6 +78,8 @@ public class PullRequestMixin {
     )
     File messageFrom;
 
+    private int pullRequestsCreated;
+
     public PullRequestMixin() { }
 
     public PullRequestMixin(String branch, String title, String message) {
@@ -80,7 +93,35 @@ public class PullRequestMixin {
         this.writer = writer;
     }
 
-    public String readBranch() {
+    public int getPullRequestsCreated() {
+        return pullRequestsCreated;
+    }
+
+    public Optional<URI> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
+        Repository ghr = service.getRepository(repositoryFullName).get();
+
+        if (ghr.isArchived()) {
+            System.out.printf("Repository %s is archived. Nothing will be deleted.%n", ghr.getFullName());
+            return Optional.empty();
+        }
+
+        if (!ghr.canWrite()) {
+            System.out.printf("Current user does not have write rights to the repository %s. Nothing will be deleted.%n", ghr.getFullName());
+            return Optional.empty();
+        }
+
+        ghr.createBranch(readBranch());
+
+        if (withRepository.peform(ghr, readBranch(), readMessage())) {
+            Optional<URL> maybeUrl = ghr.createPullRequest(readBranch(), readTitle(), readMessage());
+            maybeUrl.ifPresent(url -> System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url));
+            return  maybeUrl.map(SearchMixin::toSafeUri);
+        }
+
+        return  Optional.empty();
+    }
+
+    private String readBranch() {
         while (StringUtils.isEmpty(branch)) {
             this.branch = reader.apply("Branch Name: ");
         }
@@ -88,14 +129,14 @@ public class PullRequestMixin {
         return branch;
     }
 
-    public String readTitle() {
+    private String readTitle() {
         while (StringUtils.isEmpty(title)) {
             this.title = reader.apply("Pull Request Title: ");
         }
         return title;
     }
 
-    public String readMessage() {
+    private String readMessage() {
         // it's more convenient for the user to always ask for the title first, before the message
         readTitle();
 

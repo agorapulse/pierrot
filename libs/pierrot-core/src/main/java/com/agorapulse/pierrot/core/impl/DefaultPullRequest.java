@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.stream.Stream;
 
 public class DefaultPullRequest implements PullRequest {
@@ -90,4 +91,8 @@ public class DefaultPullRequest implements PullRequest {
         return httpClient.getCheckRuns(repository.getOwnerName(), repository.getName(), pr.getBase().getSha()).getCheckRuns().stream();
     }
 
+    @Override
+    public URL getHtmlUrl() {
+        return repository.getHtmlUrl();
+    }
 }
