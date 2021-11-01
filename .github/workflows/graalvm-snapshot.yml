@@ -38,7 +38,7 @@ jobs:
       - name: Build Native Image Snapshot
         run: |
           ./gradlew :pierrot:shadowJar --no-daemon
-          native-image --no-fallback -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.PierrotCommand -H:Name=pierrot
+          native-image --no-fallback -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
