@@ -88,13 +88,13 @@ public class DefaultPullRequest implements PullRequest {
 
     @Override
     public Stream<? extends CheckRun> getChecks() {
-        Repository repository = getRepository();
-        return httpClient.getCheckRuns(repository.getOwnerName(), repository.getName(), pr.getBase().getSha()).getCheckRuns().stream();
+        Repository r = getRepository();
+        return httpClient.getCheckRuns(r.getOwnerName(), r.getName(), pr.getBase().getSha()).getCheckRuns().stream();
     }
 
     @Override
     public URL getHtmlUrl() {
-        return repository.getHtmlUrl();
+        return pr.getHtmlUrl();
     }
 
     GHPullRequest getNativePullRequest() {
