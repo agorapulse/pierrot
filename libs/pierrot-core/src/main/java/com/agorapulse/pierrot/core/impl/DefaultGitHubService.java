@@ -235,6 +235,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHRepository",
         "org.kohsuke.github.GHRepository$Contributor",
         "org.kohsuke.github.GHRepository$ForkSort",
+        "org.kohsuke.github.GHRepository$GHRepoPermission",
+        "org.kohsuke.github.GHRepository$Topics",
         "org.kohsuke.github.GHRepoPermission",
         "org.kohsuke.github.GHRepoPermission$Topics",
         "org.kohsuke.github.GHRepositoryCloneTraffic",
