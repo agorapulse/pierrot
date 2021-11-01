@@ -19,7 +19,9 @@ package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
+import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
+import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentBuilder;
 import org.kohsuke.github.GHIssueState;
@@ -32,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.EnumSet;
 import java.util.Optional;
 
@@ -45,11 +46,13 @@ public class DefaultRepository implements Repository {
     private final GHRepository repository;
     private final GHUser myself;
     private final GitHubConfiguration configuration;
+    private final GitHubHttpClient httpClient;
 
-    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
+    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration, GitHubHttpClient httpClient) {
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -100,7 +103,7 @@ public class DefaultRepository implements Repository {
     }
 
     @Override
-    public Optional<URL> createPullRequest(String branch, String title, String message) {
+    public Optional<PullRequest> createPullRequest(String branch, String title, String message) {
         try {
             PagedIterator<GHPullRequest> iterator = repository.queryPullRequests().head(branch).base(getDefaultBranch()).list().iterator();
             if (iterator.hasNext()) {
@@ -108,9 +111,21 @@ public class DefaultRepository implements Repository {
                 if (!GHIssueState.OPEN.equals(existing.getState())) {
                     existing.reopen();
                 }
-                return Optional.of(existing.getHtmlUrl());
+                return Optional.of(new DefaultPullRequest(
+                    existing,
+                    repository,
+                    myself,
+                    configuration,
+                    httpClient
+                ));
             }
-            return Optional.of(repository.createPullRequest(title, branch, getDefaultBranch(), message).getHtmlUrl());
+            return Optional.of(new DefaultPullRequest(
+                repository.createPullRequest(title, branch, getDefaultBranch(), message),
+                repository,
+                myself,
+                configuration,
+                httpClient
+            ));
         } catch (IOException e) {
             logger.error("Exception creating pull request " + title, e);
             return Optional.empty();
@@ -142,7 +157,7 @@ public class DefaultRepository implements Repository {
     private Optional<Content> getFile(String branch, String path) {
         try {
             GHContent fileContent = repository.getFileContent(path, branch);
-            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration));
+            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration, httpClient));
         } catch (IOException e) {
             logger.error("Exception fetching file " + path, e);
             return Optional.empty();

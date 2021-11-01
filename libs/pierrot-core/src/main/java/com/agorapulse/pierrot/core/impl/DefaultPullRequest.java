@@ -53,7 +53,7 @@ public class DefaultPullRequest implements PullRequest {
 
     @Override
     public Repository getRepository() {
-        return new DefaultRepository(repository, myself, configuration);
+        return new DefaultRepository(repository, myself, configuration, httpClient);
     }
 
     @Override
@@ -95,5 +95,9 @@ public class DefaultPullRequest implements PullRequest {
     @Override
     public URL getHtmlUrl() {
         return repository.getHtmlUrl();
+    }
+
+    GHPullRequest getNativePullRequest() {
+        return pr;
     }
 }

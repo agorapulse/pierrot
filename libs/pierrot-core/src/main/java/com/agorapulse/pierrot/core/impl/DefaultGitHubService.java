@@ -330,14 +330,14 @@ public class DefaultGitHubService implements GitHubService {
     @Override
     public Stream<Content> searchContent(String query, boolean global) {
         return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
-            new DefaultContent(content, content.getOwner(), getMyself(), configuration)
+            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient)
         );
     }
 
     @Override
     public Optional<Repository> getRepository(String repositoryFullName) {
         try {
-            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration));
+            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
         } catch (IOException e) {
             logger.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
@@ -364,6 +364,30 @@ public class DefaultGitHubService implements GitHubService {
                 }
             })
             .filter(Objects::nonNull);
+    }
+
+    @Override
+    public Optional<Project> findOrCreateProject(String org, String project, String column) {
+        try {
+            return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
+                .filter(p -> project.equals(p.getName()))
+                .findFirst()
+                .or(() -> {
+                    try {
+                        GHProject newProject = client.getOrganization(org).createProject(project, "Created by Pierrot");
+                        newProject.createColumn(column);
+                        return Optional.of(newProject);
+                    } catch (IOException e) {
+                        logger.error("Exception creating project " + project + " in organization " + org ,  e);
+                        return Optional.empty();
+                    }
+                })
+                .map(DefaultProject::new);
+
+        } catch (IOException e) {
+            logger.error("Exception fetching organization " + org, e);
+            return Optional.empty();
+        }
     }
 
     private GHUser getMyself() {

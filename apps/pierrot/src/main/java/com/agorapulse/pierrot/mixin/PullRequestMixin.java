@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot.mixin;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
@@ -27,8 +28,6 @@ import picocli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.Scanner;
@@ -98,7 +97,7 @@ public class PullRequestMixin {
         return pullRequestsCreated;
     }
 
-    public Optional<URI> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
+    public Optional<PullRequest> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
         Optional<Repository> maybeRepository = service.getRepository(repositoryFullName);
 
         if (maybeRepository.isEmpty()) {
@@ -122,9 +121,9 @@ public class PullRequestMixin {
 
         if (withRepository.perform(ghr, readBranch(), readMessage())) {
             pullRequestsCreated++;
-            Optional<URL> maybeUrl = ghr.createPullRequest(readBranch(), readTitle(), readMessage());
-            maybeUrl.ifPresent(url -> System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url));
-            return  maybeUrl.map(SearchMixin::toSafeUri);
+            Optional<PullRequest> maybePullRequest = ghr.createPullRequest(readBranch(), readTitle(), readMessage());
+            maybePullRequest.ifPresent(pr -> System.out.printf("PR for %s available at %s%n", ghr.getFullName(), pr.getHtmlUrl()));
+            return  maybePullRequest;
         }
 
         return  Optional.empty();

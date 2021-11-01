@@ -61,7 +61,7 @@ public class ReplaceCommand implements Runnable {
             }
 
             return false;
-        }));
+        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Replaced text in %d files%n", pullRequest.getPullRequestsCreated());
     }

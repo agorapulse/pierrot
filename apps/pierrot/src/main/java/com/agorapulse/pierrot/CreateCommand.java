@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.mixin.FileMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
@@ -59,7 +60,7 @@ public class CreateCommand implements Runnable {
             }
 
             return false;
-        }));
+        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Created %d files%n", pullRequest.getPullRequestsCreated());
     }

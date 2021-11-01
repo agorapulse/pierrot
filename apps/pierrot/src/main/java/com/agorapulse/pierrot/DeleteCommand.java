@@ -49,7 +49,7 @@ public class DeleteCommand implements Runnable {
             }
 
             return false;
-        }));
+        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Processed %d files%n", pullRequest.getPullRequestsCreated());
     }

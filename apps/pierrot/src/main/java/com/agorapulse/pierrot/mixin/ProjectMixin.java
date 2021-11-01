@@ -18,33 +18,17 @@
 package com.agorapulse.pierrot.mixin;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Repository;
+import com.agorapulse.pierrot.core.Project;
+import com.agorapulse.pierrot.core.PullRequest;
 import io.micronaut.core.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class ProjectMixin {
-
-    public interface RepositoryChange {
-
-        boolean perform(Repository repository, String branch, String message);
-
-    }
-
-    // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(ProjectMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -53,137 +37,86 @@ public class ProjectMixin {
         return scanner.nextLine();
     };
 
-    private Consumer<String> writer = System.out::println;
+    @CommandLine.Option(
+        names = {"-o", "--org"},
+        description = "The organization owner of the project board"
+    )
+    String organization;
 
     @CommandLine.Option(
-        names = {"-b", "--branch"},
-        description = "The pull request branch"
+        names = {"--project"},
+        description = "The name of the organization project"
     )
-    String branch;
+    String project;
 
     @CommandLine.Option(
-        names = {"-t", "--title"},
-        description = "The pull request title"
+        names = {"--column"},
+        description = "The name of the column in the project",
+        defaultValue = "To do"
     )
-    String title;
+    String column;
 
-    @CommandLine.Option(
-        names = {"-m", "--message"},
-        description = "The pull request message"
-    )
-    String message;
-
-    @CommandLine.Option(
-        names = {"--message-from"},
-        description = "The file containing the pull request message"
-    )
-    File messageFrom;
-
-    private int pullRequestsCreated;
+    private Project board;
 
     public ProjectMixin() { }
 
-    public ProjectMixin(String branch, String title, String message) {
-        this.branch = branch;
-        this.title = title;
-        this.message = message;
+    public ProjectMixin(String organization, String project, String column) {
+        this.project = project;
+        this.column = column;
+        this.organization = organization;
     }
 
-    public ProjectMixin(UnaryOperator<String> reader, Consumer<String> writer) {
+    public ProjectMixin(UnaryOperator<String> reader) {
         this.reader = reader;
-        this.writer = writer;
     }
 
-    public int getPullRequestsCreated() {
-        return pullRequestsCreated;
+    public Optional<URI> addToProject(GitHubService service, String defaultOrganization, Optional<PullRequest> pullRequest) {
+        if (StringUtils.isEmpty(project)) {
+            // project must be specified to add projects
+            return pullRequest.map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl()));
+        }
+        return pullRequest.map(pr -> {
+            String currentColumn = readColumn(defaultOrganization);
+            service.findOrCreateProject(readOrganization(defaultOrganization), readProject(defaultOrganization), currentColumn).ifPresent(p -> {
+                p.addToColumn(currentColumn, pr);
+                board = p;
+
+            });
+            return SearchMixin.toSafeUri(pr.getHtmlUrl());
+        });
     }
 
-    public Optional<URI> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
-        Optional<Repository> maybeRepository = service.getRepository(repositoryFullName);
 
-        if (maybeRepository.isEmpty()) {
-            System.out.printf("Repository %s is not available.%n", repositoryFullName);
-            return Optional.empty();
+
+    private String readOrganization(String defaultOrganization) {
+        if (StringUtils.isEmpty(organization) && StringUtils.isNotEmpty(defaultOrganization)) {
+            organization = defaultOrganization;
+        }
+        while (StringUtils.isEmpty(organization)) {
+            organization = reader.apply("Organization: ");
         }
 
-        Repository ghr = maybeRepository.get();
-
-        if (ghr.isArchived()) {
-            System.out.printf("Repository %s is archived.%n", ghr.getFullName());
-            return Optional.empty();
-        }
-
-        if (!ghr.canWrite()) {
-            System.out.printf("Current user does not have write rights to the repository %s.%n", ghr.getFullName());
-            return Optional.empty();
-        }
-
-        ghr.createBranch(readBranch());
-
-        if (withRepository.perform(ghr, readBranch(), readMessage())) {
-            pullRequestsCreated++;
-            Optional<URL> maybeUrl = ghr.createPullRequest(readBranch(), readTitle(), readMessage());
-            maybeUrl.ifPresent(url -> System.out.printf("PR for %s available at %s%n", ghr.getFullName(), url));
-            return  maybeUrl.map(SearchMixin::toSafeUri);
-        }
-
-        return  Optional.empty();
+        return organization;
     }
 
-    private String readBranch() {
-        while (StringUtils.isEmpty(branch)) {
-            this.branch = reader.apply("Branch Name: ");
-        }
+    private String readProject(String defaultOrganization) {
+        // read the organization first
+        readOrganization(defaultOrganization);
 
-        return branch;
+        // the project should be always present but let's keep the loop in case of anything changes in the future
+        while (StringUtils.isEmpty(project)) {
+            this.project = reader.apply("Project (board): ");
+        }
+        return project;
     }
 
-    private String readTitle() {
-        while (StringUtils.isEmpty(title)) {
-            this.title = reader.apply("Pull Request Title: ");
+    private String readColumn(String defaultOrganization) {
+        // read the project first
+        readProject(defaultOrganization);
+        while (StringUtils.isEmpty(column)) {
+            this.column = reader.apply("Column: ");
         }
-        return title;
-    }
-
-    private String readMessage() {
-        // it's more convenient for the user to always ask for the title first, before the message
-        readTitle();
-
-        if (StringUtils.isNotEmpty(message)) {
-            return message;
-        }
-
-        if (messageFrom != null && messageFrom.exists()) {
-            try {
-                return Files.readString(messageFrom.toPath());
-            } catch (IOException e) {
-                logger.error("Exception reading content of " + messageFrom, e);
-            }
-        }
-
-        while (StringUtils.isEmpty(message)) {
-            this.writer.accept("Pull Request Message (Markdown format, use triple new line to submit):%n");
-
-            StringWriter stringWriter = new StringWriter();
-
-            int emptyLines = 0;
-
-            while (emptyLines < 2) {
-                String line = reader.apply("> ");
-
-                if (StringUtils.isEmpty(line)) {
-                    emptyLines++;
-                } else {
-                    emptyLines = 0;
-                }
-
-                stringWriter.append(line);
-            }
-
-            this.message = stringWriter.toString();
-        }
-
-        return this.message;
+        return column;
     }
 
 }
