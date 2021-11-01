@@ -36,6 +36,10 @@ jobs:
         run: |
           ./gradlew :pierrot:shadowJar --no-daemon
           native-image --no-fallback -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.PierrotCommand -H:Name=pierrot
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pierrot-${{ runner.os }}
+          path: pierrot
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
         uses: docker/login-action@v1
