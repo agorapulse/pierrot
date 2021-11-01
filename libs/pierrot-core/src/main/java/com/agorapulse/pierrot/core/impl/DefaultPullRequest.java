@@ -22,11 +22,11 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class DefaultPullRequest implements PullRequest {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(DefaultPullRequest.class);
+    private static final Logger LOGGER = LazyLogger.create(DefaultPullRequest.class);
 
     private final GHPullRequest pr;
     private final GHRepository repository;
@@ -71,7 +71,7 @@ public class DefaultPullRequest implements PullRequest {
         try {
             return pr.isMerged();
         } catch (IOException e) {
-            logger.error("Exception fetching merged state", e);
+            LOGGER.error("Exception fetching merged state", e);
             return false;
         }
     }
@@ -81,7 +81,7 @@ public class DefaultPullRequest implements PullRequest {
         try {
             return Boolean.TRUE.equals(pr.getMergeable());
         } catch (IOException e) {
-            logger.error("Exception fetching mergeable state", e);
+            LOGGER.error("Exception fetching mergeable state", e);
             return false;
         }
     }

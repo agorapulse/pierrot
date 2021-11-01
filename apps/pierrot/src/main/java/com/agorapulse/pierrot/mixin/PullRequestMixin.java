@@ -20,9 +20,9 @@ package com.agorapulse.pierrot.mixin;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class PullRequestMixin {
     }
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(PullRequestMixin.class);
+    private static final Logger LOGGER = LazyLogger.create(PullRequestMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -156,7 +156,7 @@ public class PullRequestMixin {
             try {
                 return Files.readString(messageFrom.toPath());
             } catch (IOException e) {
-                logger.error("Exception reading content of " + messageFrom, e);
+                LOGGER.error("Exception reading content of " + messageFrom, e);
             }
         }
 

@@ -17,9 +17,9 @@
  */
 package com.agorapulse.pierrot.mixin;
 
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.function.UnaryOperator;
 public class FileMixin {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(FileMixin.class);
+    private static final Logger LOGGER = LazyLogger.create(FileMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -99,7 +99,7 @@ public class FileMixin {
             try {
                 return Files.readString(contentFrom.toPath());
             } catch (IOException e) {
-                logger.error("Exception reading content of " + contentFrom, e);
+                LOGGER.error("Exception reading content of " + contentFrom, e);
             }
         }
 

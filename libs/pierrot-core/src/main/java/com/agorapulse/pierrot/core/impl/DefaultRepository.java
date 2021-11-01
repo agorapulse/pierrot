@@ -22,6 +22,7 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentBuilder;
 import org.kohsuke.github.GHIssueState;
@@ -31,7 +32,6 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.PagedIterator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.EnumSet;
@@ -40,7 +40,7 @@ import java.util.Optional;
 public class DefaultRepository implements Repository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(DefaultRepository.class);
+    private static final Logger LOGGER = LazyLogger.create(DefaultRepository.class);
     private static final EnumSet<GHPermissionType> WRITE_PERMISSIONS = EnumSet.of(GHPermissionType.WRITE, GHPermissionType.ADMIN);
 
     private final GHRepository repository;
@@ -80,7 +80,7 @@ public class DefaultRepository implements Repository {
         try {
             return WRITE_PERMISSIONS.contains(repository.getPermission(myself));
         } catch (IOException e) {
-            logger.info("Exception evaluating permissions for {}", getFullName());
+            LOGGER.info("Exception evaluating permissions for {}", getFullName());
             return false;
         }
     }
@@ -88,16 +88,16 @@ public class DefaultRepository implements Repository {
     @Override
     public boolean createBranch(String name) {
         if (hasBranch(name)) {
-            logger.info("Branch {} already exists in repository {}", name, getFullName());
+            LOGGER.info("Branch {} already exists in repository {}", name, getFullName());
             return false;
         }
 
         try {
             repository.createRef("refs/heads/" + name, getLastCommitSha());
-            logger.info("Branch {} created in repository {}", name, getFullName());
+            LOGGER.info("Branch {} created in repository {}", name, getFullName());
             return true;
         } catch (IOException e) {
-            logger.error("Exception creating branch " + name, e);
+            LOGGER.error("Exception creating branch " + name, e);
             return false;
         }
     }
@@ -127,7 +127,7 @@ public class DefaultRepository implements Repository {
                 httpClient
             ));
         } catch (IOException e) {
-            logger.error("Exception creating pull request " + title, e);
+            LOGGER.error("Exception creating pull request " + title, e);
             return Optional.empty();
         }
     }
@@ -140,16 +140,16 @@ public class DefaultRepository implements Repository {
             if (existing.isPresent()) {
                 Content content = existing.get();
                 if (text.equals(content.getTextContent())) {
-                    logger.info("Remote file {} already contains all the changes", path);
+                    LOGGER.info("Remote file {} already contains all the changes", path);
                     return false;
                 }
                 builder.sha(content.getSha());
             }
             builder.commit();
-            logger.info("File {} pushed to branch {} of repository {}", path, branch, getFullName());
+            LOGGER.info("File {} pushed to branch {} of repository {}", path, branch, getFullName());
             return true;
         } catch (IOException e) {
-            logger.error("Exception writing file " + path, e);
+            LOGGER.error("Exception writing file " + path, e);
             return false;
         }
     }
@@ -159,7 +159,7 @@ public class DefaultRepository implements Repository {
             GHContent fileContent = repository.getFileContent(path, branch);
             return Optional.of(new DefaultContent(fileContent, repository, myself, configuration, httpClient));
         } catch (IOException e) {
-            logger.error("Exception fetching file " + path, e);
+            LOGGER.error("Exception fetching file " + path, e);
             return Optional.empty();
         }
     }
@@ -172,7 +172,7 @@ public class DefaultRepository implements Repository {
         try {
             return repository.getBranches().containsKey(name);
         } catch (IOException e) {
-            logger.error("Exception checking presence of branch " + name, e);
+            LOGGER.error("Exception checking presence of branch " + name, e);
             return false;
         }
     }

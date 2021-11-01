@@ -17,8 +17,8 @@
  */
 package com.agorapulse.pierrot.core.ws;
 
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class LocalRepository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(LocalRepository.class);
+    private static final Logger LOGGER = LazyLogger.create(LocalRepository.class);
 
     private final File location;
     private final String name;
@@ -51,11 +51,11 @@ public class LocalRepository {
                     String path = f.toFile().getCanonicalPath().substring(location.getCanonicalPath().length() + 1);
                     visitor.accept(new LocalFile(f.toFile(), path));
                 } catch (IOException e) {
-                    logger.error("Exception extracting path from" + f, e);
+                    LOGGER.error("Exception extracting path from" + f, e);
                 }
             });
         } catch (IOException e) {
-            logger.error("Exception walking repository " + getName(), e);
+            LOGGER.error("Exception walking repository " + getName(), e);
         }
     }
 

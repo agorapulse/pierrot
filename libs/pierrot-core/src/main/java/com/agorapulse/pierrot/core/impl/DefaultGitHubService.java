@@ -19,12 +19,12 @@ package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.*;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
 import org.kohsuke.github.*;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -309,7 +309,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
 public class DefaultGitHubService implements GitHubService {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(DefaultGitHubService.class);
+    private static final Logger LOGGER = LazyLogger.create(DefaultGitHubService.class);
 
     private static final String PR_URL_REPO_PREFIX = "https://api.github.com/repos/";
     private static final String PR_URL_REPO_SUFFIX = "/issues/";
@@ -339,7 +339,7 @@ public class DefaultGitHubService implements GitHubService {
         try {
             return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
         } catch (IOException e) {
-            logger.error("Exception fetching repository " + repositoryFullName, e);
+            LOGGER.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
         }
     }
@@ -359,7 +359,7 @@ public class DefaultGitHubService implements GitHubService {
                     GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
                     return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
                 } catch (IOException e) {
-                    logger.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
+                    LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
                     return null;
                 }
             })
@@ -378,14 +378,14 @@ public class DefaultGitHubService implements GitHubService {
                         newProject.createColumn(column);
                         return Optional.of(newProject);
                     } catch (IOException e) {
-                        logger.error("Exception creating project " + project + " in organization " + org, e);
+                        LOGGER.error("Exception creating project " + project + " in organization " + org, e);
                         return Optional.empty();
                     }
                 })
                 .map(DefaultProject::new);
 
         } catch (IOException e) {
-            logger.error("Exception fetching organization " + org, e);
+            LOGGER.error("Exception fetching organization " + org, e);
             return Optional.empty();
         }
     }
@@ -398,7 +398,7 @@ public class DefaultGitHubService implements GitHubService {
             this.myself = client.getMyself();
             return myself;
         } catch (IOException e) {
-            logger.error("Exception fetching current user", e);
+            LOGGER.error("Exception fetching current user", e);
             return new GHUser();
         }
     }
@@ -413,7 +413,7 @@ public class DefaultGitHubService implements GitHubService {
         }
 
         if (StringUtils.isEmpty(configuration.getOrganization())) {
-            logger.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
+            LOGGER.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
             return query;
         }
 

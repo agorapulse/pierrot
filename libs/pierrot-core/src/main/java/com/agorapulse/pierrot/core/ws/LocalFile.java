@@ -17,8 +17,8 @@
  */
 package com.agorapulse.pierrot.core.ws;
 
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.nio.file.Files;
 public class LocalFile {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(LocalFile.class);
+    private static final Logger LOGGER = LazyLogger.create(LocalFile.class);
 
     private final File location;
     private final String path;
@@ -45,7 +45,7 @@ public class LocalFile {
         try {
             return Files.readString(location.toPath());
         } catch (IOException e) {
-            logger.error("Exception reading text content of the file " + getPath(), e);
+            LOGGER.error("Exception reading text content of the file " + getPath(), e);
             return "";
         }
     }

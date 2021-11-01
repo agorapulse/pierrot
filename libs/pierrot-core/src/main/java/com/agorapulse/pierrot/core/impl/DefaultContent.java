@@ -21,12 +21,12 @@ import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LazyLogger;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 public class DefaultContent implements Content {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger logger = LoggerFactory.getLogger(DefaultContent.class);
+    private static final Logger LOGGER = LazyLogger.create(DefaultContent.class);
 
     private final GHContent content;
     private final Repository repositoryWrapper;
@@ -69,7 +69,7 @@ public class DefaultContent implements Content {
         try {
             return content.read();
         } catch (IOException e) {
-            logger.error("Exception fetching content of " + getRepository().getFullName() + "/" + getPath(), e);
+            LOGGER.error("Exception fetching content of " + getRepository().getFullName() + "/" + getPath(), e);
             return new ByteArrayInputStream(new byte[0]);
         }
     }
@@ -79,7 +79,7 @@ public class DefaultContent implements Content {
         try {
             return new String(getContent().readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            logger.error("Exception fetching text content of " + getRepository().getFullName() + "/" + getPath(), e);
+            LOGGER.error("Exception fetching text content of " + getRepository().getFullName() + "/" + getPath(), e);
             return "";
         }
     }
@@ -95,10 +95,10 @@ public class DefaultContent implements Content {
             content.delete(message, branchName);
             return true;
         } catch (GHFileNotFoundException e) {
-            logger.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
+            LOGGER.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
             return false;
         } catch (IOException e) {
-            logger.error("Exception deleting " + getRepository().getFullName() + "/" + getPath(), e);
+            LOGGER.error("Exception deleting " + getRepository().getFullName() + "/" + getPath(), e);
             return false;
         }
     }
@@ -110,14 +110,14 @@ public class DefaultContent implements Content {
             String newText = text.replaceAll(regexp, replacement);
 
             if (newText.equals(text)) {
-                logger.info("The content of {} is still the same after replacement", getPath());
+                LOGGER.info("The content of {} is still the same after replacement", getPath());
                 return false;
             }
 
             content.update(newText, message, branchName);
             return true;
         } catch (IOException e) {
-            logger.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);
+            LOGGER.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);
         }
         return false;
     }
