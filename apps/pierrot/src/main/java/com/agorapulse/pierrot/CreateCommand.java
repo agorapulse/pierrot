@@ -21,6 +21,7 @@ import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.FileMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
+import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -37,6 +38,7 @@ public class CreateCommand implements Runnable {
     @Mixin PullRequestMixin pullRequest;
     @Mixin SearchMixin search;
     @Mixin FileMixin file;
+    @Mixin StacktraceMixin stacktrace;
 
     @Inject GitHubService service;
 
@@ -59,7 +61,7 @@ public class CreateCommand implements Runnable {
             }
 
             return false;
-        }));
+        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Created %d files%n", pullRequest.getPullRequestsCreated());
     }

@@ -17,15 +17,8 @@
  */
 package com.agorapulse.pierrot.core;
 
-import java.util.Optional;
-import java.util.stream.Stream;
+public interface Project {
 
-public interface GitHubService {
-    Stream<Content> searchContent(String query, boolean global);
+    void addToColumn(String column, PullRequest pr);
 
-    Optional<Repository> getRepository(String repositoryFullName);
-
-    Stream<? extends PullRequest> searchPullRequests(String query, boolean openOnly, boolean global);
-
-    Optional<Project>  findOrCreateProject(String org, String project, String column);
 }

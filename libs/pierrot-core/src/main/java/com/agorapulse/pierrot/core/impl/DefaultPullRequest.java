@@ -22,11 +22,11 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,7 +34,8 @@ import java.util.stream.Stream;
 
 public class DefaultPullRequest implements PullRequest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPullRequest.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultPullRequest.class);
 
     private final GHPullRequest pr;
     private final GHRepository repository;
@@ -52,7 +53,7 @@ public class DefaultPullRequest implements PullRequest {
 
     @Override
     public Repository getRepository() {
-        return new DefaultRepository(repository, myself, configuration);
+        return new DefaultRepository(repository, myself, configuration, httpClient);
     }
 
     @Override
@@ -87,12 +88,16 @@ public class DefaultPullRequest implements PullRequest {
 
     @Override
     public Stream<? extends CheckRun> getChecks() {
-        Repository repository = getRepository();
-        return httpClient.getCheckRuns(repository.getOwnerName(), repository.getName(), pr.getBase().getSha()).getCheckRuns().stream();
+        Repository r = getRepository();
+        return httpClient.getCheckRuns(r.getOwnerName(), r.getName(), pr.getBase().getSha()).getCheckRuns().stream();
     }
 
     @Override
     public URL getHtmlUrl() {
-        return repository.getHtmlUrl();
+        return pr.getHtmlUrl();
+    }
+
+    GHPullRequest getNativePullRequest() {
+        return pr;
     }
 }

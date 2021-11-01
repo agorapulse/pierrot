@@ -17,9 +17,9 @@
  */
 package com.agorapulse.pierrot.mixin;
 
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -32,7 +32,8 @@ import java.util.function.UnaryOperator;
 
 public class FileMixin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileMixin.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(FileMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 

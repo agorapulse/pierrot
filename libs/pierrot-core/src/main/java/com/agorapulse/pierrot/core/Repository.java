@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot.core;
 
-import java.net.URL;
 import java.util.Optional;
 
 public interface Repository {
@@ -28,6 +27,6 @@ public interface Repository {
     boolean isArchived();
     boolean canWrite();
     boolean createBranch(String name);
-    Optional<URL> createPullRequest(String branch, String title, String message);
+    Optional<PullRequest> createPullRequest(String branch, String title, String message);
     boolean writeFile(String branch, String message, String path, String text);
 }

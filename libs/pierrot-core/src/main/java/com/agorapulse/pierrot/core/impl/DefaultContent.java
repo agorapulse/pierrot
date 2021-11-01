@@ -20,26 +20,28 @@ package com.agorapulse.pierrot.core.impl;
 import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.Repository;
+import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class DefaultContent implements Content {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultContent.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultContent.class);
 
     private final GHContent content;
     private final Repository repositoryWrapper;
 
-    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
+    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration, GitHubHttpClient httpClient) {
         this.content = content;
-        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration);
+        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration, httpClient);
     }
 
     @Override

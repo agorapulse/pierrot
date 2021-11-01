@@ -20,6 +20,7 @@ package com.agorapulse.pierrot;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
+import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -33,6 +34,7 @@ public class ReplaceCommand implements Runnable {
 
     @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
+    @Mixin StacktraceMixin stacktrace;
 
     @Inject GitHubService service;
 
@@ -61,7 +63,7 @@ public class ReplaceCommand implements Runnable {
             }
 
             return false;
-        }));
+        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Replaced text in %d files%n", pullRequest.getPullRequestsCreated());
     }

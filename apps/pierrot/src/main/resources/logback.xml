@@ -18,21 +18,12 @@
 
 -->
 <configuration>
-    <!-- breaks GraalVM -->
-<!--    <appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
-<!--        <file>pierrot.log</file>-->
-<!--        <append>true</append>-->
-<!--        <encoder>-->
-<!--            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
-
     <!-- info logs are displayed to the user -->
     <appender name="PROGRESS" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>%msg%nopex%n</pattern>
+            <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
@@ -41,6 +32,5 @@
     </logger>
 
     <root level="error">
-<!--        <appender-ref ref="FILE" />-->
     </root>
 </configuration>

@@ -39,4 +39,5 @@ dependencies {
     testImplementation 'space.jasan:groovy-closure-support:0.6.3'
     testImplementation 'javax.activation:activation:1.1.1'
     testImplementation 'com.agorapulse.testing:fixt:0.2.2'
+    testImplementation 'org.reflections:reflections:0.10.2'
 }

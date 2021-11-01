@@ -19,12 +19,12 @@ package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.*;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
 import org.kohsuke.github.*;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -74,11 +74,12 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHCommentAuthorAssociation",
         "org.kohsuke.github.GHCommit",
         "org.kohsuke.github.GHCommit$File",
-        "org.kohsuke.github.GHAuthor",
-        "org.kohsuke.github.GHAuthor$Parent",
-        "org.kohsuke.github.GHAuthor$ShortInfo",
-        "org.kohsuke.github.GHAuthor$Stats",
-        "org.kohsuke.github.GHAuthor$User",
+        "org.kohsuke.github.GHCommit$GHAuthor",
+        "org.kohsuke.github.GHCommit$Parent",
+        "org.kohsuke.github.GHCommit$ShortInfo",
+        "org.kohsuke.github.GHCommit$ShortInfo$Tree",
+        "org.kohsuke.github.GHCommit$Stats",
+        "org.kohsuke.github.GHCommit$User",
         "org.kohsuke.github.GHCommitBuilder",
         "org.kohsuke.github.GHCommitBuilder$UserInfo",
         "org.kohsuke.github.GHCommitComment",
@@ -117,7 +118,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHEmail",
         "org.kohsuke.github.GHEvent",
         "org.kohsuke.github.GHEventInfo",
-        "org.kohsuke.github.GHEventRepository",
+        "org.kohsuke.github.GHEventInfo$GHEventRepository",
         "org.kohsuke.github.GHEventPayload",
         "org.kohsuke.github.GHEventPayload$CheckRun",
         "org.kohsuke.github.GHEventPayload$CheckSuite",
@@ -137,8 +138,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHEventPayload$PullRequestReview",
         "org.kohsuke.github.GHEventPayload$PullRequestReviewComment",
         "org.kohsuke.github.GHEventPayload$Push",
-        "org.kohsuke.github.GHEventPayload$PushCommit",
-        "org.kohsuke.github.GHEventPayload$Pusher",
+        "org.kohsuke.github.GHEventPayload$Push$PushCommit",
+        "org.kohsuke.github.GHEventPayload$Push$Pusher",
         "org.kohsuke.github.GHEventPayload$Release",
         "org.kohsuke.github.GHEventPayload$Repository",
         "org.kohsuke.github.GHEventPayload$Status",
@@ -227,6 +228,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHRateLimit$UnknownLimitRecord",
         "org.kohsuke.github.GHReaction",
         "org.kohsuke.github.GHRef",
+        "org.kohsuke.github.GHRef$GHObject",
         "org.kohsuke.github.GHObject",
         "org.kohsuke.github.GHRelease",
         "org.kohsuke.github.GHReleaseBuilder",
@@ -235,8 +237,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHRepository",
         "org.kohsuke.github.GHRepository$Contributor",
         "org.kohsuke.github.GHRepository$ForkSort",
-        "org.kohsuke.github.GHRepoPermission",
-        "org.kohsuke.github.GHRepoPermission$Topics",
+        "org.kohsuke.github.GHRepository$GHRepoPermission",
+        "org.kohsuke.github.GHRepository$Topics",
         "org.kohsuke.github.GHRepositoryCloneTraffic",
         "org.kohsuke.github.GHRepositoryCloneTraffic$DailyInfo",
         "org.kohsuke.github.GHRepositorySearchBuilder",
@@ -247,6 +249,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHRepositoryStatistics$CodeFrequency",
         "org.kohsuke.github.GHRepositoryStatistics$CommitActivity",
         "org.kohsuke.github.GHRepositoryStatistics$ContributorStats",
+        "org.kohsuke.github.GHRepositoryStatistics$ContributorStats$Week",
         "org.kohsuke.github.GHRepositoryStatistics$Participation",
         "org.kohsuke.github.GHRepositoryStatistics$PunchCardItem",
         "org.kohsuke.github.GHRepositoryTraffic",
@@ -277,24 +280,6 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHVerification",
         "org.kohsuke.github.GHVerification$Reason",
         "org.kohsuke.github.GHVerifiedKey",
-        "org.kohsuke.github.GHVerifiedKey$GitHub",
-        "org.kohsuke.github.GHVerifiedKey$GitHubBuilder",
-        "org.kohsuke.github.GHVerifiedKey$GitHubClient",
-        "org.kohsuke.github.GHApiInfo",
-        "org.kohsuke.github.GHApiInfo$GitHubHttpUrlConnectionClient",
-        "org.kohsuke.github.GHApiInfo$HttpURLConnectionResponseInfo",
-        "org.kohsuke.github.GHApiInfo$GitHubPageContentsIterable",
-        "org.kohsuke.github.GHApiInfo$GitHubPageContentsIterator",
-        "org.kohsuke.github.GHApiInfo$GitHubPageIterator",
-        "org.kohsuke.github.GHApiInfo$GitHubRateLimitChecker",
-        "org.kohsuke.github.GHApiInfo$GitHubRequest",
-        "org.kohsuke.github.GHApiInfo$Builder",
-        "org.kohsuke.github.GHApiInfo$Entry",
-        "org.kohsuke.github.GHApiInfo$GitHubResponse",
-        "org.kohsuke.github.GHApiInfo$BodyHandler",
-        "org.kohsuke.github.GHApiInfo$ResponseInfo",
-        "org.kohsuke.github.GHApiInfo$GitUser",
-
     },
     accessType = {
         ALL_PUBLIC,
@@ -308,7 +293,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
 )
 public class DefaultGitHubService implements GitHubService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubService.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultGitHubService.class);
 
     private static final String PR_URL_REPO_PREFIX = "https://api.github.com/repos/";
     private static final String PR_URL_REPO_SUFFIX = "/issues/";
@@ -329,14 +315,14 @@ public class DefaultGitHubService implements GitHubService {
     @Override
     public Stream<Content> searchContent(String query, boolean global) {
         return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
-            new DefaultContent(content, content.getOwner(), getMyself(), configuration)
+            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient)
         );
     }
 
     @Override
     public Optional<Repository> getRepository(String repositoryFullName) {
         try {
-            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration));
+            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
         } catch (IOException e) {
             LOGGER.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
@@ -363,6 +349,32 @@ public class DefaultGitHubService implements GitHubService {
                 }
             })
             .filter(Objects::nonNull);
+    }
+
+    @Override
+    public Optional<Project> findOrCreateProject(String org, String project, String column) {
+        try {
+            return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
+                .filter(p -> project.equals(p.getName()))
+                .findFirst()
+                .or(() -> {
+                    try {
+                        GHProject newProject = client.getOrganization(org).createProject(project, "Created by Pierrot");
+                        newProject.createColumn(column);
+                        LOGGER.info("New project created, you will need to add more column and set up automation yourself!");
+                        LOGGER.info("    {}", newProject.getHtmlUrl());
+                        return Optional.of(newProject);
+                    } catch (IOException e) {
+                        LOGGER.error("Exception creating project " + project + " in organization " + org, e);
+                        return Optional.empty();
+                    }
+                })
+                .map(DefaultProject::new);
+
+        } catch (IOException e) {
+            LOGGER.error("Exception fetching organization " + org, e);
+            return Optional.empty();
+        }
     }
 
     private GHUser getMyself() {
