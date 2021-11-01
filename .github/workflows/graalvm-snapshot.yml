@@ -4,7 +4,7 @@ jobs:
   build:
     name: 'Build with Graal on ${{ matrix.os }}'
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         gu-binary: [ gu, gu.cmd ]
@@ -34,8 +34,8 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - name: Build Native Image Snapshot
         run: |
-          ./gradlew :pierrot:buildLayers --no-daemon
-          ./gradlew :pierrot:nativeImage --no-daemon
+          ./gradlew :pierrot:shadowJar --no-daemon
+          native-image --no-fallback -cp apps/pierrot/build/libs/pierrot-*-all.jar
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
         uses: docker/login-action@v1
