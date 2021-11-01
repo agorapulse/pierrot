@@ -25,6 +25,7 @@ import picocli.CommandLine.Command;
     description = "The GitHub cross-repository governance tool",
     mixinStandardHelpOptions = true,
     subcommands = {
+        CreateCommand.class,
         DeleteCommand.class,
         PullCommand.class,
         PushCommand.class,

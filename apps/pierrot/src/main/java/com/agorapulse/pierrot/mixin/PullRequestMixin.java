@@ -73,7 +73,7 @@ public class PullRequestMixin {
     String message;
 
     @CommandLine.Option(
-        names = {"-f", "--message-from"},
+        names = {"--message-from"},
         description = "The file containing the pull request message"
     )
     File messageFrom;

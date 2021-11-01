@@ -18,52 +18,50 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.mixin.FileMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Option;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Command(
-    name = "replace",
-    description = "replaces content in the files and creates PRs"
+    name = "create",
+    description = "creates a file in a matching repositories and creates PRs"
 )
-public class ReplaceCommand implements Runnable {
+public class CreateCommand implements Runnable {
 
-    @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
+    @Mixin SearchMixin search;
+    @Mixin FileMixin file;
 
     @Inject GitHubService service;
 
-    @Option(
-        names = {"-p", "--pattern"},
-        description = "The Java-style regular expression pattern to execute on the matched files",
-        required = true
-    )
-    String pattern;
-
-    @Option(
-        names = {"-r", "--replacement"},
-        description = "The Java-style regular expression replacement",
-        required = true
-    )
-    String replacement;
-
     @Override
     public void run() {
-        search.searchContent(service, content -> pullRequest.createPullRequest(service, content.getRepository().getFullName(), (repository, branch, message) -> {
-            System.out.printf("Replacing %s/%s%n", content.getRepository().getFullName(), content.getPath());
+        final Set<String> processed = new LinkedHashSet<>();
+        search.searchContent(service, found -> pullRequest.createPullRequest(service, found.getRepository().getFullName(), (r, branch, message) -> {
+            if (!processed.add(r.getFullName())) {
+                return false;
+            }
 
-            if (content.replace(branch, message, pattern, replacement)) {
-                System.out.printf("Replaced %s/%s%n", content.getRepository().getFullName(), content.getPath());
+            String path = file.readPath();
+            String content = file.readContent();
+
+            System.out.printf("Creating file %s/%s%n", r.getFullName(), path);
+
+            if (r.writeFile(branch, message, path, content)) {
+                System.out.printf("Created %s/%s%n", r.getFullName(), path);
                 return true;
             }
 
             return false;
         }));
 
-        System.out.printf("Replaced text in %d files%n", pullRequest.getPullRequestsCreated());
+        System.out.printf("Created %d files%n", pullRequest.getPullRequestsCreated());
     }
 
 }
