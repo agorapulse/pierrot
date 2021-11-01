@@ -32,6 +32,8 @@ jobs:
           graalvm-version: 21.2.0.java11
       - name: Install Native Image
         run: ${{ matrix.gu-binary }} install native-image
+      - name: Build Native Image Snapshot
+        run: ./gradlew :pierrot:nativeImage --no-daemon
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
         uses: docker/login-action@v1
