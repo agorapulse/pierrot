@@ -35,7 +35,7 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public class PullRequestMixin {
+public class ProjectMixin {
 
     public interface RepositoryChange {
 
@@ -44,7 +44,7 @@ public class PullRequestMixin {
     }
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(PullRequestMixin.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(ProjectMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -81,15 +81,15 @@ public class PullRequestMixin {
 
     private int pullRequestsCreated;
 
-    public PullRequestMixin() { }
+    public ProjectMixin() { }
 
-    public PullRequestMixin(String branch, String title, String message) {
+    public ProjectMixin(String branch, String title, String message) {
         this.branch = branch;
         this.title = title;
         this.message = message;
     }
 
-    public PullRequestMixin(UnaryOperator<String> reader, Consumer<String> writer) {
+    public ProjectMixin(UnaryOperator<String> reader, Consumer<String> writer) {
         this.reader = reader;
         this.writer = writer;
     }

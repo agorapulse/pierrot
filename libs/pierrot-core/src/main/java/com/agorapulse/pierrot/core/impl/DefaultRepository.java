@@ -38,7 +38,8 @@ import java.util.Optional;
 
 public class DefaultRepository implements Repository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRepository.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(DefaultRepository.class);
     private static final EnumSet<GHPermissionType> WRITE_PERMISSIONS = EnumSet.of(GHPermissionType.WRITE, GHPermissionType.ADMIN);
 
     private final GHRepository repository;

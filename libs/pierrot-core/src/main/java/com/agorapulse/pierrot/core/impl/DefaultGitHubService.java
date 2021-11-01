@@ -308,7 +308,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
 )
 public class DefaultGitHubService implements GitHubService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubService.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubService.class);
 
     private static final String PR_URL_REPO_PREFIX = "https://api.github.com/repos/";
     private static final String PR_URL_REPO_SUFFIX = "/issues/";

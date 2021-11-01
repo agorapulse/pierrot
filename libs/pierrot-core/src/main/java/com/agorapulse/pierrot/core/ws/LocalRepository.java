@@ -29,7 +29,8 @@ import java.util.stream.Stream;
 
 public class LocalRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
 
     private final File location;
     private final String name;

@@ -32,7 +32,8 @@ import java.util.function.UnaryOperator;
 
 public class FileMixin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileMixin.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(FileMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 

@@ -32,7 +32,8 @@ import java.nio.charset.StandardCharsets;
 
 public class DefaultContent implements Content {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultContent.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(DefaultContent.class);
 
     private final GHContent content;
     private final Repository repositoryWrapper;

@@ -34,7 +34,8 @@ import java.util.stream.Stream;
 
 public class DefaultPullRequest implements PullRequest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPullRequest.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(DefaultPullRequest.class);
 
     private final GHPullRequest pr;
     private final GHRepository repository;

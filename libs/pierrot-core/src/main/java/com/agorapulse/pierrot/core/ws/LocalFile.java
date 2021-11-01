@@ -26,7 +26,8 @@ import java.nio.file.Files;
 
 public class LocalFile {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFile.class);
+    // the field is not static to prevent GraalVM FileAppender issues
+    private final Logger LOGGER = LoggerFactory.getLogger(LocalFile.class);
 
     private final File location;
     private final String path;
