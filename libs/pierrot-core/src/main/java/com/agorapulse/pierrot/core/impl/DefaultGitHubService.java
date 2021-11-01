@@ -309,7 +309,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
 public class DefaultGitHubService implements GitHubService {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(DefaultGitHubService.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultGitHubService.class);
 
     private static final String PR_URL_REPO_PREFIX = "https://api.github.com/repos/";
     private static final String PR_URL_REPO_SUFFIX = "/issues/";
@@ -339,7 +339,7 @@ public class DefaultGitHubService implements GitHubService {
         try {
             return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration));
         } catch (IOException e) {
-            LOGGER.error("Exception fetching repository " + repositoryFullName, e);
+            logger.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
         }
     }
@@ -359,7 +359,7 @@ public class DefaultGitHubService implements GitHubService {
                     GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
                     return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
                 } catch (IOException e) {
-                    LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
+                    logger.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
                     return null;
                 }
             })
@@ -374,7 +374,7 @@ public class DefaultGitHubService implements GitHubService {
             this.myself = client.getMyself();
             return myself;
         } catch (IOException e) {
-            LOGGER.error("Exception fetching current user", e);
+            logger.error("Exception fetching current user", e);
             return new GHUser();
         }
     }
@@ -389,7 +389,7 @@ public class DefaultGitHubService implements GitHubService {
         }
 
         if (StringUtils.isEmpty(configuration.getOrganization())) {
-            LOGGER.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
+            logger.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
             return query;
         }
 

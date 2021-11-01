@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class LocalRepository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(LocalRepository.class);
 
     private final File location;
     private final String name;
@@ -51,11 +51,11 @@ public class LocalRepository {
                     String path = f.toFile().getCanonicalPath().substring(location.getCanonicalPath().length() + 1);
                     visitor.accept(new LocalFile(f.toFile(), path));
                 } catch (IOException e) {
-                    LOGGER.error("Exception extracting path from" + f, e);
+                    logger.error("Exception extracting path from" + f, e);
                 }
             });
         } catch (IOException e) {
-            LOGGER.error("Exception walking repository " + getName(), e);
+            logger.error("Exception walking repository " + getName(), e);
         }
     }
 

@@ -39,7 +39,7 @@ import java.util.Optional;
 public class DefaultRepository implements Repository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(DefaultRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultRepository.class);
     private static final EnumSet<GHPermissionType> WRITE_PERMISSIONS = EnumSet.of(GHPermissionType.WRITE, GHPermissionType.ADMIN);
 
     private final GHRepository repository;
@@ -77,7 +77,7 @@ public class DefaultRepository implements Repository {
         try {
             return WRITE_PERMISSIONS.contains(repository.getPermission(myself));
         } catch (IOException e) {
-            LOGGER.info("Exception evaluating permissions for {}", getFullName());
+            logger.info("Exception evaluating permissions for {}", getFullName());
             return false;
         }
     }
@@ -85,16 +85,16 @@ public class DefaultRepository implements Repository {
     @Override
     public boolean createBranch(String name) {
         if (hasBranch(name)) {
-            LOGGER.info("Branch {} already exists in repository {}", name, getFullName());
+            logger.info("Branch {} already exists in repository {}", name, getFullName());
             return false;
         }
 
         try {
             repository.createRef("refs/heads/" + name, getLastCommitSha());
-            LOGGER.info("Branch {} created in repository {}", name, getFullName());
+            logger.info("Branch {} created in repository {}", name, getFullName());
             return true;
         } catch (IOException e) {
-            LOGGER.error("Exception creating branch " + name, e);
+            logger.error("Exception creating branch " + name, e);
             return false;
         }
     }
@@ -112,7 +112,7 @@ public class DefaultRepository implements Repository {
             }
             return Optional.of(repository.createPullRequest(title, branch, getDefaultBranch(), message).getHtmlUrl());
         } catch (IOException e) {
-            LOGGER.error("Exception creating pull request " + title, e);
+            logger.error("Exception creating pull request " + title, e);
             return Optional.empty();
         }
     }
@@ -125,16 +125,16 @@ public class DefaultRepository implements Repository {
             if (existing.isPresent()) {
                 Content content = existing.get();
                 if (text.equals(content.getTextContent())) {
-                    LOGGER.info("Remote file {} already contains all the changes", path);
+                    logger.info("Remote file {} already contains all the changes", path);
                     return false;
                 }
                 builder.sha(content.getSha());
             }
             builder.commit();
-            LOGGER.info("File {} pushed to branch {} of repository {}", path, branch, getFullName());
+            logger.info("File {} pushed to branch {} of repository {}", path, branch, getFullName());
             return true;
         } catch (IOException e) {
-            LOGGER.error("Exception writing file " + path, e);
+            logger.error("Exception writing file " + path, e);
             return false;
         }
     }
@@ -144,7 +144,7 @@ public class DefaultRepository implements Repository {
             GHContent fileContent = repository.getFileContent(path, branch);
             return Optional.of(new DefaultContent(fileContent, repository, myself, configuration));
         } catch (IOException e) {
-            LOGGER.error("Exception fetching file " + path, e);
+            logger.error("Exception fetching file " + path, e);
             return Optional.empty();
         }
     }
@@ -157,7 +157,7 @@ public class DefaultRepository implements Repository {
         try {
             return repository.getBranches().containsKey(name);
         } catch (IOException e) {
-            LOGGER.error("Exception checking presence of branch " + name, e);
+            logger.error("Exception checking presence of branch " + name, e);
             return false;
         }
     }

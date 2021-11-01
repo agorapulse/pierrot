@@ -27,7 +27,7 @@ import java.nio.file.Files;
 public class LocalFile {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(LocalFile.class);
+    private final Logger logger = LoggerFactory.getLogger(LocalFile.class);
 
     private final File location;
     private final String path;
@@ -45,7 +45,7 @@ public class LocalFile {
         try {
             return Files.readString(location.toPath());
         } catch (IOException e) {
-            LOGGER.error("Exception reading text content of the file " + getPath(), e);
+            logger.error("Exception reading text content of the file " + getPath(), e);
             return "";
         }
     }

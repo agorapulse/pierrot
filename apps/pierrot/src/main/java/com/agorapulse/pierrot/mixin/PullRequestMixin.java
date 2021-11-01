@@ -44,7 +44,7 @@ public class PullRequestMixin {
     }
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(PullRequestMixin.class);
+    private final Logger logger = LoggerFactory.getLogger(PullRequestMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -157,7 +157,7 @@ public class PullRequestMixin {
             try {
                 return Files.readString(messageFrom.toPath());
             } catch (IOException e) {
-                LOGGER.error("Exception reading content of " + messageFrom, e);
+                logger.error("Exception reading content of " + messageFrom, e);
             }
         }
 

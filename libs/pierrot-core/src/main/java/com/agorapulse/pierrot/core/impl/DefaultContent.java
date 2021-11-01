@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 public class DefaultContent implements Content {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(DefaultContent.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultContent.class);
 
     private final GHContent content;
     private final Repository repositoryWrapper;
@@ -68,7 +68,7 @@ public class DefaultContent implements Content {
         try {
             return content.read();
         } catch (IOException e) {
-            LOGGER.error("Exception fetching content of " + getRepository().getFullName() + "/" + getPath(), e);
+            logger.error("Exception fetching content of " + getRepository().getFullName() + "/" + getPath(), e);
             return new ByteArrayInputStream(new byte[0]);
         }
     }
@@ -78,7 +78,7 @@ public class DefaultContent implements Content {
         try {
             return new String(getContent().readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            LOGGER.error("Exception fetching text content of " + getRepository().getFullName() + "/" + getPath(), e);
+            logger.error("Exception fetching text content of " + getRepository().getFullName() + "/" + getPath(), e);
             return "";
         }
     }
@@ -94,10 +94,10 @@ public class DefaultContent implements Content {
             content.delete(message, branchName);
             return true;
         } catch (GHFileNotFoundException e) {
-            LOGGER.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
+            logger.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
             return false;
         } catch (IOException e) {
-            LOGGER.error("Exception deleting " + getRepository().getFullName() + "/" + getPath(), e);
+            logger.error("Exception deleting " + getRepository().getFullName() + "/" + getPath(), e);
             return false;
         }
     }
@@ -109,14 +109,14 @@ public class DefaultContent implements Content {
             String newText = text.replaceAll(regexp, replacement);
 
             if (newText.equals(text)) {
-                LOGGER.info("The content of {} is still the same after replacement", getPath());
+                logger.info("The content of {} is still the same after replacement", getPath());
                 return false;
             }
 
             content.update(newText, message, branchName);
             return true;
         } catch (IOException e) {
-            LOGGER.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);
+            logger.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);
         }
         return false;
     }

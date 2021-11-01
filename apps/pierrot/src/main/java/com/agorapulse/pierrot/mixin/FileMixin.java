@@ -33,7 +33,7 @@ import java.util.function.UnaryOperator;
 public class FileMixin {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(FileMixin.class);
+    private final Logger logger = LoggerFactory.getLogger(FileMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -99,7 +99,7 @@ public class FileMixin {
             try {
                 return Files.readString(contentFrom.toPath());
             } catch (IOException e) {
-                LOGGER.error("Exception reading content of " + contentFrom, e);
+                logger.error("Exception reading content of " + contentFrom, e);
             }
         }
 

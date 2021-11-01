@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class DefaultPullRequest implements PullRequest {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private final Logger LOGGER = LoggerFactory.getLogger(DefaultPullRequest.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultPullRequest.class);
 
     private final GHPullRequest pr;
     private final GHRepository repository;
@@ -71,7 +71,7 @@ public class DefaultPullRequest implements PullRequest {
         try {
             return pr.isMerged();
         } catch (IOException e) {
-            LOGGER.error("Exception fetching merged state", e);
+            logger.error("Exception fetching merged state", e);
             return false;
         }
     }
@@ -81,7 +81,7 @@ public class DefaultPullRequest implements PullRequest {
         try {
             return Boolean.TRUE.equals(pr.getMergeable());
         } catch (IOException e) {
-            LOGGER.error("Exception fetching mergeable state", e);
+            logger.error("Exception fetching mergeable state", e);
             return false;
         }
     }
