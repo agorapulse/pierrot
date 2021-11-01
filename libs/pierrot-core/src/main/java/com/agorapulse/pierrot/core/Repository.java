@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot.core;
 
-import java.net.URL;
 import java.util.Optional;
 
 public interface Repository {

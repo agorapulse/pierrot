@@ -18,7 +18,6 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.mixin.FileMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;

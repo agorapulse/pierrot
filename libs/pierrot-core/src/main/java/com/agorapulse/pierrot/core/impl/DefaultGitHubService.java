@@ -378,7 +378,7 @@ public class DefaultGitHubService implements GitHubService {
                         newProject.createColumn(column);
                         return Optional.of(newProject);
                     } catch (IOException e) {
-                        logger.error("Exception creating project " + project + " in organization " + org ,  e);
+                        logger.error("Exception creating project " + project + " in organization " + org, e);
                         return Optional.empty();
                     }
                 })
