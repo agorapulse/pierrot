@@ -98,15 +98,22 @@ public class PullRequestMixin {
     }
 
     public Optional<URI> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
-        Repository ghr = service.getRepository(repositoryFullName).get();
+        Optional<Repository> maybeRepository = service.getRepository(repositoryFullName);
+
+        if (maybeRepository.isEmpty()) {
+            System.out.printf("Repository %s is not available.%n", repositoryFullName);
+            return Optional.empty();
+        }
+
+        Repository ghr = maybeRepository.get();
 
         if (ghr.isArchived()) {
-            System.out.printf("Repository %s is archived. Nothing will be deleted.%n", ghr.getFullName());
+            System.out.printf("Repository %s is archived.%n", ghr.getFullName());
             return Optional.empty();
         }
 
         if (!ghr.canWrite()) {
-            System.out.printf("Current user does not have write rights to the repository %s. Nothing will be deleted.%n", ghr.getFullName());
+            System.out.printf("Current user does not have write rights to the repository %s.%n", ghr.getFullName());
             return Optional.empty();
         }
 
