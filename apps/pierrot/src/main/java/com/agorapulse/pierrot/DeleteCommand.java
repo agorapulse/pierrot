@@ -26,7 +26,7 @@ import picocli.CommandLine.Mixin;
 
 @Command(
     name = "delete",
-    description = "searches GitHub and creates PRs to delete files"
+    description = "creates PRs to delete files"
 )
 public class DeleteCommand implements Runnable {
 

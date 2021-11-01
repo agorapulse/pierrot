@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @Command(
     name = "pull",
-    description = "searches GitHub and pulls the matching files locally"
+    description = "pulls the matching files locally"
 )
 public class PullCommand implements Runnable {
 

@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
     name = "push",
-    description = "searches GitHub and pulls the matching files locally"
+    description = "pushes the the local changes and creates PRs"
 )
 public class PushCommand implements Runnable {
 
