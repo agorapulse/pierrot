@@ -18,18 +18,15 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.ws.Workspace;
 import com.agorapulse.pierrot.mixin.FileMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
-import com.agorapulse.pierrot.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
     name = "create",
