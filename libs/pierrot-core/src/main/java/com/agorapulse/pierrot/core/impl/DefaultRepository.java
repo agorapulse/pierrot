@@ -22,7 +22,7 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentBuilder;
 import org.kohsuke.github.GHIssueState;
@@ -40,7 +40,7 @@ import java.util.Optional;
 public class DefaultRepository implements Repository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(DefaultRepository.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultRepository.class);
     private static final EnumSet<GHPermissionType> WRITE_PERMISSIONS = EnumSet.of(GHPermissionType.WRITE, GHPermissionType.ADMIN);
 
     private final GHRepository repository;

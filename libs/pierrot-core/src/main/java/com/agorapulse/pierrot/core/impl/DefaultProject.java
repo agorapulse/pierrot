@@ -19,7 +19,7 @@ package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.Project;
 import com.agorapulse.pierrot.core.PullRequest;
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHProject;
 import org.slf4j.Logger;
 
@@ -30,7 +30,7 @@ import java.util.stream.StreamSupport;
 public class DefaultProject implements Project {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(DefaultProject.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultProject.class);
 
     private final GHProject project;
 

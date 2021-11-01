@@ -20,6 +20,7 @@ package com.agorapulse.pierrot;
 import com.agorapulse.pierrot.core.CheckRun;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
+import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -40,6 +41,7 @@ public class StatusCommand implements Runnable {
     private static final String UNKNOWN = "?";
 
     @Mixin SearchMixin search;
+    @Mixin StacktraceMixin stacktrace;
     @Inject GitHubService service;
 
     @Override

@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot.core.ws;
 
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -27,7 +27,7 @@ import java.nio.file.Files;
 public class LocalFile {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(LocalFile.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(LocalFile.class);
 
     private final File location;
     private final String path;

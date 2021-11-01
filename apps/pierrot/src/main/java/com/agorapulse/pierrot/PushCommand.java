@@ -20,6 +20,7 @@ package com.agorapulse.pierrot;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.ws.Workspace;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
+import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import com.agorapulse.pierrot.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
@@ -35,6 +36,7 @@ public class PushCommand implements Runnable {
 
     @Mixin WorkspaceMixin workspace;
     @Mixin PullRequestMixin pullRequest;
+    @Mixin StacktraceMixin stacktrace;
 
     @Inject GitHubService service;
 

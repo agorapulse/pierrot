@@ -19,6 +19,7 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
+import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -37,6 +38,7 @@ public class SearchCommand implements Runnable {
     private static final String DOUBLE_LINE = "=".repeat(120);
 
     @Mixin SearchMixin search;
+    @Mixin StacktraceMixin stacktrace;
 
     @Inject GitHubService service;
 

@@ -20,7 +20,7 @@ package com.agorapulse.pierrot.mixin;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import picocli.CommandLine;
@@ -43,7 +43,7 @@ public class PullRequestMixin {
     }
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(PullRequestMixin.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(PullRequestMixin.class);
 
     private final Scanner scanner = new Scanner(System.in);
 

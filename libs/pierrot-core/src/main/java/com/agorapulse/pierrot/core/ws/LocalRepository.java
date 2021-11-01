@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot.core.ws;
 
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class LocalRepository {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(LocalRepository.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(LocalRepository.class);
 
     private final File location;
     private final String name;

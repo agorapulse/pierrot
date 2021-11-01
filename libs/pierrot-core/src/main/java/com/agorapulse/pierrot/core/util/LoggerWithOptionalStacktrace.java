@@ -21,329 +21,327 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
-public class LazyLogger implements Logger {
+public class LoggerWithOptionalStacktrace implements Logger {
 
-    public static Logger create(Class<?> type) {
-        return new LazyLogger(type);
+    private static boolean stacktrace;
+
+    public static void enableStacktrace() {
+        stacktrace = true;
     }
 
-    private final Class<?> type;
-    private Logger delegate;
+    public static Logger create(Class<?> type) {
+        return new LoggerWithOptionalStacktrace(type);
+    }
 
-    private LazyLogger(Class<?> type) {
-        this.type = type;
+    private final Logger delegate;
+
+    private LoggerWithOptionalStacktrace(Class<?> type) {
+        this.delegate = LoggerFactory.getLogger(type);
     }
 
     @Override
     public String getName() {
-        return getDelegate().getName();
+        return delegate.getName();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return getDelegate().isTraceEnabled();
+        return delegate.isTraceEnabled();
     }
 
     @Override
     public void trace(String msg) {
-        getDelegate().trace(msg);
+        delegate.trace(msg);
     }
 
     @Override
     public void trace(String format, Object arg) {
-        getDelegate().trace(format, arg);
+        delegate.trace(format, arg);
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        getDelegate().trace(format, arg1, arg2);
+        delegate.trace(format, arg1, arg2);
     }
 
     @Override
     public void trace(String format, Object... arguments) {
-        getDelegate().trace(format, arguments);
+        delegate.trace(format, arguments);
     }
 
     @Override
     public void trace(String msg, Throwable t) {
-        getDelegate().trace(msg, t);
+        delegate.trace(msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isTraceEnabled(Marker marker) {
-        return getDelegate().isTraceEnabled(marker);
+        return delegate.isTraceEnabled(marker);
     }
 
     @Override
     public void trace(Marker marker, String msg) {
-        getDelegate().trace(marker, msg);
+        delegate.trace(marker, msg);
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg) {
-        getDelegate().trace(marker, format, arg);
+        delegate.trace(marker, format, arg);
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
-        getDelegate().trace(marker, format, arg1, arg2);
+        delegate.trace(marker, format, arg1, arg2);
     }
 
     @Override
     public void trace(Marker marker, String format, Object... argArray) {
-        getDelegate().trace(marker, format, argArray);
+        delegate.trace(marker, format, argArray);
     }
 
     @Override
     public void trace(Marker marker, String msg, Throwable t) {
-        getDelegate().trace(marker, msg, t);
+        delegate.trace(marker, msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return getDelegate().isDebugEnabled();
+        return delegate.isDebugEnabled();
     }
 
     @Override
     public void debug(String msg) {
-        getDelegate().debug(msg);
+        delegate.debug(msg);
     }
 
     @Override
     public void debug(String format, Object arg) {
-        getDelegate().debug(format, arg);
+        delegate.debug(format, arg);
     }
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        getDelegate().debug(format, arg1, arg2);
+        delegate.debug(format, arg1, arg2);
     }
 
     @Override
     public void debug(String format, Object... arguments) {
-        getDelegate().debug(format, arguments);
+        delegate.debug(format, arguments);
     }
 
     @Override
     public void debug(String msg, Throwable t) {
-        getDelegate().debug(msg, t);
+        delegate.debug(msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isDebugEnabled(Marker marker) {
-        return getDelegate().isDebugEnabled(marker);
+        return delegate.isDebugEnabled(marker);
     }
 
     @Override
     public void debug(Marker marker, String msg) {
-        getDelegate().debug(marker, msg);
+        delegate.debug(marker, msg);
     }
 
     @Override
     public void debug(Marker marker, String format, Object arg) {
-        getDelegate().debug(marker, format, arg);
+        delegate.debug(marker, format, arg);
     }
 
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
-        getDelegate().debug(marker, format, arg1, arg2);
+        delegate.debug(marker, format, arg1, arg2);
     }
 
     @Override
     public void debug(Marker marker, String format, Object... arguments) {
-        getDelegate().debug(marker, format, arguments);
+        delegate.debug(marker, format, arguments);
     }
 
     @Override
     public void debug(Marker marker, String msg, Throwable t) {
-        getDelegate().debug(marker, msg, t);
+        delegate.debug(marker, msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isInfoEnabled() {
-        return getDelegate().isInfoEnabled();
+        return delegate.isInfoEnabled();
     }
 
     @Override
     public void info(String msg) {
-        getDelegate().info(msg);
+        delegate.info(msg);
     }
 
     @Override
     public void info(String format, Object arg) {
-        getDelegate().info(format, arg);
+        delegate.info(format, arg);
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        getDelegate().info(format, arg1, arg2);
+        delegate.info(format, arg1, arg2);
     }
 
     @Override
     public void info(String format, Object... arguments) {
-        getDelegate().info(format, arguments);
+        delegate.info(format, arguments);
     }
 
     @Override
     public void info(String msg, Throwable t) {
-        getDelegate().info(msg, t);
+        delegate.info(msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isInfoEnabled(Marker marker) {
-        return getDelegate().isInfoEnabled(marker);
+        return delegate.isInfoEnabled(marker);
     }
 
     @Override
     public void info(Marker marker, String msg) {
-        getDelegate().info(marker, msg);
+        delegate.info(marker, msg);
     }
 
     @Override
     public void info(Marker marker, String format, Object arg) {
-        getDelegate().info(marker, format, arg);
+        delegate.info(marker, format, arg);
     }
 
     @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
-        getDelegate().info(marker, format, arg1, arg2);
+        delegate.info(marker, format, arg1, arg2);
     }
 
     @Override
     public void info(Marker marker, String format, Object... arguments) {
-        getDelegate().info(marker, format, arguments);
+        delegate.info(marker, format, arguments);
     }
 
     @Override
     public void info(Marker marker, String msg, Throwable t) {
-        getDelegate().info(marker, msg, t);
+        delegate.info(marker, msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isWarnEnabled() {
-        return getDelegate().isWarnEnabled();
+        return delegate.isWarnEnabled();
     }
 
     @Override
     public void warn(String msg) {
-        getDelegate().warn(msg);
+        delegate.warn(msg);
     }
 
     @Override
     public void warn(String format, Object arg) {
-        getDelegate().warn(format, arg);
+        delegate.warn(format, arg);
     }
 
     @Override
     public void warn(String format, Object... arguments) {
-        getDelegate().warn(format, arguments);
+        delegate.warn(format, arguments);
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        getDelegate().warn(format, arg1, arg2);
+        delegate.warn(format, arg1, arg2);
     }
 
     @Override
     public void warn(String msg, Throwable t) {
-        getDelegate().warn(msg, t);
+        delegate.warn(msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isWarnEnabled(Marker marker) {
-        return getDelegate().isWarnEnabled(marker);
+        return delegate.isWarnEnabled(marker);
     }
 
     @Override
     public void warn(Marker marker, String msg) {
-        getDelegate().warn(marker, msg);
+        delegate.warn(marker, msg);
     }
 
     @Override
     public void warn(Marker marker, String format, Object arg) {
-        getDelegate().warn(marker, format, arg);
+        delegate.warn(marker, format, arg);
     }
 
     @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
-        getDelegate().warn(marker, format, arg1, arg2);
+        delegate.warn(marker, format, arg1, arg2);
     }
 
     @Override
     public void warn(Marker marker, String format, Object... arguments) {
-        getDelegate().warn(marker, format, arguments);
+        delegate.warn(marker, format, arguments);
     }
 
     @Override
     public void warn(Marker marker, String msg, Throwable t) {
-        getDelegate().warn(marker, msg, t);
+        delegate.warn(marker, msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isErrorEnabled() {
-        return getDelegate().isErrorEnabled();
+        return delegate.isErrorEnabled();
     }
 
     @Override
     public void error(String msg) {
-        getDelegate().error(msg);
+        delegate.error(msg);
     }
 
     @Override
     public void error(String format, Object arg) {
-        getDelegate().error(format, arg);
+        delegate.error(format, arg);
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        getDelegate().error(format, arg1, arg2);
+        delegate.error(format, arg1, arg2);
     }
 
     @Override
     public void error(String format, Object... arguments) {
-        getDelegate().error(format, arguments);
+        delegate.error(format, arguments);
     }
 
     @Override
     public void error(String msg, Throwable t) {
-        getDelegate().error(msg, t);
+        delegate.error(msg, stacktrace ? t : null);
     }
 
     @Override
     public boolean isErrorEnabled(Marker marker) {
-        return getDelegate().isErrorEnabled(marker);
+        return delegate.isErrorEnabled(marker);
     }
 
     @Override
     public void error(Marker marker, String msg) {
-        getDelegate().error(marker, msg);
+        delegate.error(marker, msg);
     }
 
     @Override
     public void error(Marker marker, String format, Object arg) {
-        getDelegate().error(marker, format, arg);
+        delegate.error(marker, format, arg);
     }
 
     @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
-        getDelegate().error(marker, format, arg1, arg2);
+        delegate.error(marker, format, arg1, arg2);
     }
 
     @Override
     public void error(Marker marker, String format, Object... arguments) {
-        getDelegate().error(marker, format, arguments);
+        delegate.error(marker, format, arguments);
     }
 
     @Override
     public void error(Marker marker, String msg, Throwable t) {
-        getDelegate().error(marker, msg, t);
-    }
-
-    private Logger getDelegate() {
-        if (delegate == null) {
-            delegate = LoggerFactory.getLogger(type);
-        }
-        return delegate;
+        delegate.error(marker, msg, stacktrace ? t : null);
     }
 
 }

@@ -22,7 +22,7 @@ import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class DefaultPullRequest implements PullRequest {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(DefaultPullRequest.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultPullRequest.class);
 
     private final GHPullRequest pr;
     private final GHRepository repository;

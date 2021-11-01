@@ -21,7 +21,7 @@ import com.agorapulse.pierrot.core.Content;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
-import com.agorapulse.pierrot.core.util.LazyLogger;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 public class DefaultContent implements Content {
 
     // the field is not static to prevent GraalVM FileAppender issues
-    private static final Logger LOGGER = LazyLogger.create(DefaultContent.class);
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultContent.class);
 
     private final GHContent content;
     private final Repository repositoryWrapper;
