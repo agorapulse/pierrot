@@ -27,7 +27,7 @@ import picocli.CommandLine.Option;
 
 @Command(
     name = "replace",
-    description = "creates PRs to updated files"
+    description = "replaces content in the files and creates PRs"
 )
 public class ReplaceCommand implements Runnable {
 
