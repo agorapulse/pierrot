@@ -162,6 +162,7 @@ public class SearchMixin {
             }
         } catch (UnsatisfiedLinkError error) {
             // GraalVM on macOS
+            // see https://github.com/oracle/graal/issues/2842
             try {
                 Runtime.getRuntime().exec("open " + uri);
             } catch (IOException e) {
