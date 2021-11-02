@@ -87,6 +87,16 @@ public class DefaultPullRequest implements PullRequest {
     }
 
     @Override
+    public String getMergeableState() {
+        try {
+            return pr.getMergeableState();
+        } catch (IOException e) {
+            LOGGER.error("Exception fetching mergeable state", e);
+            return "unknown";
+        }
+    }
+
+    @Override
     public Stream<? extends CheckRun> getChecks() {
         Repository r = getRepository();
         return httpClient.getCheckRuns(r.getOwnerName(), r.getName(), pr.getBase().getSha()).getCheckRuns().stream();

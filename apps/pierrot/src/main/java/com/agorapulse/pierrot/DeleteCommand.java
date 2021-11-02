@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import com.agorapulse.pierrot.mixin.StacktraceMixin;
@@ -34,12 +35,13 @@ public class DeleteCommand implements Runnable {
     @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
     @Mixin StacktraceMixin stacktrace;
+    @Mixin ProjectMixin project;
 
     @Inject GitHubService service;
 
     @Override
     public void run() {
-        search.searchContent(service, content -> pullRequest.createPullRequest(service, content.getRepository().getFullName(), (r, branch, message) -> {
+        search.searchContent(service, content -> project.addToProject(service, pullRequest.createPullRequest(service, content.getRepository().getFullName(), (r, branch, message) -> {
             System.out.printf("Deleting %s/%s%n", content.getRepository().getFullName(), content.getPath());
 
             if (content.delete(branch, message)) {
@@ -48,7 +50,7 @@ public class DeleteCommand implements Runnable {
             }
 
             return false;
-        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
+        })).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Processed %d files%n", pullRequest.getPullRequestsCreated());
     }

@@ -161,7 +161,7 @@ public class PullRequestMixin {
         }
 
         while (StringUtils.isEmpty(message)) {
-            this.writer.accept("Pull Request Message (Markdown format, use triple new line to submit):%n");
+            this.writer.accept("Pull Request Message (Markdown format, use triple new line to submit):");
 
             StringWriter stringWriter = new StringWriter();
 

@@ -23,100 +23,90 @@ import com.agorapulse.pierrot.core.PullRequest;
 import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine;
 
-import java.net.URI;
+import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
-import java.util.function.UnaryOperator;
 
 public class ProjectMixin {
 
-    private final Scanner scanner = new Scanner(System.in);
-
-    private UnaryOperator<String> reader = s -> {
-        System.out.print(s);
-        return scanner.nextLine();
-    };
-
-    @CommandLine.Option(
-        names = {"-o", "--org"},
-        description = "The organization owner of the project board"
-    )
-    String organization;
+    private static final List<String> IN_PROGRESS_MERGEABLE_STATES = List.of(
+        //The merge is blocked.
+        "BLOCKED",
+        //The merge commit cannot be cleanly created.
+        "dirty",
+        //The merge is blocked due to the pull request being a draft.
+        "draft",
+        //The state cannot currently be determined.
+        "unknown",
+        //Mergeable with non-passing commit status.
+        "unstable"
+    );
 
     @CommandLine.Option(
         names = {"--project"},
-        description = "The name of the organization project"
+        description = "The name of the project (board)"
     )
     String project;
 
     @CommandLine.Option(
-        names = {"--column"},
-        description = "The name of the column in the project",
+        names = {"--todo-column"},
+        description = "The name of the 'To do' column in the project",
         defaultValue = "To do"
     )
-    String column;
+    String todoColumn;
+
+    @CommandLine.Option(
+        names = {"--progress-column"},
+        description = "The name of the 'In progress' column in the project",
+        defaultValue = "In progress"
+    )
+    String progressColumn;
+
+    @CommandLine.Option(
+        names = {"--done-column"},
+        description = "The name of the 'Done' column in the project",
+        defaultValue = "Done"
+    )
+    String doneColumn;
 
     private Project board;
 
     public ProjectMixin() { }
 
-    public ProjectMixin(String organization, String project, String column) {
+    public ProjectMixin(String project, String todoColumn) {
         this.project = project;
-        this.column = column;
-        this.organization = organization;
+        this.todoColumn = todoColumn;
     }
 
-    public ProjectMixin(UnaryOperator<String> reader) {
-        this.reader = reader;
-    }
-
-    public Optional<URI> addToProject(GitHubService service, String defaultOrganization, Optional<PullRequest> pullRequest) {
+    public Optional<PullRequest> addToProject(GitHubService service, Optional<PullRequest> pullRequest) {
         if (StringUtils.isEmpty(project)) {
             // project must be specified to add projects
-            return pullRequest.map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl()));
+            return pullRequest;
         }
         return pullRequest.map(pr -> {
-            String currentColumn = readColumn(defaultOrganization);
-            service.findOrCreateProject(readOrganization(defaultOrganization), readProject(defaultOrganization), currentColumn).ifPresent(p -> {
+            String defaultOrganization = pr.getRepository().getOwnerName();
+            String currentColumn = getColumnNameForPullRequest(pr);
+            service.findOrCreateProject(defaultOrganization, project, currentColumn).ifPresent(p -> {
                 p.addToColumn(currentColumn, pr);
                 board = p;
-
             });
-            return SearchMixin.toSafeUri(pr.getHtmlUrl());
+            return pr;
         });
     }
 
-
-
-    private String readOrganization(String defaultOrganization) {
-        if (StringUtils.isEmpty(organization) && StringUtils.isNotEmpty(defaultOrganization)) {
-            organization = defaultOrganization;
-        }
-        while (StringUtils.isEmpty(organization)) {
-            organization = reader.apply("Organization: ");
-        }
-
-        return organization;
+    public Optional<Project> getProject() {
+        return Optional.ofNullable(board);
     }
 
-    private String readProject(String defaultOrganization) {
-        // read the organization first
-        readOrganization(defaultOrganization);
-
-        // the project should be always present but let's keep the loop in case of anything changes in the future
-        while (StringUtils.isEmpty(project)) {
-            this.project = reader.apply("Project (board): ");
+    private String getColumnNameForPullRequest(PullRequest pr) {
+        if (pr.isMerged()) {
+            return doneColumn;
         }
-        return project;
-    }
 
-    private String readColumn(String defaultOrganization) {
-        // read the project first
-        readProject(defaultOrganization);
-        while (StringUtils.isEmpty(column)) {
-            this.column = reader.apply("Column: ");
+        if (IN_PROGRESS_MERGEABLE_STATES.contains(pr.getMergeableState())) {
+            return progressColumn;
         }
-        return column;
+
+        return todoColumn;
     }
 
 }

@@ -21,9 +21,11 @@ import com.agorapulse.pierrot.core.Project;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHProject;
+import org.kohsuke.github.HttpException;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -56,8 +58,12 @@ public class DefaultProject implements Project {
                     if (pr instanceof DefaultPullRequest) {
                         try {
                             col.createCard(((DefaultPullRequest) pr).getNativePullRequest());
+                        } catch (HttpException e) {
+                            if (e.getResponseCode() != 422) {
+                                LOGGER.error("Exception while adding PR to the column " + column + " in project " + project.getName(), e);
+                            }
                         } catch (IOException e) {
-                            LOGGER.error("Exception adding PR to the column " + column + " in project " + project.getName(), e);
+                            LOGGER.error("Exception while adding PR to the column " + column + " in project " + project.getName(), e);
                         }
                     } else {
                         LOGGER.error("Cannot add PR to the column " + column + " in project " + project.getName() + " - wrong type");
@@ -66,5 +72,19 @@ public class DefaultProject implements Project {
         } catch (IOException e) {
             LOGGER.error("Exception adding PR to the column " + column + " in project " + project.getName(), e);
         }
+    }
+
+    @Override
+    public URL getHttpUrl() {
+        try {
+            return project.getHtmlUrl();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String getName() {
+        return project.getName();
     }
 }

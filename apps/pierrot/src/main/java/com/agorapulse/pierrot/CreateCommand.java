@@ -17,11 +17,9 @@
  */
 package com.agorapulse.pierrot;
 
+import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.mixin.FileMixin;
-import com.agorapulse.pierrot.mixin.PullRequestMixin;
-import com.agorapulse.pierrot.mixin.SearchMixin;
-import com.agorapulse.pierrot.mixin.StacktraceMixin;
+import com.agorapulse.pierrot.mixin.*;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -39,31 +37,41 @@ public class CreateCommand implements Runnable {
     @Mixin SearchMixin search;
     @Mixin FileMixin file;
     @Mixin StacktraceMixin stacktrace;
+    @Mixin ProjectMixin project;
 
     @Inject GitHubService service;
+    @Inject GitHubConfiguration configuration;
 
     @Override
     public void run() {
         final Set<String> processed = new LinkedHashSet<>();
-        search.searchContent(service, found -> pullRequest.createPullRequest(service, found.getRepository().getFullName(), (r, branch, message) -> {
-            if (!processed.add(r.getFullName())) {
-                return false;
-            }
+        search.searchContent(service, found ->
+            project.addToProject(service, pullRequest.createPullRequest(service, found.getRepository().getFullName(),
+                    (r, branch, message) -> {
+                        if (!processed.add(r.getFullName())) {
+                            return false;
+                        }
 
-            String path = file.readPath();
-            String content = file.readContent();
+                        String path = file.readPath();
+                        String content = file.readContent();
 
-            System.out.printf("Creating file %s/%s%n", r.getFullName(), path);
+                        System.out.printf("Creating file %s/%s%n", r.getFullName(), path);
 
-            if (r.writeFile(branch, message, path, content)) {
-                System.out.printf("Created %s/%s%n", r.getFullName(), path);
-                return true;
-            }
+                        if (r.writeFile(branch, message, path, content)) {
+                            System.out.printf("Created %s/%s%n", r.getFullName(), path);
+                            return true;
+                        }
 
-            return false;
-        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
+                        return false;
+                    }
+                )
+            ).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Created %d files%n", pullRequest.getPullRequestsCreated());
+
+        project.getProject().ifPresent(p -> {
+            System.out.printf("Pull requests were added to the project %s at %s%n", p.getName(), p.getHttpUrl());
+        });
     }
 
 }

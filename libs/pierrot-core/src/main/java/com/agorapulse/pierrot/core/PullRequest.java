@@ -32,6 +32,8 @@ public interface PullRequest extends Ignorable {
 
     boolean isMergeable();
 
+    String getMergeableState();
+
     Stream<? extends CheckRun> getChecks();
 
     @Override
