@@ -152,12 +152,23 @@ public class SearchMixin {
     }
 
     private void open(URI uri) {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException ignored) {
+                    // ignored
+                }
+            }
+        } catch (UnsatisfiedLinkError error) {
+            // GraalVM on macOS
+            // see https://github.com/oracle/graal/issues/2842
             try {
-                Desktop.getDesktop().browse(uri);
-            } catch (IOException ignored) {
-                // ignored
+                Runtime.getRuntime().exec("open " + uri);
+            } catch (IOException e) {
+                System.out.println("Unable to open link " + uri);
             }
         }
+
     }
 }
