@@ -104,7 +104,7 @@ public class FileMixin {
         }
 
         while (StringUtils.isEmpty(content)) {
-            writer.accept("Content (use triple new line to submit):%n");
+            writer.accept("Content (use triple new line to submit):");
 
             StringWriter stringWriter = new StringWriter();
 

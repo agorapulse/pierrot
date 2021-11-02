@@ -17,8 +17,14 @@
  */
 package com.agorapulse.pierrot.core;
 
+import java.net.URL;
+
 public interface Project {
 
     void addToColumn(String column, PullRequest pr);
+
+    URL getHttpUrl();
+
+    String getName();
 
 }

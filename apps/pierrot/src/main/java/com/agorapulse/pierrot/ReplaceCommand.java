@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import com.agorapulse.pierrot.mixin.StacktraceMixin;
@@ -35,6 +36,7 @@ public class ReplaceCommand implements Runnable {
     @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
     @Mixin StacktraceMixin stacktrace;
+    @Mixin ProjectMixin project;
 
     @Inject GitHubService service;
 
@@ -54,7 +56,7 @@ public class ReplaceCommand implements Runnable {
 
     @Override
     public void run() {
-        search.searchContent(service, content -> pullRequest.createPullRequest(service, content.getRepository().getFullName(), (repository, branch, message) -> {
+        search.searchContent(service, content -> project.addToProject(service, pullRequest.createPullRequest(service, content.getRepository().getFullName(), (repository, branch, message) -> {
             System.out.printf("Replacing %s/%s%n", content.getRepository().getFullName(), content.getPath());
 
             if (content.replace(branch, message, pattern, replacement)) {
@@ -63,7 +65,7 @@ public class ReplaceCommand implements Runnable {
             }
 
             return false;
-        }).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
+        })).map(pr -> SearchMixin.toSafeUri(pr.getHtmlUrl())));
 
         System.out.printf("Replaced text in %d files%n", pullRequest.getPullRequestsCreated());
     }

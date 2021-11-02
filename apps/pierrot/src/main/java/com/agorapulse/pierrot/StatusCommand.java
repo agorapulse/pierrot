@@ -19,6 +19,7 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.CheckRun;
 import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
 import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
@@ -42,6 +43,8 @@ public class StatusCommand implements Runnable {
 
     @Mixin SearchMixin search;
     @Mixin StacktraceMixin stacktrace;
+    @Mixin ProjectMixin project;
+
     @Inject GitHubService service;
 
     @Override
@@ -50,7 +53,7 @@ public class StatusCommand implements Runnable {
             System.out.println(DOUBLE_LINE);
             System.out.printf("| %s%n", pr.getRepository().getFullName());
             System.out.println(LINE);
-            System.out.printf("| %-6s | %s %n", pr.isMerged() ? "MERGED" : "OPEN", pr.getTitle());
+            System.out.printf("| %-10s | %s %n", pr.getMergeableState().toUpperCase(), pr.getTitle());
             System.out.println(LINE);
             pr.getChecks().forEach(check ->
                 System.out.printf(
@@ -59,6 +62,7 @@ public class StatusCommand implements Runnable {
                     check.getName()
                 )
             );
+            project.addToProject(service, Optional.of(pr));
             return Optional.of(SearchMixin.toSafeUri(pr.getHtmlUrl()));
         });
 
