@@ -1,4 +1,4 @@
-Searching content for 'org:agorapulse filename:gradle.properties'!
+Searching content for 'org:agorapulse filename:.testfile'!
 Creating file agorapulse/pierrot/.testfile
 Creating file agorapulse/oss/.testfile
 Created agorapulse/oss/.testfile

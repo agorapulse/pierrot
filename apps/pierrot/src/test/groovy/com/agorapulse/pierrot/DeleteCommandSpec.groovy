@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
-class CreateCommandSpec extends Specification {
+class DeleteCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
@@ -28,10 +28,11 @@ class CreateCommandSpec extends Specification {
 
     @AutoCleanup ApplicationContext context
 
-    Fixt fixt = Fixt.create(CreateCommandSpec)
+    Fixt fixt = Fixt.create(DeleteCommandSpec)
 
     PullRequest pullRequest1 = Mock {
-        getMergeableState() >> 'unstable'
+        isMerged() >> true
+        getMergeableState() >> 'unknown'
         getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
     }
 
@@ -43,7 +44,6 @@ class CreateCommandSpec extends Specification {
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> false
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
         getOwnerName() >> OWNER
     }
@@ -51,21 +51,26 @@ class CreateCommandSpec extends Specification {
     Repository repository2 = Mock {
         getFullName() >> REPOSITORY_TWO
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
     }
 
     Content content1 = Mock {
         getRepository() >> repository1
+        delete(BRANCH, MESSAGE) >> true
+        getPath() >> PATH
     }
 
     Content content2 = Mock {
         getRepository() >> repository2
+        delete(BRANCH, MESSAGE) >> true
+        getPath() >> PATH
     }
 
     Content content3 = Mock {
         getRepository() >> repository2
+        delete(BRANCH, MESSAGE) >> false
+        getPath() >> PATH
     }
 
     Project project = Mock {
@@ -81,7 +86,7 @@ class CreateCommandSpec extends Specification {
             Stream.of(content1, content2, content3)
         }
 
-        findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
     void setup() {
@@ -97,17 +102,13 @@ class CreateCommandSpec extends Specification {
             System.out = new PrintStream(baos)
 
             String[] args = [
-                'create',
+                'delete',
                 '-b',
                 BRANCH,
                 '-t',
                 TITLE,
                 '-m',
                 MESSAGE,
-                '-p',
-                PATH,
-                '-c',
-                CONTENT,
                 '--project',
                 PROJECT,
                 '-P',
@@ -116,7 +117,8 @@ class CreateCommandSpec extends Specification {
             PicocliRunner.run(PierrotCommand, context, args)
 
         then:
-            baos.toString() == fixt.readText('create.txt')
+            fixt.writeText('delete.txt', baos.toString())
+            baos.toString() == fixt.readText('delete.txt')
 
             _ * pullRequest1.getRepository() >> repository1
             _ * pullRequest2.getRepository() >> repository2

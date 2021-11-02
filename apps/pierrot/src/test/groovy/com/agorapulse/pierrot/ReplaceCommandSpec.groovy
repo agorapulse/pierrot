@@ -1,10 +1,6 @@
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
-import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.PullRequest
-import com.agorapulse.pierrot.core.Repository
+import com.agorapulse.pierrot.core.*
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
@@ -13,22 +9,23 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
-class CreateCommandSpec extends Specification {
+class ReplaceCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
     private static final String BRANCH = 'chore/test'
     private static final String TITLE = 'Test Title'
     private static final String MESSAGE = 'Test Message'
-    private static final String CONTENT = 'Test Content'
-    private static final String PATH = '.testfile'
+    private static final String REPLACEMENT = 'salut $1'
+    private static final String PATTERN = /hello (\w+)/
     private static final String PROJECT = 'Pierrot'
+    private static final String PATH = '.testfile'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
     @AutoCleanup ApplicationContext context
 
-    Fixt fixt = Fixt.create(CreateCommandSpec)
+    Fixt fixt = Fixt.create(ReplaceCommandSpec)
 
     PullRequest pullRequest1 = Mock {
         getMergeableState() >> 'unstable'
@@ -43,7 +40,6 @@ class CreateCommandSpec extends Specification {
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> false
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
         getOwnerName() >> OWNER
     }
@@ -51,21 +47,26 @@ class CreateCommandSpec extends Specification {
     Repository repository2 = Mock {
         getFullName() >> REPOSITORY_TWO
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
     }
 
     Content content1 = Mock {
         getRepository() >> repository1
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        getPath() >> PATH
     }
 
     Content content2 = Mock {
         getRepository() >> repository2
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        getPath() >> PATH
     }
 
     Content content3 = Mock {
         getRepository() >> repository2
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> false
+        getPath() >> PATH
     }
 
     Project project = Mock {
@@ -97,7 +98,7 @@ class CreateCommandSpec extends Specification {
             System.out = new PrintStream(baos)
 
             String[] args = [
-                'create',
+                'replace',
                 '-b',
                 BRANCH,
                 '-t',
@@ -105,9 +106,9 @@ class CreateCommandSpec extends Specification {
                 '-m',
                 MESSAGE,
                 '-p',
-                PATH,
-                '-c',
-                CONTENT,
+                PATTERN,
+                '-r',
+                REPLACEMENT,
                 '--project',
                 PROJECT,
                 '-P',
@@ -116,7 +117,7 @@ class CreateCommandSpec extends Specification {
             PicocliRunner.run(PierrotCommand, context, args)
 
         then:
-            baos.toString() == fixt.readText('create.txt')
+            baos.toString() == fixt.readText('replace.txt')
 
             _ * pullRequest1.getRepository() >> repository1
             _ * pullRequest2.getRepository() >> repository2
