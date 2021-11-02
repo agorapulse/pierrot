@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot;
 
-import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.*;
 import jakarta.inject.Inject;
@@ -40,7 +39,6 @@ public class CreateCommand implements Runnable {
     @Mixin ProjectMixin project;
 
     @Inject GitHubService service;
-    @Inject GitHubConfiguration configuration;
 
     @Override
     public void run() {

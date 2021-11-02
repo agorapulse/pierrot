@@ -1,0 +1,7 @@
+Searching content for 'org:agorapulse filename:gradle.properties'!
+Creating file agorapulse/pierrot/.testfile
+Creating file agorapulse/oss/.testfile
+Created agorapulse/oss/.testfile
+PR for agorapulse/oss available at https://example.com/agorapulse/oss/pulls/1
+Created 1 files
+Pull requests were added to the project Pierrot at https://example.com/agorapulse/projects/1
