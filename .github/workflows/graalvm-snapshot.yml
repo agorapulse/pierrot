@@ -37,8 +37,9 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - name: Build Native Image Snapshot
         run: |
+          ./gradlew :pierrot:buildLayers --no-daemon
           ./gradlew :pierrot:shadowJar --no-daemon
-          native-image --no-fallback -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
+          native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
