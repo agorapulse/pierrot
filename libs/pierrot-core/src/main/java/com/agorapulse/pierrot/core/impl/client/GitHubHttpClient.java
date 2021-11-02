@@ -18,15 +18,33 @@
 package com.agorapulse.pierrot.core.impl.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.jackson.annotation.JacksonFeatures;
 
+import static io.micronaut.core.annotation.TypeHint.AccessType.*;
+
 @GitHub
 @Client("github")
 @JacksonFeatures(
     disabledDeserializationFeatures = DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES
+)
+@TypeHint(
+    typeNames = {
+        "com.agorapulse.pierrot.core.impl.client.CheckRunResult",
+        "com.agorapulse.pierrot.core.impl.client.CheckRunsListResult",
+    },
+    accessType = {
+        ALL_PUBLIC,
+        ALL_DECLARED_CONSTRUCTORS,
+        ALL_PUBLIC_CONSTRUCTORS,
+        ALL_DECLARED_METHODS,
+        ALL_DECLARED_FIELDS,
+        ALL_PUBLIC_METHODS,
+        ALL_PUBLIC_FIELDS
+    }
 )
 public interface GitHubHttpClient {
 
