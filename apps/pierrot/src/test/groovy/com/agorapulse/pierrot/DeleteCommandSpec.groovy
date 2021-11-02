@@ -117,7 +117,6 @@ class DeleteCommandSpec extends Specification {
             PicocliRunner.run(PierrotCommand, context, args)
 
         then:
-            fixt.writeText('delete.txt', baos.toString())
             baos.toString() == fixt.readText('delete.txt')
 
             _ * pullRequest1.getRepository() >> repository1
