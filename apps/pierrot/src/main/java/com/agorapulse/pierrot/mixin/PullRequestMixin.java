@@ -80,19 +80,6 @@ public class PullRequestMixin {
 
     private int pullRequestsCreated;
 
-    public PullRequestMixin() { }
-
-    public PullRequestMixin(String branch, String title, String message) {
-        this.branch = branch;
-        this.title = title;
-        this.message = message;
-    }
-
-    public PullRequestMixin(UnaryOperator<String> reader, Consumer<String> writer) {
-        this.reader = reader;
-        this.writer = writer;
-    }
-
     public int getPullRequestsCreated() {
         return pullRequestsCreated;
     }

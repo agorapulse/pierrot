@@ -1,0 +1,3 @@
+Pushing changes from WORKSPACE
+PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pulls/1
+Opened 1 pull requests

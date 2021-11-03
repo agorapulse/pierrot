@@ -1,0 +1,30 @@
+Usage: pierrot create [-aghPsV] [-b=<branch>] [-c=<content>]
+                      [--done-column=<doneColumn>] [--from=<contentFrom>]
+                      [-m=<message>] [--message-from=<messageFrom>] [-p=<path>]
+                      [--progress-column=<progressColumn>]
+                      [--project=<project>] [-t=<title>]
+                      [--todo-column=<todoColumn>] QUERY...
+creates a file in a matching repositories and creates PRs
+      QUERY...               The search term such as 'org:agorapulse filename:
+                               build.gradle'
+  -a, --all                  Include archived and closed
+  -b, --branch=<branch>      The pull request branch
+  -c, --content=<content>    The inline content of the newly created file
+      --done-column=<doneColumn>
+                             The name of the 'Done' column in the project
+      --from=<contentFrom>   The file to be uploaded to the repositories
+  -g, --global               Do not constrain search to current organization
+  -h, --help                 Show this help message and exit.
+  -m, --message=<message>    The pull request message
+      --message-from=<messageFrom>
+                             The file containing the pull request message
+  -p, --path=<path>          The path inside the repository
+  -P, --no-page              Do not wait after each result
+      --progress-column=<progressColumn>
+                             The name of the 'In progress' column in the project
+      --project=<project>    The name of the project (board)
+  -s, --stacktrace           Print stack traces
+  -t, --title=<title>        The pull request title
+      --todo-column=<todoColumn>
+                             The name of the 'To do' column in the project
+  -V, --version              Print version information and exit.

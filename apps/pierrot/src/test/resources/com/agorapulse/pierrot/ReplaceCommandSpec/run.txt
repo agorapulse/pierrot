@@ -1,0 +1,9 @@
+Searching content for 'org:agorapulse filename:.testfile'!
+Replacing agorapulse/pierrot/.testfile
+Replaced agorapulse/pierrot/.testfile
+PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pulls/1
+Replacing agorapulse/oss/.testfile
+Replaced agorapulse/oss/.testfile
+PR for agorapulse/oss available at https://example.com/agorapulse/oss/pulls/1
+Replacing agorapulse/oss/prefix/.testfile
+Replaced text in 2 files

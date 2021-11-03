@@ -19,7 +19,6 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.SearchMixin;
-import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import com.agorapulse.pierrot.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
@@ -30,13 +29,13 @@ import java.util.Optional;
 
 @Command(
     name = "pull",
-    description = "pulls the matching files locally"
+    description = "pulls the matching files locally",
+    mixinStandardHelpOptions = true
 )
 public class PullCommand implements Runnable {
 
     @Mixin SearchMixin search;
     @Mixin WorkspaceMixin workspace;
-    @Mixin StacktraceMixin stacktrace;
 
     @Inject GitHubService service;
 
@@ -47,7 +46,6 @@ public class PullCommand implements Runnable {
             content.writeTo(location);
             System.out.printf("Fetched %s/%s%n", content.getRepository().getFullName(), content.getPath());
             return Optional.of(location.toURI());
-            // TODO: paginate?
         });
 
         System.out.printf("Found %d results!%n", search.getProcessed());

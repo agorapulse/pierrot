@@ -38,6 +38,7 @@ dependencies {
     implementation("io.micronaut:micronaut-validation")
 
     testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("com.agorapulse.testing:fixt:0.2.2")
 }
 
 

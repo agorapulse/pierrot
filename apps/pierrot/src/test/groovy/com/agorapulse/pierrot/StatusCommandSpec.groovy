@@ -15,21 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.mixin;
+package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
-import picocli.CommandLine;
+class StatusCommandSpec extends AbstractCommandSpec {
 
-public class StacktraceMixin {
+    String command = 'status'
 
-    @CommandLine.Option(
-        names = {"-s", "--stacktrace"},
-        description = "Print stack traces"
-    )
-    void setStacktrace(boolean stacktrace) {
-        if (stacktrace) {
-            LoggerWithOptionalStacktrace.enableStacktrace();
-        }
-    }
+    List<String> args = [
+        '--project',
+        PROJECT,
+        '-P',
+        PR_SEARCH_TERM,
+    ]
 
 }

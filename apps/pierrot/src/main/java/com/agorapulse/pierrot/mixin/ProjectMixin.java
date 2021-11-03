@@ -29,15 +29,15 @@ import java.util.Optional;
 public class ProjectMixin {
 
     private static final List<String> IN_PROGRESS_MERGEABLE_STATES = List.of(
-        //The merge is blocked.
-        "BLOCKED",
-        //The merge commit cannot be cleanly created.
+        // The merge is blocked.
+        "blocked",
+        // The merge commit cannot be cleanly created.
         "dirty",
-        //The merge is blocked due to the pull request being a draft.
+        // The merge is blocked due to the pull request being a draft.
         "draft",
-        //The state cannot currently be determined.
+        // The state cannot currently be determined.
         "unknown",
-        //Mergeable with non-passing commit status.
+        // Mergeable with non-passing commit status.
         "unstable"
     );
 
@@ -69,13 +69,6 @@ public class ProjectMixin {
     String doneColumn;
 
     private Project board;
-
-    public ProjectMixin() { }
-
-    public ProjectMixin(String project, String todoColumn) {
-        this.project = project;
-        this.todoColumn = todoColumn;
-    }
 
     public Optional<PullRequest> addToProject(GitHubService service, Optional<PullRequest> pullRequest) {
         if (StringUtils.isEmpty(project)) {

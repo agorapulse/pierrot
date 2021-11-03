@@ -15,23 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.mixin;
+package com.agorapulse.pierrot
 
-import picocli.CommandLine.Option;
+class ReplaceCommandSpec extends AbstractCommandSpec {
 
-import java.io.File;
+    String command = 'replace'
 
-public class WorkspaceMixin {
+    List<String> args = [
+        '-b',
+        BRANCH,
+        '-t',
+        TITLE,
+        '-m',
+        MESSAGE,
+        '-p',
+        PATTERN,
+        '-r',
+        REPLACEMENT,
+        '--project',
+        PROJECT,
+        '-P',
+        CONTENT_SEARCH_TERM,
+    ]
 
-    @Option(
-        names = {"-w", "--workspace"},
-        description = "The working directory to pull found files",
-        defaultValue = "."
-    )
-    File workspace;
-
-    public File getWorkspace() {
-        return workspace;
-    }
 }
-
