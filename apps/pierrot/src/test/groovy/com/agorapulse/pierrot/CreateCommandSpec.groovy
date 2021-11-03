@@ -19,7 +19,6 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Project
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream

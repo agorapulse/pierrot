@@ -18,18 +18,12 @@
 package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Project
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
-
-    Project project = Mock {
-        getName() >> PROJECT
-        getHttpUrl() >> new URL("https://example.com/$OWNER/projects/1")
-    }
 
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)

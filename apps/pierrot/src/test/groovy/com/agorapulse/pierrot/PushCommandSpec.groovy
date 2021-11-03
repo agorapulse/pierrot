@@ -18,7 +18,6 @@
 package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Project
 import io.micronaut.configuration.picocli.PicocliRunner
 import spock.lang.TempDir
 
@@ -26,11 +25,6 @@ import spock.lang.TempDir
 class PushCommandSpec extends AbstractCommandSpec {
 
     @TempDir File workspace
-
-    Project project = Mock {
-        getName() >> PROJECT
-        getHttpUrl() >> new URL("https://example.com/$OWNER/projects/1")
-    }
 
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
