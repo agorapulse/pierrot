@@ -19,6 +19,7 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.CheckRun
 import com.agorapulse.pierrot.core.GitHubService
+import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
 import com.agorapulse.testing.fixt.Fixt
@@ -49,6 +50,11 @@ abstract class AbstractCommandSpec extends Specification {
 
     abstract String getCommand()
     abstract GitHubService getService()
+
+    Project project = Mock {
+        getName() >> PROJECT
+        getHttpUrl() >> new URL("https://example.com/$OWNER/projects/1")
+    }
 
     CheckRun run1 = Mock {
         getName() >> 'Check 1'

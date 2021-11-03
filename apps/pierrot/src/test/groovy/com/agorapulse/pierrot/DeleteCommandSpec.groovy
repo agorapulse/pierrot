@@ -45,11 +45,6 @@ class DeleteCommandSpec extends AbstractCommandSpec {
         getPath() >> PATH
     }
 
-    Project project = Mock {
-        getName() >> PROJECT
-        getHttpUrl() >> new URL("https://example.com/$OWNER/projects/1")
-    }
-
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
