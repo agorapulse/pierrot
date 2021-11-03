@@ -20,20 +20,33 @@ package com.agorapulse.pierrot
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class ConsoleCapture {
+class ConsoleOutput {
 
-    static String capture(Runnable action) {
-        PrintStream original = System.out
-        ByteArrayOutputStream baos = new ByteArrayOutputStream()
-        System.out = new PrintStream(baos)
+    final String out
+    final String err
+
+    ConsoleOutput(String out, String err) {
+        this.out = out
+        this.err = err
+    }
+
+    static ConsoleOutput capture(Runnable action) {
+        PrintStream originalOut = System.out
+        ByteArrayOutputStream bout = new ByteArrayOutputStream()
+        System.out = new PrintStream(bout)
+
+        PrintStream originalErr = System.err
+        ByteArrayOutputStream berr = new ByteArrayOutputStream()
+        System.err = new PrintStream(berr)
 
         try {
             action.run()
         } finally {
-            System.out = original
+            System.out = originalOut
+            System.err = originalErr
         }
 
-        return baos.toString()
+        return new ConsoleOutput(bout.toString(), berr.toString())
     }
 
 }

@@ -1,0 +1,12 @@
+Usage: pierrot pull [-aghPsV] [-w=<workspace>] QUERY...
+pulls the matching files locally
+      QUERY...       The search term such as 'org:agorapulse filename:build.
+                       gradle'
+  -a, --all          Include archived and closed
+  -g, --global       Do not constrain search to current organization
+  -h, --help         Show this help message and exit.
+  -P, --no-page      Do not wait after each result
+  -s, --stacktrace   Print stack traces
+  -V, --version      Print version information and exit.
+  -w, --workspace=<workspace>
+                     The working directory to pull found files

@@ -22,16 +22,12 @@ import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
-import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
-import io.micronaut.context.ApplicationContext
-import spock.lang.AutoCleanup
-import spock.lang.Specification
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
-class ReplaceCommandSpec extends Specification {
+class ReplaceCommandSpec extends AbstractCommandSpec {
 
     private static final String OWNER = 'agorapulse'
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
@@ -44,10 +40,6 @@ class ReplaceCommandSpec extends Specification {
     private static final String PATH = '.testfile'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
-    @AutoCleanup ApplicationContext context
-
-    Fixt fixt = Fixt.create(ReplaceCommandSpec)
 
     PullRequest pullRequest1 = Mock {
         getMergeableState() >> 'unstable'
@@ -107,15 +99,11 @@ class ReplaceCommandSpec extends Specification {
         findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
     }
 
-    void setup() {
-        context = ApplicationContext.builder().build()
-        context.registerSingleton(GitHubService, service)
-        context.start()
-    }
+    String command = 'replace'
 
     void 'run command'() {
         when:
-            String out = ConsoleCapture.capture {
+            String out = ConsoleOutput.capture {
                 String[] args = [
                     'replace',
                     '-b',
@@ -134,7 +122,7 @@ class ReplaceCommandSpec extends Specification {
                     SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }
+            }.out
 
         then:
             out == fixt.readText('replace.txt')

@@ -21,7 +21,6 @@ import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.core.ws.Workspace;
 import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
-import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import com.agorapulse.pierrot.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
@@ -31,13 +30,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
     name = "push",
-    description = "pushes the the local changes and creates PRs"
+    description = "pushes the the local changes and creates PRs",
+    mixinStandardHelpOptions = true
 )
 public class PushCommand implements Runnable {
 
     @Mixin WorkspaceMixin workspace;
     @Mixin PullRequestMixin pullRequest;
-    @Mixin StacktraceMixin stacktrace;
     @Mixin ProjectMixin project;
 
     @Inject GitHubService service;

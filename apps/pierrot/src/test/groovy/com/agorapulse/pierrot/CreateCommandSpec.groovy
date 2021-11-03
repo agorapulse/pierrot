@@ -22,16 +22,12 @@ import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
-import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
-import io.micronaut.context.ApplicationContext
-import spock.lang.AutoCleanup
-import spock.lang.Specification
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
-class CreateCommandSpec extends Specification {
+class CreateCommandSpec extends AbstractCommandSpec {
 
     private static final String OWNER = 'agorapulse'
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
@@ -43,10 +39,6 @@ class CreateCommandSpec extends Specification {
     private static final String PROJECT = 'Pierrot'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
-    @AutoCleanup ApplicationContext context
-
-    Fixt fixt = Fixt.create(CreateCommandSpec)
 
     PullRequest pullRequest1 = Mock {
         getMergeableState() >> 'unstable'
@@ -102,15 +94,11 @@ class CreateCommandSpec extends Specification {
         findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
     }
 
-    void setup() {
-        context = ApplicationContext.builder().build()
-        context.registerSingleton(GitHubService, service)
-        context.start()
-    }
+    String command = 'create'
 
     void 'run command'() {
         when:
-            String out = ConsoleCapture.capture {
+            String out = ConsoleOutput.capture {
                 String[] args = [
                     'create',
                     '-b',
@@ -129,7 +117,7 @@ class CreateCommandSpec extends Specification {
                     SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }
+            }.out
 
         then:
             out == fixt.readText('create.txt')

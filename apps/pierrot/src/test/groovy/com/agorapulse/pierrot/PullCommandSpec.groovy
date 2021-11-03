@@ -20,17 +20,13 @@ package com.agorapulse.pierrot
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Repository
-import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
-import io.micronaut.context.ApplicationContext
-import spock.lang.AutoCleanup
-import spock.lang.Specification
 import spock.lang.TempDir
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
-class PullCommandSpec extends Specification {
+class PullCommandSpec extends AbstractCommandSpec {
 
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
     private static final String CONTENT = 'Test Content'
@@ -38,11 +34,7 @@ class PullCommandSpec extends Specification {
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
-    @AutoCleanup ApplicationContext context
-
     @TempDir File workspace
-
-    Fixt fixt = Fixt.create(PullCommandSpec)
 
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
@@ -78,15 +70,11 @@ class PullCommandSpec extends Specification {
         }
     }
 
-    void setup() {
-        context = ApplicationContext.builder().build()
-        context.registerSingleton(GitHubService, service)
-        context.start()
-    }
+    String command = 'pull'
 
     void 'run command'() {
         when:
-            String out = ConsoleCapture.capture {
+            String out = ConsoleOutput.capture {
                 String[] args = [
                     'pull',
                     '-P',
@@ -95,7 +83,7 @@ class PullCommandSpec extends Specification {
                     SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }
+            }.out
 
             File file1 = new File(workspace, "$REPOSITORY_ONE/$PATH")
             File file2 = new File(workspace, "$REPOSITORY_TWO/$PATH")

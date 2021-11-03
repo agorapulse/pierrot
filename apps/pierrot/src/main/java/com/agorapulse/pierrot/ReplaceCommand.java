@@ -21,7 +21,6 @@ import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
-import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -29,13 +28,13 @@ import picocli.CommandLine.Option;
 
 @Command(
     name = "replace",
-    description = "replaces content in the files and creates PRs"
+    description = "replaces content in the files and creates PRs",
+    mixinStandardHelpOptions = true
 )
 public class ReplaceCommand implements Runnable {
 
     @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
-    @Mixin StacktraceMixin stacktrace;
     @Mixin ProjectMixin project;
 
     @Inject GitHubService service;

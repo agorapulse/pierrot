@@ -21,15 +21,11 @@ import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
-import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
-import io.micronaut.context.ApplicationContext
-import spock.lang.AutoCleanup
-import spock.lang.Specification
 import spock.lang.TempDir
 
 @SuppressWarnings('UnnecessaryGetter')
-class PushCommandSpec extends Specification {
+class PushCommandSpec extends AbstractCommandSpec {
 
     private static final String OWNER = 'agorapulse'
     private static final String BRANCH = 'chore/test'
@@ -41,11 +37,7 @@ class PushCommandSpec extends Specification {
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
-    @AutoCleanup ApplicationContext context
-
     @TempDir File workspace
-
-    Fixt fixt = Fixt.create(PushCommandSpec)
 
     PullRequest pullRequest1 = Mock {
         getMergeableState() >> 'unknown'
@@ -78,18 +70,16 @@ class PushCommandSpec extends Specification {
         findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
-    void setup() {
-        context = ApplicationContext.builder().build()
-        context.registerSingleton(GitHubService, service)
-        context.start()
+    String command = 'push'
 
+    void setup() {
         createWorkspaceFile(REPOSITORY_ONE, PATH, CONTENT)
         createWorkspaceFile(REPOSITORY_TWO, PATH, CONTENT.reverse())
     }
 
     void 'run command'() {
         when:
-            String out = ConsoleCapture.capture {
+            String out = ConsoleOutput.capture {
                 String[] args = [
                     'push',
                     '-b',
@@ -104,7 +94,7 @@ class PushCommandSpec extends Specification {
                     workspace.canonicalPath,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }
+            }.out
 
         then:
             out == fixt.readText('push.txt').replace('WORKSPACE', workspace.canonicalPath)

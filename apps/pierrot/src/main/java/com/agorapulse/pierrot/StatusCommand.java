@@ -21,7 +21,6 @@ import com.agorapulse.pierrot.core.CheckRun;
 import com.agorapulse.pierrot.core.GitHubService;
 import com.agorapulse.pierrot.mixin.ProjectMixin;
 import com.agorapulse.pierrot.mixin.SearchMixin;
-import com.agorapulse.pierrot.mixin.StacktraceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -30,7 +29,8 @@ import java.util.Optional;
 
 @Command(
     name = "status",
-    description = "searches GitHub Pull Requests and prints their statuses"
+    description = "searches GitHub Pull Requests and prints their statuses",
+    mixinStandardHelpOptions = true
 )
 public class StatusCommand implements Runnable {
 
@@ -42,7 +42,6 @@ public class StatusCommand implements Runnable {
     private static final String UNKNOWN = "?";
 
     @Mixin SearchMixin search;
-    @Mixin StacktraceMixin stacktrace;
     @Mixin ProjectMixin project;
 
     @Inject GitHubService service;

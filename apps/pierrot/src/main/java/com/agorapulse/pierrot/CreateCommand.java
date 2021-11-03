@@ -18,7 +18,10 @@
 package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.mixin.*;
+import com.agorapulse.pierrot.mixin.FileMixin;
+import com.agorapulse.pierrot.mixin.ProjectMixin;
+import com.agorapulse.pierrot.mixin.PullRequestMixin;
+import com.agorapulse.pierrot.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -28,14 +31,14 @@ import java.util.Set;
 
 @Command(
     name = "create",
-    description = "creates a file in a matching repositories and creates PRs"
+    description = "creates a file in a matching repositories and creates PRs",
+    mixinStandardHelpOptions = true
 )
 public class CreateCommand implements Runnable {
 
     @Mixin PullRequestMixin pullRequest;
     @Mixin SearchMixin search;
     @Mixin FileMixin file;
-    @Mixin StacktraceMixin stacktrace;
     @Mixin ProjectMixin project;
 
     @Inject GitHubService service;

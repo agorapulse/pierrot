@@ -17,7 +17,9 @@
  */
 package com.agorapulse.pierrot;
 
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.configuration.picocli.PicocliRunner;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Command(
@@ -35,6 +37,17 @@ import picocli.CommandLine.Command;
     }
 )
 public class PierrotCommand implements Runnable {
+
+    @CommandLine.Option(
+        names = {"-s", "--stacktrace"},
+        description = "Print stack traces",
+        scope = CommandLine.ScopeType.INHERIT
+    )
+    void setStacktrace(boolean stacktrace) {
+        if (stacktrace) {
+            LoggerWithOptionalStacktrace.enableStacktrace();
+        }
+    }
 
     public static void main(String[] args) {
         if (args.length == 0) {
