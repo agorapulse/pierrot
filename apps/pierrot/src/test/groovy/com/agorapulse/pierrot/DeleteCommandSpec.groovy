@@ -115,26 +115,25 @@ class DeleteCommandSpec extends Specification {
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
     void 'create remote file'() {
         when:
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()
-            System.out = new PrintStream(baos)
-
-            String[] args = [
-                'delete',
-                '-b',
-                BRANCH,
-                '-t',
-                TITLE,
-                '-m',
-                MESSAGE,
-                '--project',
-                PROJECT,
-                '-P',
-                SEARCH_TERM,
-            ] as String[]
-            PicocliRunner.run(PierrotCommand, context, args)
+            String out = ConsoleCapture.capture {
+                String[] args = [
+                    'delete',
+                    '-b',
+                    BRANCH,
+                    '-t',
+                    TITLE,
+                    '-m',
+                    MESSAGE,
+                    '--project',
+                    PROJECT,
+                    '-P',
+                    SEARCH_TERM,
+                ] as String[]
+                PicocliRunner.run(PierrotCommand, context, args)
+            }
 
         then:
-            baos.toString() == fixt.readText('delete.txt')
+            out == fixt.readText('delete.txt')
 
             _ * pullRequest1.getRepository() >> repository1
             _ * pullRequest2.getRepository() >> repository2

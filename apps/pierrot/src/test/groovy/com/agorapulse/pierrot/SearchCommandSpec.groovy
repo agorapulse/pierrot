@@ -78,18 +78,17 @@ class SearchCommandSpec extends Specification {
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
     void 'create remote file'() {
         when:
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()
-            System.out = new PrintStream(baos)
-
-            String[] args = [
-                'search',
-                '-P',
-                SEARCH_TERM,
-            ] as String[]
-            PicocliRunner.run(PierrotCommand, context, args)
+            String out = ConsoleCapture.capture {
+                String[] args = [
+                    'search',
+                    '-P',
+                    SEARCH_TERM,
+                ] as String[]
+                PicocliRunner.run(PierrotCommand, context, args)
+            }
 
         then:
-            baos.toString() == fixt.readText('search.txt')
+            out == fixt.readText('search.txt')
     }
 
 }

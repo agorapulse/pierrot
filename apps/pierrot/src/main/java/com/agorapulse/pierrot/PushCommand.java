@@ -52,7 +52,7 @@ public class PushCommand implements Runnable {
                 r.visitFiles(f -> changed.set(ghr.writeFile(branch, message, f.getPath(), f.getText()) || changed.get()));
                 return changed.get();
             })));
-        System.out.printf("Opened %d pull requests %n", pullRequest.getPullRequestsCreated());
+        System.out.printf("Opened %d pull requests%n", pullRequest.getPullRequestsCreated());
     }
 
 }

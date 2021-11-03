@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
@@ -27,36 +26,30 @@ import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
 import spock.lang.AutoCleanup
 import spock.lang.Specification
-
-import java.util.stream.Stream
+import spock.lang.TempDir
 
 @SuppressWarnings('UnnecessaryGetter')
-class ReplaceCommandSpec extends Specification {
+class PushCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'
-    private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
     private static final String BRANCH = 'chore/test'
     private static final String TITLE = 'Test Title'
     private static final String MESSAGE = 'Test Message'
-    private static final String REPLACEMENT = 'salut $1'
-    private static final String PATTERN = /hello (\w+)/
-    private static final String PROJECT = 'Pierrot'
     private static final String PATH = '.testfile'
+    private static final String CONTENT = 'Test Content'
+    private static final String PROJECT = 'Pierrot'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
     @AutoCleanup ApplicationContext context
 
-    Fixt fixt = Fixt.create(ReplaceCommandSpec)
+    @TempDir File workspace
+
+    Fixt fixt = Fixt.create(PushCommandSpec)
 
     PullRequest pullRequest1 = Mock {
-        getMergeableState() >> 'unstable'
+        getMergeableState() >> 'unknown'
         getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
-    }
-
-    PullRequest pullRequest2 = Mock {
-        getMergeableState() >> 'unstable'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_TWO/pulls/1")
     }
 
     Repository repository1 = Mock {
@@ -64,31 +57,14 @@ class ReplaceCommandSpec extends Specification {
         canWrite() >> true
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
         getOwnerName() >> OWNER
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
     }
 
     Repository repository2 = Mock {
         getFullName() >> REPOSITORY_TWO
         canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
-    }
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
-        getPath() >> PATH
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
-        getPath() >> PATH
-    }
-
-    Content content3 = Mock {
-        getRepository() >> repository2
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> false
-        getPath() >> PATH
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
     }
 
     Project project = Mock {
@@ -99,18 +75,16 @@ class ReplaceCommandSpec extends Specification {
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
-
-        searchContent(SEARCH_TERM, false) >> {
-            Stream.of(content1, content2, content3)
-        }
-
-        findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
     void setup() {
         context = ApplicationContext.builder().build()
         context.registerSingleton(GitHubService, service)
         context.start()
+
+        createWorkspaceFile(REPOSITORY_ONE, PATH, CONTENT)
+        createWorkspaceFile(REPOSITORY_TWO, PATH, CONTENT.reverse())
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
@@ -118,30 +92,33 @@ class ReplaceCommandSpec extends Specification {
         when:
             String out = ConsoleCapture.capture {
                 String[] args = [
-                    'replace',
+                    'push',
                     '-b',
                     BRANCH,
                     '-t',
                     TITLE,
                     '-m',
                     MESSAGE,
-                    '-p',
-                    PATTERN,
-                    '-r',
-                    REPLACEMENT,
                     '--project',
                     PROJECT,
-                    '-P',
-                    SEARCH_TERM,
+                    '-w',
+                    workspace.canonicalPath,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
             }
 
         then:
-            out == fixt.readText('replace.txt')
+            out == fixt.readText('push.txt').replace('WORKSPACE', workspace.canonicalPath)
 
             _ * pullRequest1.getRepository() >> repository1
-            _ * pullRequest2.getRepository() >> repository2
+    }
+
+    @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
+    private void createWorkspaceFile(String repositoryFullName, String path, String content) {
+        File file = new File(workspace, "$repositoryFullName/$path")
+        file.parentFile.mkdirs()
+        file.createNewFile()
+        file.write(content)
     }
 
 }

@@ -87,22 +87,21 @@ class PullCommandSpec extends Specification {
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
     void 'create remote file'() {
         when:
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()
-            System.out = new PrintStream(baos)
-
-            String[] args = [
-                'pull',
-                '-P',
-                '-w',
-                workspace.canonicalPath,
-                SEARCH_TERM,
-            ] as String[]
-            PicocliRunner.run(PierrotCommand, context, args)
+            String out = ConsoleCapture.capture {
+                String[] args = [
+                    'pull',
+                    '-P',
+                    '-w',
+                    workspace.canonicalPath,
+                    SEARCH_TERM,
+                ] as String[]
+                PicocliRunner.run(PierrotCommand, context, args)
+            }
 
             File file1 = new File(workspace, "$REPOSITORY_ONE/$PATH")
             File file2 = new File(workspace, "$REPOSITORY_TWO/$PATH")
         then:
-            baos.toString() == fixt.readText('pull.txt')
+            out == fixt.readText('pull.txt')
 
             file1.exists()
             file1.text == CONTENT
