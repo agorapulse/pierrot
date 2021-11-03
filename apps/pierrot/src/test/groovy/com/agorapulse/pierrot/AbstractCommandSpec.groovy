@@ -33,6 +33,7 @@ import spock.lang.TempDir
 
 import java.util.stream.Stream
 
+@SuppressWarnings('UnnecessaryGetter')
 abstract class AbstractCommandSpec extends Specification {
 
     public static final String OWNER = 'agorapulse'
@@ -56,6 +57,7 @@ abstract class AbstractCommandSpec extends Specification {
     @AutoCleanup ApplicationContext context
 
     abstract String getCommand()
+    abstract List<String> getArgs()
 
     Project project = Mock {
         getName() >> PROJECT
@@ -192,6 +194,32 @@ abstract class AbstractCommandSpec extends Specification {
             // uncomment to rewrite the files
             // fixt.writeText('help.txt', out)
             out == fixt.readText('help.txt')
+    }
+
+    void 'run command'() {
+        when:
+            ConsoleOutput console = ConsoleOutput.capture {
+                List<String> commandAndArgs = [command]
+                commandAndArgs.addAll(args)
+                PicocliRunner.run(PierrotCommand, context, commandAndArgs as String[])
+            }
+
+        then:
+            !console.err
+
+            // uncomment to rewrite the files
+            // fixt.writeText('run.txt', console.out)
+            console.out == fixRunFile(fixt.readText('run.txt'))
+
+            additionalChecks()
+    }
+
+    protected String fixRunFile(String input) {
+        return input
+    }
+
+    protected boolean additionalChecks() {
+        return true
     }
 
 }

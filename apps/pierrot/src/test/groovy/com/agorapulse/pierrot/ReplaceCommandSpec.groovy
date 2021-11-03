@@ -17,39 +17,25 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
-
-@SuppressWarnings('UnnecessaryGetter')
 class ReplaceCommandSpec extends AbstractCommandSpec {
 
     String command = 'replace'
 
-    void 'run command'() {
-        when:
-            ConsoleOutput console = ConsoleOutput.capture {
-                String[] args = [
-                    'replace',
-                    '-b',
-                    BRANCH,
-                    '-t',
-                    TITLE,
-                    '-m',
-                    MESSAGE,
-                    '-p',
-                    PATTERN,
-                    '-r',
-                    REPLACEMENT,
-                    '--project',
-                    PROJECT,
-                    '-P',
-                    CONTENT_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }
-
-        then:
-            !console.err
-            console.out == fixt.readText('run.txt')
-    }
+    List<String> args = [
+        '-b',
+        BRANCH,
+        '-t',
+        TITLE,
+        '-m',
+        MESSAGE,
+        '-p',
+        PATTERN,
+        '-r',
+        REPLACEMENT,
+        '--project',
+        PROJECT,
+        '-P',
+        CONTENT_SEARCH_TERM,
+    ]
 
 }

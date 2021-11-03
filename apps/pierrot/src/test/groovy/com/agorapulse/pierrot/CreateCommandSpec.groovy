@@ -17,37 +17,25 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
-
 class CreateCommandSpec extends AbstractCommandSpec {
 
     String command = 'create'
 
-    void 'run command'() {
-        when:
-            String out = ConsoleOutput.capture {
-                String[] args = [
-                    'create',
-                    '-b',
-                    BRANCH,
-                    '-t',
-                    TITLE,
-                    '-m',
-                    MESSAGE,
-                    '-p',
-                    PATH,
-                    '-c',
-                    CONTENT,
-                    '--project',
-                    PROJECT,
-                    '-P',
-                    CONTENT_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }.out
-
-        then:
-            out == fixt.readText('run.txt')
-    }
+    List<String> args = [
+        '-b',
+        BRANCH,
+        '-t',
+        TITLE,
+        '-m',
+        MESSAGE,
+        '-p',
+        PATH,
+        '-c',
+        CONTENT,
+        '--project',
+        PROJECT,
+        '-P',
+        CONTENT_SEARCH_TERM,
+    ]
 
 }

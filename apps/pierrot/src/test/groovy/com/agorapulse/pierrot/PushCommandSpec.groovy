@@ -17,39 +17,33 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
+import spock.lang.TempDir
 
-@SuppressWarnings('UnnecessaryGetter')
 class PushCommandSpec extends AbstractCommandSpec {
 
+    @TempDir
+    File workspace
+
     String command = 'push'
+
+    List<String> getArgs() {
+        return [
+            '-b',
+            BRANCH,
+            '-t',
+            TITLE,
+            '-m',
+            MESSAGE,
+            '--project',
+            PROJECT,
+            '-w',
+            workspace.canonicalPath,
+        ]
+    }
 
     void setup() {
         createWorkspaceFile(REPOSITORY_ONE, PATH, CONTENT)
         createWorkspaceFile(REPOSITORY_TWO, PATH, CONTENT.reverse())
-    }
-
-    void 'run command'() {
-        when:
-            String out = ConsoleOutput.capture {
-                String[] args = [
-                    'push',
-                    '-b',
-                    BRANCH,
-                    '-t',
-                    TITLE,
-                    '-m',
-                    MESSAGE,
-                    '--project',
-                    PROJECT,
-                    '-w',
-                    workspace.canonicalPath,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }.out
-
-        then:
-            out == fixt.readText('run.txt').replace('WORKSPACE', workspace.canonicalPath)
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
@@ -58,6 +52,11 @@ class PushCommandSpec extends AbstractCommandSpec {
         file.parentFile.mkdirs()
         file.createNewFile()
         file.write(content)
+    }
+
+    @Override
+    protected String fixRunFile(String input) {
+        return input.replace('WORKSPACE', workspace.canonicalPath)
     }
 
 }

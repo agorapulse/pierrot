@@ -17,34 +17,21 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
-
 class DeleteCommandSpec extends AbstractCommandSpec {
 
     String command = 'delete'
 
-    void 'run command'() {
-        when:
-            String out = ConsoleOutput.capture {
-                String[] args = [
-                    'delete',
-                    '-b',
-                    BRANCH,
-                    '-t',
-                    TITLE,
-                    '-m',
-                    MESSAGE,
-                    '--project',
-                    PROJECT,
-                    '-P',
-                    CONTENT_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }.out
-
-        then:
-            fixt.writeText('run.txt', out)
-            out == fixt.readText('run.txt')
-    }
+    List<String> args = [
+        '-b',
+        BRANCH,
+        '-t',
+        TITLE,
+        '-m',
+        MESSAGE,
+        '--project',
+        PROJECT,
+        '-P',
+        CONTENT_SEARCH_TERM,
+    ]
 
 }

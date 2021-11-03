@@ -17,26 +17,13 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
-
-@SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends AbstractCommandSpec {
 
     String command = 'search'
 
-    void 'run command'() {
-        when:
-            String out = ConsoleOutput.capture {
-                String[] args = [
-                    'search',
-                    '-P',
-                    CONTENT_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }.out
-
-        then:
-            out == fixt.readText('run.txt')
-    }
+    List<String> args = [
+        '-P',
+        CONTENT_SEARCH_TERM,
+    ]
 
 }

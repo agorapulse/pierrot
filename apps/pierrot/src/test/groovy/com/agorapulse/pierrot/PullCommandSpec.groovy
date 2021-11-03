@@ -17,40 +17,37 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
+import spock.lang.TempDir
 
 class PullCommandSpec extends AbstractCommandSpec {
 
+    @TempDir File workspace
+
     String command = 'pull'
 
-    void 'run command'() {
-        when:
-            ConsoleOutput console = ConsoleOutput.capture {
-                String[] args = [
-                    'pull',
-                    '-P',
-                    '-w',
-                    workspace.canonicalPath,
-                    CONTENT_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }
+    List<String> getArgs() {
+        return [
+            '-P',
+            '-w',
+            workspace.canonicalPath,
+            CONTENT_SEARCH_TERM,
+        ]
+    }
 
-            File file1 = new File(workspace, "$REPOSITORY_ONE/$PATH")
-            File file2 = new File(workspace, "$REPOSITORY_TWO/$PATH")
-            File file3 = new File(workspace, "$REPOSITORY_TWO/prefix/$PATH")
+    @Override
+    protected boolean additionalChecks() {
+        File file1 = new File(workspace, "$REPOSITORY_ONE/$PATH")
+        File file2 = new File(workspace, "$REPOSITORY_TWO/$PATH")
+        File file3 = new File(workspace, "$REPOSITORY_TWO/prefix/$PATH")
 
-        then:
-            console.out == fixt.readText('run.txt')
+        assert file1.exists()
+        assert file1.text == CONTENT
+        assert file2.exists()
+        assert file2.text == CONTENT.reverse()
+        assert file3.exists()
+        assert file3.text == CONTENT
 
-            file1.exists()
-            file1.text == CONTENT
-
-            file2.exists()
-            file2.text == CONTENT.reverse()
-
-            file3.exists()
-            file3.text == CONTENT
+        return true
     }
 
 }

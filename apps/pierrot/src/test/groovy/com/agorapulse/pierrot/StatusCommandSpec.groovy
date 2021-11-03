@@ -17,28 +17,15 @@
  */
 package com.agorapulse.pierrot
 
-import io.micronaut.configuration.picocli.PicocliRunner
-
-@SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
 
     String command = 'status'
 
-    void 'run command'() {
-        when:
-            String out = ConsoleOutput.capture {
-                String[] args = [
-                    'status',
-                    '--project',
-                    PROJECT,
-                    '-P',
-                    PR_SEARCH_TERM,
-                ] as String[]
-                PicocliRunner.run(PierrotCommand, context, args)
-            }.out
-
-        then:
-            out == fixt.readText('run.txt')
-    }
+    List<String> args = [
+        '--project',
+        PROJECT,
+        '-P',
+        PR_SEARCH_TERM,
+    ]
 
 }

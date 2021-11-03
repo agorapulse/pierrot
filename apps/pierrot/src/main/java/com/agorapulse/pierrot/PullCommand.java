@@ -46,7 +46,6 @@ public class PullCommand implements Runnable {
             content.writeTo(location);
             System.out.printf("Fetched %s/%s%n", content.getRepository().getFullName(), content.getPath());
             return Optional.of(location.toURI());
-            // TODO: paginate?
         });
 
         System.out.printf("Found %d results!%n", search.getProcessed());
