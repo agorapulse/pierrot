@@ -19,7 +19,6 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 import spock.lang.TempDir
 
@@ -27,21 +26,6 @@ import spock.lang.TempDir
 class PushCommandSpec extends AbstractCommandSpec {
 
     @TempDir File workspace
-
-    Repository repository1 = Mock {
-        getFullName() >> REPOSITORY_ONE
-        canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
-        getOwnerName() >> OWNER
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
-    }
-
-    Repository repository2 = Mock {
-        getFullName() >> REPOSITORY_TWO
-        canWrite() >> true
-        getOwnerName() >> OWNER
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
-    }
 
     Project project = Mock {
         getName() >> PROJECT
@@ -82,8 +66,6 @@ class PushCommandSpec extends AbstractCommandSpec {
 
         then:
             out == fixt.readText('push.txt').replace('WORKSPACE', workspace.canonicalPath)
-
-            _ * pullRequest1.getRepository() >> repository1
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])

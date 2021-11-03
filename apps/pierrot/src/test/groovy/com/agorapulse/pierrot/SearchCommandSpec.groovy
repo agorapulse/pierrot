@@ -19,21 +19,12 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends AbstractCommandSpec {
-
-    Repository repository1 = Mock {
-        getFullName() >> REPOSITORY_ONE
-    }
-
-    Repository repository2 = Mock {
-        getFullName() >> REPOSITORY_TWO
-    }
 
     Content content1 = Mock {
         getRepository() >> repository1

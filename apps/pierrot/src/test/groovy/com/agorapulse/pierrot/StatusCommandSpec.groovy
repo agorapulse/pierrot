@@ -19,23 +19,12 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
-
-    Repository repository1 = Mock {
-        getFullName() >> REPOSITORY_ONE
-        getOwnerName() >> OWNER
-    }
-
-    Repository repository2 = Mock {
-        getFullName() >> REPOSITORY_TWO
-        getOwnerName() >> OWNER
-    }
 
     Project project = Mock {
         getName() >> PROJECT
@@ -70,9 +59,6 @@ class StatusCommandSpec extends AbstractCommandSpec {
 
         then:
             out == fixt.readText('status.txt')
-
-            _ * pullRequest1.getRepository() >> repository1
-            _ * pullRequest2.getRepository() >> repository2
     }
 
 }

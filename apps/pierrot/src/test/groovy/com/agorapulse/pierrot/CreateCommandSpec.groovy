@@ -20,29 +20,12 @@ package com.agorapulse.pierrot
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class CreateCommandSpec extends AbstractCommandSpec {
-
-    Repository repository1 = Mock {
-        getFullName() >> REPOSITORY_ONE
-        canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> false
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
-        getOwnerName() >> OWNER
-    }
-
-    Repository repository2 = Mock {
-        getFullName() >> REPOSITORY_TWO
-        canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
-        getOwnerName() >> OWNER
-    }
 
     Content content1 = Mock {
         getRepository() >> repository1
@@ -69,7 +52,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
             Stream.of(content1, content2, content3)
         }
 
-        findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
     String command = 'create'
@@ -98,10 +81,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
             }.out
 
         then:
-            out == fixt.readText('create.txt')
-
-            _ * pullRequest1.getRepository() >> repository1
-            _ * pullRequest2.getRepository() >> repository2
+            out == fixt.readText('run.txt')
     }
 
 }

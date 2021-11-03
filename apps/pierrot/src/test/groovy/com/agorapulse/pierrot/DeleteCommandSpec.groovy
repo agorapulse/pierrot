@@ -20,27 +20,12 @@ package com.agorapulse.pierrot
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class DeleteCommandSpec extends AbstractCommandSpec {
-
-    Repository repository1 = Mock {
-        getFullName() >> REPOSITORY_ONE
-        canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
-        getOwnerName() >> OWNER
-    }
-
-    Repository repository2 = Mock {
-        getFullName() >> REPOSITORY_TWO
-        canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
-        getOwnerName() >> OWNER
-    }
 
     Content content1 = Mock {
         getRepository() >> repository1
@@ -99,9 +84,6 @@ class DeleteCommandSpec extends AbstractCommandSpec {
 
         then:
             out == fixt.readText('delete.txt')
-
-            _ * pullRequest1.getRepository() >> repository1
-            _ * pullRequest2.getRepository() >> repository2
     }
 
 }

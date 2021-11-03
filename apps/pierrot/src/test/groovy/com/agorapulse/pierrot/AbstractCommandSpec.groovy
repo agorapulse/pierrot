@@ -20,6 +20,7 @@ package com.agorapulse.pierrot
 import com.agorapulse.pierrot.core.CheckRun
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.PullRequest
+import com.agorapulse.pierrot.core.Repository
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
@@ -87,10 +88,30 @@ abstract class AbstractCommandSpec extends Specification {
         getChecks() >> Stream.of(run3, run4)
     }
 
+    Repository repository1 = Mock {
+        getFullName() >> REPOSITORY_ONE
+        canWrite() >> true
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
+        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
+        getOwnerName() >> OWNER
+    }
+
+    Repository repository2 = Mock {
+        getFullName() >> REPOSITORY_TWO
+        canWrite() >> true
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
+        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
+        getOwnerName() >> OWNER
+    }
+
     void setup() {
         context = ApplicationContext.builder().build()
         context.registerSingleton(GitHubService, service)
         context.start()
+
+        pullRequest1.getRepository() >> repository1
+        pullRequest2.getRepository() >> repository2
     }
 
     void 'display help'() {
