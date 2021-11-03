@@ -84,8 +84,7 @@ class PullCommandSpec extends Specification {
         context.start()
     }
 
-    @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
-    void 'create remote file'() {
+    void 'run command'() {
         when:
             String out = ConsoleCapture.capture {
                 String[] args = [

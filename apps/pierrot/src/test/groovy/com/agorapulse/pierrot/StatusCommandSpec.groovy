@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
+import com.agorapulse.pierrot.core.CheckRun
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
@@ -31,63 +31,64 @@ import spock.lang.Specification
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
-class DeleteCommandSpec extends Specification {
+class StatusCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'
-    private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
-    private static final String BRANCH = 'chore/test'
-    private static final String TITLE = 'Test Title'
-    private static final String MESSAGE = 'Test Message'
-    private static final String PATH = '.testfile'
+    private static final String SEARCH_TERM = 'Agorapulse BOM'
     private static final String PROJECT = 'Pierrot'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
     @AutoCleanup ApplicationContext context
 
-    Fixt fixt = Fixt.create(DeleteCommandSpec)
+    Fixt fixt = Fixt.create(StatusCommandSpec)
+
+    CheckRun run1 = Mock {
+        getName() >> 'Check 1'
+        getStatus() >> 'completed'
+        getConclusion() >> 'success'
+    }
+
+    CheckRun run2 = Mock {
+        getName() >> 'Check 2'
+        getStatus() >> 'completed'
+        getConclusion() >> 'failure'
+    }
+
+    CheckRun run3 =  Mock {
+        getName() >> 'Check 3'
+        getStatus() >> 'completed'
+        getConclusion() >> 'unknown'
+    }
+
+    CheckRun run4 =  Mock {
+        getName() >> 'Check 4'
+        getStatus() >> 'pending'
+    }
 
     PullRequest pullRequest1 = Mock {
+        getTitle() >> 'Test PR 1'
         isMerged() >> true
         getMergeableState() >> 'unknown'
         getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
+        getChecks() >> Stream.of(run1, run2)
     }
 
     PullRequest pullRequest2 = Mock {
+        getTitle() >> 'Test PR 2'
         getMergeableState() >> 'unstable'
         getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_TWO/pulls/1")
+        getChecks() >> Stream.of(run3, run4)
     }
 
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
-        canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
         getOwnerName() >> OWNER
     }
 
     Repository repository2 = Mock {
         getFullName() >> REPOSITORY_TWO
-        canWrite() >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
-    }
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-        delete(BRANCH, MESSAGE) >> true
-        getPath() >> PATH
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-        delete(BRANCH, MESSAGE) >> true
-        getPath() >> PATH
-    }
-
-    Content content3 = Mock {
-        getRepository() >> repository2
-        delete(BRANCH, MESSAGE) >> false
-        getPath() >> PATH
     }
 
     Project project = Mock {
@@ -99,8 +100,8 @@ class DeleteCommandSpec extends Specification {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
 
-        searchContent(SEARCH_TERM, false) >> {
-            Stream.of(content1, content2, content3)
+        searchPullRequests(SEARCH_TERM, true, false) >> {
+            Stream.of(pullRequest1, pullRequest2)
         }
 
         findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
@@ -116,13 +117,7 @@ class DeleteCommandSpec extends Specification {
         when:
             String out = ConsoleCapture.capture {
                 String[] args = [
-                    'delete',
-                    '-b',
-                    BRANCH,
-                    '-t',
-                    TITLE,
-                    '-m',
-                    MESSAGE,
+                    'status',
                     '--project',
                     PROJECT,
                     '-P',
@@ -132,7 +127,7 @@ class DeleteCommandSpec extends Specification {
             }
 
         then:
-            out == fixt.readText('delete.txt')
+            out == fixt.readText('status.txt')
 
             _ * pullRequest1.getRepository() >> repository1
             _ * pullRequest2.getRepository() >> repository2
