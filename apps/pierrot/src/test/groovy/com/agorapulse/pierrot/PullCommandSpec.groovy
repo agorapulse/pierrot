@@ -17,11 +17,7 @@
  */
 package com.agorapulse.pierrot
 
-import spock.lang.TempDir
-
 class PullCommandSpec extends AbstractCommandSpec {
-
-    @TempDir File workspace
 
     String command = 'pull'
 

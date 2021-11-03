@@ -113,7 +113,7 @@ abstract class AbstractCommandSpec extends Specification {
     Repository repository2 = Mock {
         getFullName() >> REPOSITORY_TWO
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> false
         writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
