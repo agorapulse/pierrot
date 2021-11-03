@@ -19,7 +19,6 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 import spock.lang.TempDir
@@ -28,11 +27,6 @@ import spock.lang.TempDir
 class PushCommandSpec extends AbstractCommandSpec {
 
     @TempDir File workspace
-
-    PullRequest pullRequest1 = Mock {
-        getMergeableState() >> 'unknown'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
-    }
 
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE

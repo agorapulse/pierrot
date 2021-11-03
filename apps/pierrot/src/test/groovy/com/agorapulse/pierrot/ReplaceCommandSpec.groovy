@@ -20,7 +20,6 @@ package com.agorapulse.pierrot
 import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
@@ -31,16 +30,6 @@ class ReplaceCommandSpec extends AbstractCommandSpec {
 
     private static final String REPLACEMENT = 'salut $1'
     private static final String PATTERN = /hello (\w+)/
-
-    PullRequest pullRequest1 = Mock {
-        getMergeableState() >> 'unstable'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
-    }
-
-    PullRequest pullRequest2 = Mock {
-        getMergeableState() >> 'unstable'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_TWO/pulls/1")
-    }
 
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
@@ -87,14 +76,14 @@ class ReplaceCommandSpec extends AbstractCommandSpec {
             Stream.of(content1, content2, content3)
         }
 
-        findOrCreateProject(OWNER, PROJECT, 'In progress') >> Optional.of(project)
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
     String command = 'replace'
 
     void 'run command'() {
         when:
-            String out = ConsoleOutput.capture {
+            ConsoleOutput console = ConsoleOutput.capture {
                 String[] args = [
                     'replace',
                     '-b',
@@ -113,10 +102,11 @@ class ReplaceCommandSpec extends AbstractCommandSpec {
                     CONTENT_SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }.out
+            }
 
         then:
-            out == fixt.readText('replace.txt')
+            !console.err
+            console.out == fixt.readText('run.txt')
 
             _ * pullRequest1.getRepository() >> repository1
             _ * pullRequest2.getRepository() >> repository2

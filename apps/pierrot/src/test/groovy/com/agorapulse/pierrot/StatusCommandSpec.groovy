@@ -17,10 +17,8 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.CheckRun
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.PullRequest
 import com.agorapulse.pierrot.core.Repository
 import io.micronaut.configuration.picocli.PicocliRunner
 
@@ -28,44 +26,6 @@ import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
-
-    CheckRun run1 = Mock {
-        getName() >> 'Check 1'
-        getStatus() >> 'completed'
-        getConclusion() >> 'success'
-    }
-
-    CheckRun run2 = Mock {
-        getName() >> 'Check 2'
-        getStatus() >> 'completed'
-        getConclusion() >> 'failure'
-    }
-
-    CheckRun run3 =  Mock {
-        getName() >> 'Check 3'
-        getStatus() >> 'completed'
-        getConclusion() >> 'unknown'
-    }
-
-    CheckRun run4 =  Mock {
-        getName() >> 'Check 4'
-        getStatus() >> 'pending'
-    }
-
-    PullRequest pullRequest1 = Mock {
-        getTitle() >> 'Test PR 1'
-        isMerged() >> true
-        getMergeableState() >> 'unknown'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
-        getChecks() >> Stream.of(run1, run2)
-    }
-
-    PullRequest pullRequest2 = Mock {
-        getTitle() >> 'Test PR 2'
-        getMergeableState() >> 'unstable'
-        getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_TWO/pulls/1")
-        getChecks() >> Stream.of(run3, run4)
-    }
 
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
