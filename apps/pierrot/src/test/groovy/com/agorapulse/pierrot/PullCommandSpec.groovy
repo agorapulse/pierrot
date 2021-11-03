@@ -17,41 +17,17 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
-import spock.lang.TempDir
 
 import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class PullCommandSpec extends AbstractCommandSpec {
 
-    @TempDir File workspace
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-        getPath() >> PATH
-        writeTo(_ as File) >> { File f ->
-            f.parentFile.mkdirs()
-            f.createNewFile()
-            f.write(CONTENT)
-        }
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-        getPath() >> PATH
-        writeTo(_ as File) >> { File f ->
-            f.parentFile.mkdirs()
-            f.createNewFile()
-            f.write(CONTENT.reverse())
-        }
-    }
-
     GitHubService service = Mock {
         searchContent(CONTENT_SEARCH_TERM, false) >> {
-            Stream.of(content1, content2)
+            Stream.of(content1, content2, content3)
         }
     }
 
@@ -59,7 +35,7 @@ class PullCommandSpec extends AbstractCommandSpec {
 
     void 'run command'() {
         when:
-            String out = ConsoleOutput.capture {
+            ConsoleOutput console = ConsoleOutput.capture {
                 String[] args = [
                     'pull',
                     '-P',
@@ -68,18 +44,23 @@ class PullCommandSpec extends AbstractCommandSpec {
                     CONTENT_SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
-            }.out
+            }
 
             File file1 = new File(workspace, "$REPOSITORY_ONE/$PATH")
             File file2 = new File(workspace, "$REPOSITORY_TWO/$PATH")
+            File file3 = new File(workspace, "$REPOSITORY_TWO/prefix/$PATH")
+
         then:
-            out == fixt.readText('pull.txt')
+            console.out == fixt.readText('run.txt')
 
             file1.exists()
             file1.text == CONTENT
 
             file2.exists()
             file2.text == CONTENT.reverse()
+
+            file3.exists()
+            file3.text == CONTENT
     }
 
 }

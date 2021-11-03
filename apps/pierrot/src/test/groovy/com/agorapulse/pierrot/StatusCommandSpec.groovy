@@ -52,7 +52,7 @@ class StatusCommandSpec extends AbstractCommandSpec {
             }.out
 
         then:
-            out == fixt.readText('status.txt')
+            out == fixt.readText('run.txt')
     }
 
 }

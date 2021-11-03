@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
 
@@ -25,20 +24,6 @@ import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends AbstractCommandSpec {
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-        getPath() >> PATH
-        getHtmlUrl() >> "https://example.com/$REPOSITORY_ONE/$PATH"
-        getTextContent() >> CONTENT
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-        getHtmlUrl() >> "https://example.com/$REPOSITORY_TWO/$PATH"
-        getPath() >> PATH
-        getTextContent() >> CONTENT.reverse()
-    }
 
     GitHubService service = Mock {
         searchContent(CONTENT_SEARCH_TERM, false) >> {
@@ -60,7 +45,7 @@ class SearchCommandSpec extends AbstractCommandSpec {
             }.out
 
         then:
-            out == fixt.readText('search.txt')
+            out == fixt.readText('run.txt')
     }
 
 }

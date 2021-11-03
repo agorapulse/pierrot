@@ -5,5 +5,5 @@ PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pu
 Deleting agorapulse/oss/.testfile
 Deleted agorapulse/oss/.testfile
 PR for agorapulse/oss available at https://example.com/agorapulse/oss/pulls/1
-Deleting agorapulse/oss/.testfile
+Deleting agorapulse/oss/prefix/.testfile
 Processed 2 files

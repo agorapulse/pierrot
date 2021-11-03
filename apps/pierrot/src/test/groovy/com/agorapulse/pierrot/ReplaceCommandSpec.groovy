@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
 
@@ -25,27 +24,6 @@ import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class ReplaceCommandSpec extends AbstractCommandSpec {
-
-    private static final String REPLACEMENT = 'salut $1'
-    private static final String PATTERN = /hello (\w+)/
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
-        getPath() >> PATH
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
-        getPath() >> PATH
-    }
-
-    Content content3 = Mock {
-        getRepository() >> repository2
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> false
-        getPath() >> PATH
-    }
 
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)

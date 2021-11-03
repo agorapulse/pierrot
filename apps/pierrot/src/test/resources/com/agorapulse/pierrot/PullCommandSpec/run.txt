@@ -1,4 +1,5 @@
 Searching content for 'org:agorapulse filename:.testfile'!
 Fetched agorapulse/pierrot/.testfile
 Fetched agorapulse/oss/.testfile
-Found 2 results!
+Fetched agorapulse/oss/prefix/.testfile
+Found 3 results!

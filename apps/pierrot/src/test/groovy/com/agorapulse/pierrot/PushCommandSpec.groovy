@@ -19,12 +19,9 @@ package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
-import spock.lang.TempDir
 
 @SuppressWarnings('UnnecessaryGetter')
 class PushCommandSpec extends AbstractCommandSpec {
-
-    @TempDir File workspace
 
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
@@ -59,7 +56,7 @@ class PushCommandSpec extends AbstractCommandSpec {
             }.out
 
         then:
-            out == fixt.readText('push.txt').replace('WORKSPACE', workspace.canonicalPath)
+            out == fixt.readText('run.txt').replace('WORKSPACE', workspace.canonicalPath)
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])

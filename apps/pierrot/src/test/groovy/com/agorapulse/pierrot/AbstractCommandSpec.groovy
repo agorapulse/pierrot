@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot
 
 import com.agorapulse.pierrot.core.CheckRun
+import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import com.agorapulse.pierrot.core.Project
 import com.agorapulse.pierrot.core.PullRequest
@@ -28,6 +29,7 @@ import io.micronaut.context.ApplicationContext
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.TempDir
 
 import java.util.stream.Stream
 
@@ -44,8 +46,13 @@ abstract class AbstractCommandSpec extends Specification {
     public static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     public static final String REPOSITORY_TWO = 'agorapulse/oss'
     public static final String PR_SEARCH_TERM = 'Agorapulse BOM'
+    public static final String REPLACEMENT = 'salut $1'
+    public static final String PATTERN = /hello (\w+)/
+
+    @TempDir File workspace
 
     @Shared Fixt fixt = Fixt.create(getClass())
+
     @AutoCleanup ApplicationContext context
 
     abstract String getCommand()
@@ -109,6 +116,48 @@ abstract class AbstractCommandSpec extends Specification {
         writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
         createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
         getOwnerName() >> OWNER
+    }
+
+    Content content1 = Mock {
+        getRepository() >> repository1
+        delete(BRANCH, MESSAGE) >> true
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        getPath() >> PATH
+        getHtmlUrl() >> "https://example.com/$REPOSITORY_ONE/$PATH"
+        getTextContent() >> CONTENT
+        writeTo(_ as File) >> { File f ->
+            f.parentFile.mkdirs()
+            f.createNewFile()
+            f.write(CONTENT)
+        }
+    }
+
+    Content content2 = Mock {
+        getRepository() >> repository2
+        delete(BRANCH, MESSAGE) >> true
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        getPath() >> PATH
+        getHtmlUrl() >> "https://example.com/$REPOSITORY_TWO/$PATH"
+        getTextContent() >> CONTENT.reverse()
+        writeTo(_ as File) >> { File f ->
+            f.parentFile.mkdirs()
+            f.createNewFile()
+            f.write(CONTENT.reverse())
+        }
+    }
+
+    Content content3 = Mock {
+        getRepository() >> repository2
+        delete(BRANCH, MESSAGE) >> false
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> false
+        getPath() >> "prefix/$PATH"
+        getHtmlUrl() >> "https://example.com/$REPOSITORY_TWO/prefix/$PATH"
+        getTextContent() >> CONTENT
+        writeTo(_ as File) >> { File f ->
+            f.parentFile.mkdirs()
+            f.createNewFile()
+            f.write(CONTENT)
+        }
     }
 
     void setup() {

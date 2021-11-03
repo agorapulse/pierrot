@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.Content
 import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
 
@@ -25,18 +24,6 @@ import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class CreateCommandSpec extends AbstractCommandSpec {
-
-    Content content1 = Mock {
-        getRepository() >> repository1
-    }
-
-    Content content2 = Mock {
-        getRepository() >> repository2
-    }
-
-    Content content3 = Mock {
-        getRepository() >> repository2
-    }
 
     GitHubService service = Mock {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
