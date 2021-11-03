@@ -27,6 +27,18 @@ import spock.lang.Specification
 
 abstract class AbstractCommandSpec extends Specification {
 
+    public static final String OWNER = 'agorapulse'
+    public static final String CONTENT_SEARCH_TERM = 'org:agorapulse filename:.testfile'
+    public static final String BRANCH = 'chore/test'
+    public static final String TITLE = 'Test Title'
+    public static final String MESSAGE = 'Test Message'
+    public static final String CONTENT = 'Test Content'
+    public static final String PATH = '.testfile'
+    public static final String PROJECT = 'Pierrot'
+    public static final String REPOSITORY_ONE = 'agorapulse/pierrot'
+    public static final String REPOSITORY_TWO = 'agorapulse/oss'
+    public static final String PR_SEARCH_TERM = 'Agorapulse BOM'
+
     @Shared Fixt fixt = Fixt.create(getClass())
     @AutoCleanup ApplicationContext context
 

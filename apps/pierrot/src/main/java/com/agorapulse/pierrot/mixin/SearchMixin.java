@@ -73,14 +73,6 @@ public class SearchMixin {
     private boolean proceedToNextResult = true;
     private int processed;
 
-    public SearchMixin() { }
-
-    public SearchMixin(List<String> queries, boolean all, boolean global) {
-        this.queries = queries;
-        this.all = all;
-        this.global = global;
-    }
-
     public void searchContent(GitHubService service, Function<Content, Optional<URI>> action) {
         System.out.printf("Searching content for '%s'!%n", getQuery());
         service.searchContent(getQuery(), global)

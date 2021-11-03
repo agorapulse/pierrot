@@ -29,12 +29,6 @@ import java.util.stream.Stream
 @SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
 
-    private static final String OWNER = 'agorapulse'
-    private static final String SEARCH_TERM = 'Agorapulse BOM'
-    private static final String PROJECT = 'Pierrot'
-    private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
-    private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
     CheckRun run1 = Mock {
         getName() >> 'Check 1'
         getStatus() >> 'completed'
@@ -92,7 +86,7 @@ class StatusCommandSpec extends AbstractCommandSpec {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
 
-        searchPullRequests(SEARCH_TERM, true, false) >> {
+        searchPullRequests(PR_SEARCH_TERM, true, false) >> {
             Stream.of(pullRequest1, pullRequest2)
         }
 
@@ -109,7 +103,7 @@ class StatusCommandSpec extends AbstractCommandSpec {
                     '--project',
                     PROJECT,
                     '-P',
-                    SEARCH_TERM,
+                    PR_SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
             }.out

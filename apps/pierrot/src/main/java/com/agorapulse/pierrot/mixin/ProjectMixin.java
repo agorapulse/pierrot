@@ -70,13 +70,6 @@ public class ProjectMixin {
 
     private Project board;
 
-    public ProjectMixin() { }
-
-    public ProjectMixin(String project, String todoColumn) {
-        this.project = project;
-        this.todoColumn = todoColumn;
-    }
-
     public Optional<PullRequest> addToProject(GitHubService service, Optional<PullRequest> pullRequest) {
         if (StringUtils.isEmpty(project)) {
             // project must be specified to add projects

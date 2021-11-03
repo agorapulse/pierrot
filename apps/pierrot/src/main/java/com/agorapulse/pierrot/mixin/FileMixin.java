@@ -62,19 +62,6 @@ public class FileMixin {
     )
     File contentFrom;
 
-    public FileMixin() { }
-
-    public FileMixin(String path, String content, File contentFrom) {
-        this.path = path;
-        this.content = content;
-        this.contentFrom = contentFrom;
-    }
-
-    public FileMixin(UnaryOperator<String> reader, Consumer<String> writer) {
-        this.reader = reader;
-        this.writer = writer;
-    }
-
     public String readPath() {
         if (StringUtils.isEmpty(path) && contentFrom != null && contentFrom.exists()) {
             return contentFrom.getName();

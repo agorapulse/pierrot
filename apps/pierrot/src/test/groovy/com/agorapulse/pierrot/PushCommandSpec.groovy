@@ -27,16 +27,6 @@ import spock.lang.TempDir
 @SuppressWarnings('UnnecessaryGetter')
 class PushCommandSpec extends AbstractCommandSpec {
 
-    private static final String OWNER = 'agorapulse'
-    private static final String BRANCH = 'chore/test'
-    private static final String TITLE = 'Test Title'
-    private static final String MESSAGE = 'Test Message'
-    private static final String PATH = '.testfile'
-    private static final String CONTENT = 'Test Content'
-    private static final String PROJECT = 'Pierrot'
-    private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
-    private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
     @TempDir File workspace
 
     PullRequest pullRequest1 = Mock {

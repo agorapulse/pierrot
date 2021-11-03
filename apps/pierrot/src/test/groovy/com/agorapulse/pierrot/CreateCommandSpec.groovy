@@ -29,17 +29,6 @@ import java.util.stream.Stream
 @SuppressWarnings('UnnecessaryGetter')
 class CreateCommandSpec extends AbstractCommandSpec {
 
-    private static final String OWNER = 'agorapulse'
-    private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
-    private static final String BRANCH = 'chore/test'
-    private static final String TITLE = 'Test Title'
-    private static final String MESSAGE = 'Test Message'
-    private static final String CONTENT = 'Test Content'
-    private static final String PATH = '.testfile'
-    private static final String PROJECT = 'Pierrot'
-    private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
-    private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
     PullRequest pullRequest1 = Mock {
         getMergeableState() >> 'unstable'
         getHtmlUrl() >> new URL("https://example.com/$REPOSITORY_ONE/pulls/1")
@@ -87,7 +76,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
 
-        searchContent(SEARCH_TERM, false) >> {
+        searchContent(CONTENT_SEARCH_TERM, false) >> {
             Stream.of(content1, content2, content3)
         }
 
@@ -114,7 +103,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
                     '--project',
                     PROJECT,
                     '-P',
-                    SEARCH_TERM,
+                    CONTENT_SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
             }.out

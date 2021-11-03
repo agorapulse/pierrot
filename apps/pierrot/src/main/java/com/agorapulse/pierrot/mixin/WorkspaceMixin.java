@@ -30,12 +30,6 @@ public class WorkspaceMixin {
     )
     File workspace;
 
-    public WorkspaceMixin() { }
-
-    public WorkspaceMixin(File workspace) {
-        this.workspace = workspace;
-    }
-
     public File getWorkspace() {
         return workspace;
     }

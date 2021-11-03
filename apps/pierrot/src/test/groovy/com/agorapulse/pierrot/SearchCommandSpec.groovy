@@ -27,12 +27,6 @@ import java.util.stream.Stream
 @SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends AbstractCommandSpec {
 
-    private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
-    private static final String CONTENT = 'Test Content'
-    private static final String PATH = '.testfile'
-    private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
-    private static final String REPOSITORY_TWO = 'agorapulse/oss'
-
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
     }
@@ -56,7 +50,7 @@ class SearchCommandSpec extends AbstractCommandSpec {
     }
 
     GitHubService service = Mock {
-        searchContent(SEARCH_TERM, false) >> {
+        searchContent(CONTENT_SEARCH_TERM, false) >> {
             Stream.of(content1, content2)
         }
     }
@@ -69,7 +63,7 @@ class SearchCommandSpec extends AbstractCommandSpec {
                 String[] args = [
                     'search',
                     '-P',
-                    SEARCH_TERM,
+                    CONTENT_SEARCH_TERM,
                 ] as String[]
                 PicocliRunner.run(PierrotCommand, context, args)
             }.out
