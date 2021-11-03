@@ -56,7 +56,6 @@ abstract class AbstractCommandSpec extends Specification {
     @AutoCleanup ApplicationContext context
 
     abstract String getCommand()
-    abstract GitHubService getService()
 
     Project project = Mock {
         getName() >> PROJECT
@@ -158,6 +157,21 @@ abstract class AbstractCommandSpec extends Specification {
             f.createNewFile()
             f.write(CONTENT)
         }
+    }
+
+    GitHubService service = Mock {
+        getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
+        getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
+
+        searchContent(CONTENT_SEARCH_TERM, false) >> {
+            Stream.of(content1, content2, content3)
+        }
+
+        searchPullRequests(PR_SEARCH_TERM, true, false) >> {
+            Stream.of(pullRequest1, pullRequest2)
+        }
+
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
     }
 
     void setup() {

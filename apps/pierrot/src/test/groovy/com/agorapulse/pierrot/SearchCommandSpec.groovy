@@ -17,19 +17,10 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
-
-import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends AbstractCommandSpec {
-
-    GitHubService service = Mock {
-        searchContent(CONTENT_SEARCH_TERM, false) >> {
-            Stream.of(content1, content2)
-        }
-    }
 
     String command = 'search'
 

@@ -17,24 +17,10 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
-
-import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class StatusCommandSpec extends AbstractCommandSpec {
-
-    GitHubService service = Mock {
-        getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
-        getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
-
-        searchPullRequests(PR_SEARCH_TERM, true, false) >> {
-            Stream.of(pullRequest1, pullRequest2)
-        }
-
-        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
-    }
 
     String command = 'status'
 

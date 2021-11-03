@@ -17,24 +17,10 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.GitHubService
 import io.micronaut.configuration.picocli.PicocliRunner
-
-import java.util.stream.Stream
 
 @SuppressWarnings('UnnecessaryGetter')
 class ReplaceCommandSpec extends AbstractCommandSpec {
-
-    GitHubService service = Mock {
-        getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
-        getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
-
-        searchContent(CONTENT_SEARCH_TERM, false) >> {
-            Stream.of(content1, content2, content3)
-        }
-
-        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
-    }
 
     String command = 'replace'
 
