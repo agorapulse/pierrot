@@ -186,35 +186,53 @@ abstract class AbstractCommandSpec extends Specification {
     }
 
     void 'display help'() {
-        when:
-            String out = ConsoleOutput.capture {
-                PicocliRunner.run(PierrotCommand, context, command, '--help')
-            }.out
-        then:
-            // uncomment to rewrite the files
-            // fixt.writeText('help.txt', out)
-            out == fixt.readText('help.txt')
+        expect:
+            runCommand('help.txt', ['--help'])
     }
 
     void 'run command'() {
-        when:
-            ConsoleOutput console = ConsoleOutput.capture {
-                List<String> commandAndArgs = [command]
-                commandAndArgs.addAll(args)
-                PicocliRunner.run(PierrotCommand, context, commandAndArgs as String[])
-            }
-
-        then:
-            !console.err
-
-            // uncomment to rewrite the files
-            // fixt.writeText('run.txt', console.out)
-            console.out == fixRunFile(fixt.readText('run.txt'))
-
-            additionalChecks()
+        expect:
+            runCommand('run.txt', args) { additionalChecks() }
     }
 
-    protected String fixRunFile(String input) {
+    protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args) {
+        return runCommand(referenceFileName, input, args) { }
+    }
+
+    @SuppressWarnings('ConstantAssertExpression')
+    protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args, Runnable additionalChecks) {
+        TestConsole console = TestConsole.capture(input.join(System.lineSeparator())) {
+            List<String> commandAndArgs = [command]
+            commandAndArgs.addAll(args)
+            PicocliRunner.run(PierrotCommand, context, commandAndArgs as String[])
+        }
+
+        assert !console.err
+
+        String content = fixt.readText(referenceFileName)
+
+        if (!content) {
+            fixt.writeText(referenceFileName, console.out)
+            assert false, "New file $referenceFileName has been generated. Please, run the test again!"
+        }
+
+        assert console.out == expandFile(content)
+
+        additionalChecks()
+
+        return true
+    }
+
+    @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
+    protected File createWorkspaceFile(String repositoryFullName, String path, String content) {
+        File file = new File(workspace, "$repositoryFullName/$path")
+        file.parentFile.mkdirs()
+        file.createNewFile()
+        file.write(content)
+        return file
+    }
+
+    protected String expandFile(String input) {
         return input
     }
 

@@ -38,4 +38,23 @@ class CreateCommandSpec extends AbstractCommandSpec {
         CONTENT_SEARCH_TERM,
     ]
 
+    void 'use file to upload content'() {
+        given:
+            File content = createWorkspaceFile(REPOSITORY_ONE, '.testfile', CONTENT)
+            File message = createWorkspaceFile(REPOSITORY_ONE, 'prefix/message.txt', MESSAGE)
+        expect:
+            runCommand('file.txt', [
+                '-b',
+                BRANCH,
+                '-t',
+                TITLE,
+                '--message-from',
+                message.canonicalPath,
+                '--from',
+                content.canonicalPath,
+                '-P',
+                CONTENT_SEARCH_TERM,
+            ])
+    }
+
 }

@@ -41,16 +41,8 @@ class PushCommandSpec extends AbstractCommandSpec {
         createWorkspaceFile(REPOSITORY_TWO, PATH, CONTENT.reverse())
     }
 
-    @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
-    private void createWorkspaceFile(String repositoryFullName, String path, String content) {
-        File file = new File(workspace, "$repositoryFullName/$path")
-        file.parentFile.mkdirs()
-        file.createNewFile()
-        file.write(content)
-    }
-
     @Override
-    protected String fixRunFile(String input) {
+    protected String expandFile(String input) {
         return input.replace('WORKSPACE', workspace.canonicalPath)
     }
 
