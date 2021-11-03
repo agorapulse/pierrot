@@ -30,6 +30,7 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
+@SuppressWarnings('UnnecessaryGetter')
 class DeleteCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'
@@ -37,7 +38,6 @@ class DeleteCommandSpec extends Specification {
     private static final String BRANCH = 'chore/test'
     private static final String TITLE = 'Test Title'
     private static final String MESSAGE = 'Test Message'
-    private static final String CONTENT = 'Test Content'
     private static final String PATH = '.testfile'
     private static final String PROJECT = 'Pierrot'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'

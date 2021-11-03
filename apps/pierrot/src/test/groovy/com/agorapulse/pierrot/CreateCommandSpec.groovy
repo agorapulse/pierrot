@@ -30,6 +30,7 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
+@SuppressWarnings('UnnecessaryGetter')
 class CreateCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'

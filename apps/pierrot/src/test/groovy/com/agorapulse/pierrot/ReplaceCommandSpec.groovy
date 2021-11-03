@@ -17,7 +17,11 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.*
+import com.agorapulse.pierrot.core.Content
+import com.agorapulse.pierrot.core.GitHubService
+import com.agorapulse.pierrot.core.Project
+import com.agorapulse.pierrot.core.PullRequest
+import com.agorapulse.pierrot.core.Repository
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
@@ -26,6 +30,7 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
+@SuppressWarnings('UnnecessaryGetter')
 class ReplaceCommandSpec extends Specification {
 
     private static final String OWNER = 'agorapulse'

@@ -17,7 +17,9 @@
  */
 package com.agorapulse.pierrot
 
-import com.agorapulse.pierrot.core.*
+import com.agorapulse.pierrot.core.Content
+import com.agorapulse.pierrot.core.GitHubService
+import com.agorapulse.pierrot.core.Repository
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
@@ -26,15 +28,12 @@ import spock.lang.Specification
 
 import java.util.stream.Stream
 
+@SuppressWarnings('UnnecessaryGetter')
 class SearchCommandSpec extends Specification {
 
     private static final String SEARCH_TERM = 'org:agorapulse filename:.testfile'
-    private static final String BRANCH = 'chore/test'
-    private static final String TITLE = 'Test Title'
-    private static final String MESSAGE = 'Test Message'
     private static final String CONTENT = 'Test Content'
     private static final String PATH = '.testfile'
-    private static final String PROJECT = 'Pierrot'
     private static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     private static final String REPOSITORY_TWO = 'agorapulse/oss'
 
