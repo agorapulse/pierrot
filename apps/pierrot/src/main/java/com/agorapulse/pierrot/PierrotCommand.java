@@ -19,8 +19,15 @@ package com.agorapulse.pierrot;
 
 import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.configuration.picocli.PicocliRunner;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.env.CommandLinePropertySource;
+import io.micronaut.context.env.Environment;
+import io.micronaut.context.env.MapPropertySource;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+
+import java.util.Map;
 
 @Command(
     name = "pierrot",
@@ -38,6 +45,9 @@ import picocli.CommandLine.Command;
 )
 public class PierrotCommand implements Runnable {
 
+    private static final String GITHUB_TOKEN_NAME = "github-token";
+    private static final String GITHUB_TOKEN_PARAMETER = "--" + GITHUB_TOKEN_NAME;
+
     @CommandLine.Option(
         names = {"-s", "--stacktrace"},
         description = "Print stack traces",
@@ -50,7 +60,7 @@ public class PierrotCommand implements Runnable {
     }
 
     @CommandLine.Option(
-        names = {"--github-token"},
+        names = {GITHUB_TOKEN_PARAMETER},
         description = "The GitHub token",
         scope = CommandLine.ScopeType.INHERIT
     )
@@ -61,7 +71,24 @@ public class PierrotCommand implements Runnable {
             args = new String[] {"--help"};
         }
 
-        PicocliRunner.run(PierrotCommand.class, args);
+        io.micronaut.core.cli.CommandLine commandLine = io.micronaut.core.cli.CommandLine.parse(args);
+
+        CommandLinePropertySource commandLinePropertySource = new CommandLinePropertySource(commandLine);
+
+        Map<String, Object> map = commandLine.getUndeclaredOptions().containsKey(GITHUB_TOKEN_NAME)
+            ? Map.of("github.token", commandLine.getUndeclaredOptions().get(GITHUB_TOKEN_NAME))
+            : Map.of();
+
+
+        MapPropertySource mapSource = MapPropertySource.of("token-from-command-line", map);
+
+        ApplicationContextBuilder builder = ApplicationContext
+            .builder(PierrotCommand.class, Environment.CLI)
+            .propertySources(commandLinePropertySource, mapSource);
+
+        try (ApplicationContext ctx = builder.start()) {
+            PicocliRunner.run(PierrotCommand.class, ctx, args);
+        }
     }
 
     public void run() {

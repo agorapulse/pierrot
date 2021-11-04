@@ -97,7 +97,7 @@ public class DefaultPullRequest implements PullRequest {
     @Override
     public Stream<? extends CheckRun> getChecks() {
         try {
-            return StreamSupport.stream(pr.getHead().getCommit().getCheckRuns().spliterator(), false).map(r -> new DefaultCheckRun(r));
+            return StreamSupport.stream(repository.getCommit(pr.getHead().getSha()).getCheckRuns().spliterator(), false).map(DefaultCheckRun::new);
         } catch (IOException e) {
             LOGGER.error("Exception fetching check runs", e);
             return Stream.empty();
