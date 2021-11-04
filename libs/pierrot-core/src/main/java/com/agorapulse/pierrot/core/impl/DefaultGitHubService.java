@@ -17,13 +17,23 @@
  */
 package com.agorapulse.pierrot.core.impl;
 
-import com.agorapulse.pierrot.core.*;
-import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
+import com.agorapulse.pierrot.core.Content;
+import com.agorapulse.pierrot.core.GitHubConfiguration;
+import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.core.Project;
+import com.agorapulse.pierrot.core.PullRequest;
+import com.agorapulse.pierrot.core.Repository;
 import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
-import org.kohsuke.github.*;
+import org.kohsuke.github.GHContent;
+import org.kohsuke.github.GHMyself;
+import org.kohsuke.github.GHProject;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -40,13 +50,22 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHApp",
         "org.kohsuke.github.GHAppCreateTokenBuilder",
         "org.kohsuke.github.GHAppInstallation",
+        "org.kohsuke.github.GHAppInstallation$GHAppInstallationRepositoryResult",
         "org.kohsuke.github.GHAppInstallationToken",
+        "org.kohsuke.github.GHAppInstallationsIterable",
+        "org.kohsuke.github.GHAppInstallationsIterable$1",
+        "org.kohsuke.github.GHAppInstallationsPage",
+        "org.kohsuke.github.GHArtifact",
+        "org.kohsuke.github.GHArtifactsIterable",
+        "org.kohsuke.github.GHArtifactsIterable$1",
+        "org.kohsuke.github.GHArtifactsPage",
         "org.kohsuke.github.GHAsset",
         "org.kohsuke.github.GHAuthorization",
         "org.kohsuke.github.GHAuthorization$App",
         "org.kohsuke.github.GHBlob",
         "org.kohsuke.github.GHBlobBuilder",
         "org.kohsuke.github.GHBranch",
+        "org.kohsuke.github.GHBranch$1",
         "org.kohsuke.github.GHBranch$Commit",
         "org.kohsuke.github.GHBranchProtection",
         "org.kohsuke.github.GHBranchProtection$EnforceAdmins",
@@ -55,6 +74,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHBranchProtection$RequiredStatusChecks",
         "org.kohsuke.github.GHBranchProtection$Restrictions",
         "org.kohsuke.github.GHBranchProtectionBuilder",
+        "org.kohsuke.github.GHBranchProtectionBuilder$1",
         "org.kohsuke.github.GHBranchProtectionBuilder$Restrictions",
         "org.kohsuke.github.GHBranchProtectionBuilder$StatusChecks",
         "org.kohsuke.github.GHCheckRun",
@@ -68,11 +88,13 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHCheckRunBuilder$Image",
         "org.kohsuke.github.GHCheckRunBuilder$Output",
         "org.kohsuke.github.GHCheckRunsIterable",
+        "org.kohsuke.github.GHCheckRunsIterable$1",
         "org.kohsuke.github.GHCheckRunsPage",
         "org.kohsuke.github.GHCheckSuite",
         "org.kohsuke.github.GHCheckSuite$HeadCommit",
         "org.kohsuke.github.GHCommentAuthorAssociation",
         "org.kohsuke.github.GHCommit",
+        "org.kohsuke.github.GHCommit$1",
         "org.kohsuke.github.GHCommit$File",
         "org.kohsuke.github.GHCommit$GHAuthor",
         "org.kohsuke.github.GHCommit$Parent",
@@ -81,6 +103,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHCommit$Stats",
         "org.kohsuke.github.GHCommit$User",
         "org.kohsuke.github.GHCommitBuilder",
+        "org.kohsuke.github.GHCommitBuilder$1",
         "org.kohsuke.github.GHCommitBuilder$UserInfo",
         "org.kohsuke.github.GHCommitComment",
         "org.kohsuke.github.GHCommitPointer",
@@ -91,7 +114,10 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHCommitState",
         "org.kohsuke.github.GHCommitStatus",
         "org.kohsuke.github.GHCompare",
+        "org.kohsuke.github.GHCompare$1",
         "org.kohsuke.github.GHCompare$Commit",
+        "org.kohsuke.github.GHCompare$GHCompareCommitsIterable",
+        "org.kohsuke.github.GHCompare$GHCompareCommitsIterable$1",
         "org.kohsuke.github.GHCompare$InnerCommit",
         "org.kohsuke.github.GHCompare$Status",
         "org.kohsuke.github.GHCompare$Tree",
@@ -100,6 +126,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHContentBuilder",
         "org.kohsuke.github.GHContentSearchBuilder",
         "org.kohsuke.github.GHContentSearchBuilder$ContentSearchResult",
+        "org.kohsuke.github.GHContentSearchBuilder$Sort",
         "org.kohsuke.github.GHContentUpdateResponse",
         "org.kohsuke.github.GHContentWithLicense",
         "org.kohsuke.github.GHCreateRepositoryBuilder",
@@ -111,6 +138,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHDeploymentStatusBuilder",
         "org.kohsuke.github.GHDirection",
         "org.kohsuke.github.GHDiscussion",
+        "org.kohsuke.github.GHDiscussion$1",
         "org.kohsuke.github.GHDiscussion$Creator",
         "org.kohsuke.github.GHDiscussion$Setter",
         "org.kohsuke.github.GHDiscussion$Updater",
@@ -132,6 +160,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHEventPayload$InstallationRepositories",
         "org.kohsuke.github.GHEventPayload$Issue",
         "org.kohsuke.github.GHEventPayload$IssueComment",
+        "org.kohsuke.github.GHEventPayload$Label",
         "org.kohsuke.github.GHEventPayload$Ping",
         "org.kohsuke.github.GHEventPayload$Public",
         "org.kohsuke.github.GHEventPayload$PullRequest",
@@ -143,6 +172,8 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHEventPayload$Release",
         "org.kohsuke.github.GHEventPayload$Repository",
         "org.kohsuke.github.GHEventPayload$Status",
+        "org.kohsuke.github.GHEventPayload$WorkflowDispatch",
+        "org.kohsuke.github.GHEventPayload$WorkflowRun",
         "org.kohsuke.github.GHException",
         "org.kohsuke.github.GHFileNotFoundException",
         "org.kohsuke.github.GHGist",
@@ -151,26 +182,36 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHGistUpdater",
         "org.kohsuke.github.GHHook",
         "org.kohsuke.github.GHHooks",
+        "org.kohsuke.github.GHHooks$1",
         "org.kohsuke.github.GHHooks$Context",
         "org.kohsuke.github.GHHooks$OrgContext",
         "org.kohsuke.github.GHHooks$RepoContext",
-        "org.kohsuke.github.GHInvitation",
         "org.kohsuke.github.GHIOException",
+        "org.kohsuke.github.GHInvitation",
         "org.kohsuke.github.GHIssue",
         "org.kohsuke.github.GHIssue$PullRequest",
         "org.kohsuke.github.GHIssueBuilder",
+        "org.kohsuke.github.GHIssueChanges",
+        "org.kohsuke.github.GHIssueChanges$GHFrom",
         "org.kohsuke.github.GHIssueComment",
         "org.kohsuke.github.GHIssueEvent",
+        "org.kohsuke.github.GHIssueQueryBuilder",
+        "org.kohsuke.github.GHIssueQueryBuilder$ForRepository",
+        "org.kohsuke.github.GHIssueQueryBuilder$Sort",
+        "org.kohsuke.github.GHIssueRename",
         "org.kohsuke.github.GHIssueSearchBuilder",
         "org.kohsuke.github.GHIssueSearchBuilder$IssueSearchResult",
         "org.kohsuke.github.GHIssueSearchBuilder$Sort",
         "org.kohsuke.github.GHIssueState",
         "org.kohsuke.github.GHKey",
         "org.kohsuke.github.GHLabel",
+        "org.kohsuke.github.GHLabel$1",
         "org.kohsuke.github.GHLabel$Creator",
         "org.kohsuke.github.GHLabel$Setter",
         "org.kohsuke.github.GHLabel$Updater",
         "org.kohsuke.github.GHLabelBuilder",
+        "org.kohsuke.github.GHLabelChanges",
+        "org.kohsuke.github.GHLabelChanges$GHFrom",
         "org.kohsuke.github.GHLicense",
         "org.kohsuke.github.GHMarketplaceAccount",
         "org.kohsuke.github.GHMarketplaceAccountPlan",
@@ -191,15 +232,19 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHMyself",
         "org.kohsuke.github.GHMyself$RepositoryListFilter",
         "org.kohsuke.github.GHNotificationStream",
+        "org.kohsuke.github.GHNotificationStream$1",
+        "org.kohsuke.github.GHOTPRequiredException",
         "org.kohsuke.github.GHObject",
+        "org.kohsuke.github.GHObject$1",
+        "org.kohsuke.github.GHObject$2",
+        "org.kohsuke.github.GHOrgHook",
         "org.kohsuke.github.GHOrganization",
         "org.kohsuke.github.GHOrganization$Permission",
         "org.kohsuke.github.GHOrganization$Role",
-        "org.kohsuke.github.GHOrgHook",
-        "org.kohsuke.github.GHOTPRequiredException",
         "org.kohsuke.github.GHPermission",
         "org.kohsuke.github.GHPermissionType",
         "org.kohsuke.github.GHPerson",
+        "org.kohsuke.github.GHPerson$1",
         "org.kohsuke.github.GHPersonSet",
         "org.kohsuke.github.GHProject",
         "org.kohsuke.github.GHProject$ProjectState",
@@ -207,7 +252,11 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHProjectCard",
         "org.kohsuke.github.GHProjectColumn",
         "org.kohsuke.github.GHPullRequest",
+        "org.kohsuke.github.GHPullRequest$AutoMerge",
         "org.kohsuke.github.GHPullRequest$MergeMethod",
+        "org.kohsuke.github.GHPullRequestChanges",
+        "org.kohsuke.github.GHPullRequestChanges$GHCommitPointer",
+        "org.kohsuke.github.GHPullRequestChanges$GHFrom",
         "org.kohsuke.github.GHPullRequestCommitDetail",
         "org.kohsuke.github.GHPullRequestCommitDetail$Authorship",
         "org.kohsuke.github.GHPullRequestCommitDetail$Commit",
@@ -221,7 +270,9 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHPullRequestReviewBuilder$DraftReviewComment",
         "org.kohsuke.github.GHPullRequestReviewComment",
         "org.kohsuke.github.GHPullRequestReviewEvent",
+        "org.kohsuke.github.GHPullRequestReviewEvent$1",
         "org.kohsuke.github.GHPullRequestReviewState",
+        "org.kohsuke.github.GHPullRequestReviewState$1",
         "org.kohsuke.github.GHQueryBuilder",
         "org.kohsuke.github.GHRateLimit",
         "org.kohsuke.github.GHRateLimit$Record",
@@ -229,19 +280,25 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHReaction",
         "org.kohsuke.github.GHRef",
         "org.kohsuke.github.GHRef$GHObject",
-        "org.kohsuke.github.GHObject",
         "org.kohsuke.github.GHRelease",
         "org.kohsuke.github.GHReleaseBuilder",
         "org.kohsuke.github.GHReleaseUpdater",
         "org.kohsuke.github.GHRepoHook",
         "org.kohsuke.github.GHRepository",
+        "org.kohsuke.github.GHRepository$1",
+        "org.kohsuke.github.GHRepository$CollaboratorAffiliation",
         "org.kohsuke.github.GHRepository$Contributor",
         "org.kohsuke.github.GHRepository$ForkSort",
         "org.kohsuke.github.GHRepository$GHRepoPermission",
+        "org.kohsuke.github.GHRepository$Setter",
         "org.kohsuke.github.GHRepository$Topics",
+        "org.kohsuke.github.GHRepository$Updater",
+        "org.kohsuke.github.GHRepository$Visibility",
+        "org.kohsuke.github.GHRepositoryBuilder",
         "org.kohsuke.github.GHRepositoryCloneTraffic",
         "org.kohsuke.github.GHRepositoryCloneTraffic$DailyInfo",
         "org.kohsuke.github.GHRepositorySearchBuilder",
+        "org.kohsuke.github.GHRepositorySearchBuilder$Fork",
         "org.kohsuke.github.GHRepositorySearchBuilder$RepositorySearchResult",
         "org.kohsuke.github.GHRepositorySearchBuilder$Sort",
         "org.kohsuke.github.GHRepositorySelection",
@@ -271,6 +328,7 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHThread$Subject",
         "org.kohsuke.github.GHTree",
         "org.kohsuke.github.GHTreeBuilder",
+        "org.kohsuke.github.GHTreeBuilder$1",
         "org.kohsuke.github.GHTreeBuilder$TreeEntry",
         "org.kohsuke.github.GHTreeEntry",
         "org.kohsuke.github.GHUser",
@@ -280,6 +338,24 @@ import static io.micronaut.core.annotation.TypeHint.AccessType.*;
         "org.kohsuke.github.GHVerification",
         "org.kohsuke.github.GHVerification$Reason",
         "org.kohsuke.github.GHVerifiedKey",
+        "org.kohsuke.github.GHWorkflow",
+        "org.kohsuke.github.GHWorkflowJob",
+        "org.kohsuke.github.GHWorkflowJob$Step",
+        "org.kohsuke.github.GHWorkflowJobQueryBuilder",
+        "org.kohsuke.github.GHWorkflowJobsIterable",
+        "org.kohsuke.github.GHWorkflowJobsIterable$1",
+        "org.kohsuke.github.GHWorkflowJobsPage",
+        "org.kohsuke.github.GHWorkflowRun",
+        "org.kohsuke.github.GHWorkflowRun$Conclusion",
+        "org.kohsuke.github.GHWorkflowRun$HeadCommit",
+        "org.kohsuke.github.GHWorkflowRun$Status",
+        "org.kohsuke.github.GHWorkflowRunQueryBuilder",
+        "org.kohsuke.github.GHWorkflowRunsIterable",
+        "org.kohsuke.github.GHWorkflowRunsIterable$1",
+        "org.kohsuke.github.GHWorkflowRunsPage",
+        "org.kohsuke.github.GHWorkflowsIterable",
+        "org.kohsuke.github.GHWorkflowsIterable$1",
+        "org.kohsuke.github.GHWorkflowsPage",
     },
     accessType = {
         ALL_PUBLIC,
@@ -302,27 +378,25 @@ public class DefaultGitHubService implements GitHubService {
 
     private final GitHubConfiguration configuration;
     private final GitHub client;
-    private final GitHubHttpClient httpClient;
 
     private GHMyself myself;
 
-    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client, GitHubHttpClient httpClient) {
+    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client) {
         this.configuration = configuration;
         this.client = client;
-        this.httpClient = httpClient;
     }
 
     @Override
     public Stream<Content> searchContent(String query, boolean global) {
         return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
-            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient)
+            new DefaultContent(content, content.getOwner(), getMyself(), configuration)
         );
     }
 
     @Override
     public Optional<Repository> getRepository(String repositoryFullName) {
         try {
-            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
+            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration));
         } catch (IOException e) {
             LOGGER.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
@@ -342,7 +416,7 @@ public class DefaultGitHubService implements GitHubService {
                     String repoFullName = url.substring(PR_URL_REPO_PREFIX.length(), url.lastIndexOf(PR_URL_REPO_SUFFIX));
                     GHRepository repository = client.getRepository(repoFullName);
                     GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
-                    return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
+                    return new DefaultPullRequest(pullRequest, repository, myself, configuration);
                 } catch (IOException e) {
                     LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
                     return null;

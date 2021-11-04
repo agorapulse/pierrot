@@ -26,6 +26,7 @@ import com.agorapulse.pierrot.core.Repository
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.env.Environment
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
@@ -56,7 +57,6 @@ abstract class AbstractCommandSpec extends Specification {
 
     @AutoCleanup ApplicationContext context
 
-    abstract String getCommand()
     abstract List<String> getArgs()
 
     Project project = Mock {
@@ -177,7 +177,7 @@ abstract class AbstractCommandSpec extends Specification {
     }
 
     void setup() {
-        context = ApplicationContext.builder().build()
+        context = ApplicationContext.builder(Environment.CLI, Environment.TEST).build()
         context.registerSingleton(GitHubService, service)
         context.start()
 
@@ -187,7 +187,7 @@ abstract class AbstractCommandSpec extends Specification {
 
     void 'display help'() {
         expect:
-            runCommand('help.txt', ['--help'])
+            runCommand('help.txt', getHelpArgs())
     }
 
     void 'run command'() {
@@ -202,9 +202,7 @@ abstract class AbstractCommandSpec extends Specification {
     @SuppressWarnings('ConstantAssertExpression')
     protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args, Runnable additionalChecks) {
         TestConsole console = TestConsole.capture(input.join(System.lineSeparator())) {
-            List<String> commandAndArgs = [command]
-            commandAndArgs.addAll(args)
-            PicocliRunner.run(PierrotCommand, context, commandAndArgs as String[])
+            PicocliRunner.run(PierrotCommand, context, args as String[])
         }
 
         assert !console.err
@@ -238,6 +236,10 @@ abstract class AbstractCommandSpec extends Specification {
 
     protected boolean additionalChecks() {
         return true
+    }
+
+    protected List<String> getHelpArgs() {
+        return [args.first(), '--help']
     }
 
 }

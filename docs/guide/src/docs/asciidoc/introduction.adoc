@@ -2,4 +2,11 @@
 [[_introduction]]
 = Introduction
 
-Lorem ipsum dolor sit amet
+Pierrot is a tool which helps you to manage many GitHub repositories with single command. The typical use cases are
+
+ * Upgrade the version of dependency or tool within the GitHub organization
+ * Migrate deprecated code across many repositories
+ * Batch create or delete files within the GitHub organization (license files, security documents)
+ * Compare configuration files across many repositories (e.g. GitHub workflow files)
+
+

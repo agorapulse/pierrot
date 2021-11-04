@@ -21,7 +21,6 @@ import com.agorapulse.pierrot.core.CheckRun;
 import com.agorapulse.pierrot.core.GitHubConfiguration;
 import com.agorapulse.pierrot.core.PullRequest;
 import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.impl.client.GitHubHttpClient;
 import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class DefaultPullRequest implements PullRequest {
 
@@ -41,19 +41,17 @@ public class DefaultPullRequest implements PullRequest {
     private final GHRepository repository;
     private final GHUser myself;
     private final GitHubConfiguration configuration;
-    private final GitHubHttpClient httpClient;
 
-    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration, GitHubHttpClient httpClient) {
+    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
         this.pr = pr;
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
-        this.httpClient = httpClient;
     }
 
     @Override
     public Repository getRepository() {
-        return new DefaultRepository(repository, myself, configuration, httpClient);
+        return new DefaultRepository(repository, myself, configuration);
     }
 
     @Override
@@ -98,8 +96,12 @@ public class DefaultPullRequest implements PullRequest {
 
     @Override
     public Stream<? extends CheckRun> getChecks() {
-        Repository r = getRepository();
-        return httpClient.getCheckRuns(r.getOwnerName(), r.getName(), pr.getBase().getSha()).getCheckRuns().stream();
+        try {
+            return StreamSupport.stream(pr.getHead().getCommit().getCheckRuns().spliterator(), false).map(r -> new DefaultCheckRun(r));
+        } catch (IOException e) {
+            LOGGER.error("Exception fetching check runs", e);
+            return Stream.empty();
+        }
     }
 
     @Override

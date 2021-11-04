@@ -19,9 +19,8 @@ package com.agorapulse.pierrot
 
 class ReplaceCommandSpec extends AbstractCommandSpec {
 
-    String command = 'replace'
-
     List<String> args = [
+        'replace',
         '-b',
         BRANCH,
         '-t',

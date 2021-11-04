@@ -15,20 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core.impl.client;
+package com.agorapulse.pierrot
 
-import io.micronaut.http.annotation.FilterMatcher;
+class PierrotCommandSpec extends AbstractCommandSpec {
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    List<String> args = [
+        '--help',
+        '--github-token=xazabc',
+    ]
 
-@Documented
-@FilterMatcher
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.PARAMETER})
-public @interface GitHub {
+    List<String> helpArgs = [
+        '--help',
+    ]
 
 }

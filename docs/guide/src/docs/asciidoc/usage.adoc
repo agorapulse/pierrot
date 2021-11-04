@@ -2,4 +2,4 @@
 [[_usage]]
 = Usage
 
-Lorem ipsum dolor sit amet
+All the commands are based on https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax[GitHub search syntax].

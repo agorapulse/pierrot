@@ -1,0 +1,5 @@
+
+[[_installation]]
+= Installation
+
+Download and extract https://github.com/agorapulse/micronaut-worker/releases/latest[ the latest binaries from the release page].

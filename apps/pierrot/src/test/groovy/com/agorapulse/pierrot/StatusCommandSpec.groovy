@@ -19,9 +19,8 @@ package com.agorapulse.pierrot
 
 class StatusCommandSpec extends AbstractCommandSpec {
 
-    String command = 'status'
-
     List<String> args = [
+        'status',
         '--project',
         PROJECT,
         '-P',

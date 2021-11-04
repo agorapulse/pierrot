@@ -19,9 +19,8 @@ package com.agorapulse.pierrot
 
 class CreateCommandSpec extends AbstractCommandSpec {
 
-    String command = 'create'
-
     List<String> args = [
+        'create',
         '-b',
         BRANCH,
         '-t',
@@ -44,6 +43,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
             File message = createWorkspaceFile(REPOSITORY_ONE, 'prefix/message.txt', MESSAGE)
         expect:
             runCommand('file.txt', [
+                'create',
                 '-b',
                 BRANCH,
                 '-t',

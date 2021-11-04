@@ -19,9 +19,8 @@ package com.agorapulse.pierrot
 
 class DeleteCommandSpec extends AbstractCommandSpec {
 
-    String command = 'delete'
-
     List<String> args = [
+        'delete',
         '-b',
         BRANCH,
         '-t',

@@ -36,6 +36,20 @@ public class DefaultGitHubConfiguration implements GitHubConfiguration {
         this.token = token;
     }
 
+    /**
+     * alias to {@link #getToken()}
+     */
+    public String getOauth() {
+        return token;
+    }
+
+    /**
+     * alias to {@link #setToken(String)} ()}
+     */
+    public void setOauth(String token) {
+        this.token = token;
+    }
+
     @Override
     public String getDefaultBranch() {
         return defaultBranch;

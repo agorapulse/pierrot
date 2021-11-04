@@ -14,6 +14,7 @@ include::{includedir}/_links.adoc[]
 
 :leveloffset: 1
 include::{includedir}/introduction.adoc[]
+include::{includedir}/installation.adoc[]
 include::{includedir}/usage.adoc[]
 
 = Links

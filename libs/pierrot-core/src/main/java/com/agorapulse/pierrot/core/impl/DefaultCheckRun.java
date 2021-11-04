@@ -15,43 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core.impl.client;
+package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.CheckRun;
-import io.micronaut.core.annotation.Introspected;
+import org.kohsuke.github.GHCheckRun;
 
-@Introspected
-public class CheckRunResult implements CheckRun {
+public class DefaultCheckRun implements CheckRun {
 
-    private String name;
-    private String status;
-    private String conclusion;
+    private final GHCheckRun run;
+
+    public DefaultCheckRun(GHCheckRun run) {
+        this.run = run;
+    }
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return run.getName();
     }
 
     @Override
     public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+        return run.getStatus().toString().toLowerCase();
     }
 
     @Override
     public String getConclusion() {
-        return conclusion;
-    }
-
-    public void setConclusion(String conclusion) {
-        this.conclusion = conclusion;
+        return run.getConclusion().toString().toLowerCase();
     }
 
 }

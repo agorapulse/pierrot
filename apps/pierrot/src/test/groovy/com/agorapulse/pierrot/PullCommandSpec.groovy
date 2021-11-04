@@ -19,10 +19,9 @@ package com.agorapulse.pierrot
 
 class PullCommandSpec extends AbstractCommandSpec {
 
-    String command = 'pull'
-
     List<String> getArgs() {
         return [
+            'pull',
             '-P',
             '-w',
             workspace.canonicalPath,

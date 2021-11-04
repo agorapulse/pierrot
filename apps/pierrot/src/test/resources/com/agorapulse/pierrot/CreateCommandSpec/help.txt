@@ -1,6 +1,7 @@
 Usage: pierrot create [-aghPsV] [-b=<branch>] [-c=<content>]
                       [--done-column=<doneColumn>] [--from=<contentFrom>]
-                      [-m=<message>] [--message-from=<messageFrom>] [-p=<path>]
+                      [--github-token=<token>] [-m=<message>]
+                      [--message-from=<messageFrom>] [-p=<path>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [-t=<title>]
                       [--todo-column=<todoColumn>] QUERY...
@@ -14,6 +15,7 @@ creates a file in a matching repositories and creates PRs
                              The name of the 'Done' column in the project
       --from=<contentFrom>   The file to be uploaded to the repositories
   -g, --global               Do not constrain search to current organization
+      --github-token=<token> The GitHub token
   -h, --help                 Show this help message and exit.
   -m, --message=<message>    The pull request message
       --message-from=<messageFrom>

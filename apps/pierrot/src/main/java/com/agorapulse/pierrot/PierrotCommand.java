@@ -49,13 +49,16 @@ public class PierrotCommand implements Runnable {
         }
     }
 
+    @CommandLine.Option(
+        names = {"--github-token"},
+        description = "The GitHub token",
+        scope = CommandLine.ScopeType.INHERIT
+    )
+    String token;
+
     public static void main(String[] args) {
         if (args.length == 0) {
             args = new String[] {"--help"};
-        }
-
-        if (System.getenv("GITHUB_TOKEN") == null) {
-            System.out.println("Please, set up your GitHub token as GITHUB_TOKEN environment variable");
         }
 
         PicocliRunner.run(PierrotCommand.class, args);

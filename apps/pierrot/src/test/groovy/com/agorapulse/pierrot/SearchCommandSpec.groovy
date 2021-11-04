@@ -19,9 +19,8 @@ package com.agorapulse.pierrot
 
 class SearchCommandSpec extends AbstractCommandSpec {
 
-    String command = 'search'
-
     List<String> args = [
+        'search',
         '-P',
         CONTENT_SEARCH_TERM,
     ]

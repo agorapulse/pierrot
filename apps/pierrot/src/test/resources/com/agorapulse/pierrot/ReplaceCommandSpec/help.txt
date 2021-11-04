@@ -1,6 +1,7 @@
 Usage: pierrot replace [-aghPsV] [-b=<branch>] [--done-column=<doneColumn>]
-                       [-m=<message>] [--message-from=<messageFrom>]
-                       -p=<pattern> [--progress-column=<progressColumn>]
+                       [--github-token=<token>] [-m=<message>]
+                       [--message-from=<messageFrom>] -p=<pattern>
+                       [--progress-column=<progressColumn>]
                        [--project=<project>] -r=<replacement> [-t=<title>]
                        [--todo-column=<todoColumn>] QUERY...
 replaces content in the files and creates PRs
@@ -11,6 +12,8 @@ replaces content in the files and creates PRs
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
+      --github-token=<token>
+                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message
       --message-from=<messageFrom>

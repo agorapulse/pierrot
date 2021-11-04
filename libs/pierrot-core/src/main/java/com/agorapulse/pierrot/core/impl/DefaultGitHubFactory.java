@@ -18,20 +18,42 @@
 package com.agorapulse.pierrot.core.impl;
 
 import com.agorapulse.pierrot.core.GitHubConfiguration;
+import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
 import org.kohsuke.github.GitHub;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 
 @Factory
 public class DefaultGitHubFactory {
 
+    private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultGitHubFactory.class);
+
     @Bean
     @Singleton
     public GitHub gitHub(GitHubConfiguration configuration) throws IOException {
+        if (StringUtils.isEmpty(configuration.getToken())) {
+            try {
+                return GitHub.connect();
+            } catch (IOException e) {
+                printMissingTokenMessage();
+                return GitHub.connectAnonymously();
+            }
+        }
+
         return GitHub.connectUsingOAuth(configuration.getToken());
+    }
+
+    private void printMissingTokenMessage() {
+        LOGGER.error("GitHub client is not authenticated. Please, set up your GitHub token");
+        LOGGER.error("    GITHUB_TOKEN environment");
+        LOGGER.error("  --github-token argument");
+        LOGGER.error("Alternatively, see other authentication options in the GitHub API docs:");
+        LOGGER.error("\n    https://github-api.kohsuke.org\n");
     }
 
 }

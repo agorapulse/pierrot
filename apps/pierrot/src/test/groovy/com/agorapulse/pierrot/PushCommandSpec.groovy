@@ -19,10 +19,9 @@ package com.agorapulse.pierrot
 
 class PushCommandSpec extends AbstractCommandSpec {
 
-    String command = 'push'
-
     List<String> getArgs() {
         return [
+            'push',
             '-b',
             BRANCH,
             '-t',
