@@ -1,4 +1,4 @@
-GitHub client is not authenticated. Please, set up your GitHub token
+GitHub client is not authenticated. Please, set up your GitHub token using one of the following options
     GITHUB_TOKEN environment variable
   --github-token=<token> command line parameter
 Alternatively, see other authentication options in the GitHub API docs:
