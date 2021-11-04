@@ -28,4 +28,14 @@ class PierrotCommandSpec extends AbstractCommandSpec {
         '--help',
     ]
 
+    void 'run main'() {
+        when:
+            TestConsole console = TestConsole.capture {
+                PierrotCommand.main('--help', '--github-token=token')
+            }
+
+        then:
+            console.out == fixt.readText('help.txt')
+    }
+
 }
