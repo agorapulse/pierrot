@@ -2,4 +2,315 @@
 [[_usage]]
 = Usage
 
+Pierrot provides various command to batch-manipulate code in the GitHub repositories. You can see the list
+of available commands when you run the `pierrot` command without any parameters:
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PierrotCommandSpec/help.txt[]
+----
+
+Pierrot requires being authenticated to GitHub. You can either set up `GITHUB_TOKEN` or pass the token as `--github-token` parameter.
+Alternatively, see other authentication options in https://github-api.kohsuke.org[the GitHub API for Java documentation].
+
 All the commands are based on https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax[GitHub search syntax].
+Pierrot works the best if you constrain the searches to an organization. If you don't want to add `org:myorg` search
+term to every command then set `GITHUB_ORGANIZATION` environment variable to the name of your organization.
+
+== Common Parameters
+
+The commands share common parameters depending on the action their perform.
+
+=== Shared Parameters
+
+The following parameters can be use with any command:
+
+[source,bash]
+----
+      --github-token=<token> The GitHub token
+  -h, --help                 Show this help message and exit.
+  -s, --stacktrace           Print stack traces
+  -V, --version              Print version information and exit.
+----
+
+=== Search Parameters
+
+Search parameters allows you to tune the search scope and pagination of the results.
+
+[source,bash]
+----
+  -a, --all          Include archived and closed
+  -g, --global       Do not constrain search to current organization
+  -P, --no-page      Do not wait after each result
+----
+
+=== Pull Request Parameters
+
+Pull request parameters will be used to create new pull requests in the affected repositories. If the values are not
+provided in the form of command line argument then the user will be prompted to enter them first time they are requested.
+The pull request message is also the message for the individual commits and can be also read from file using `--mesage-from` parameter.
+
+[source,bash]
+----
+  -b, --branch=<branch>      The pull request branch
+  -m, --message=<message>    The pull request message
+      --message-from=<messageFrom>
+  -t, --title=<title>        The pull request title
+----
+
+=== Project Parameters
+
+The commands that can create pull request or searches pull requests such as `status` command can add the pull requests to the
+GitHub Project (board) once `--project` parameter is provided. The other parameters are optional. The board is created if it does not exist
+but the automation must be set up manually.
+
+[source,bash]
+----
+      --done-column=<doneColumn>
+                             The name of the 'Done' column in the project
+      --progress-column=<progressColumn>
+                             The name of the 'In progress' column in the project
+      --project=<project>    The name of the project (board)
+      --todo-column=<todoColumn>
+                             The name of the 'To do' column in the project
+----
+
+=== Workspace Parameter
+
+Command working with workspaces such as `pull` and `push` can point to a different directory then the current one that is the default one.
+
+[source,bash]
+----
+  -w, --workspace=<workspace>
+                     The working directory to pull found files
+----
+
+[[_commands]]
+
+== Commands
+
+[[_search]]
+=== Search Command
+
+The `search` command allows to search GitHub using  https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax[GitHub search syntax].
+You can experiment with the search term online at the https://github.com/search[GitHub Search Page].
+This is usually the first command you will run to verify the search terms.
+
+==== Examples
+
+[source,bash]
+.Find All Usages of JCenter Repository within Gradle's Build Files
+----
+pierrot search extension:gradle jcenter
+----
+
+JCenter has been shut down so if you still have a references in the build files then you should remove them.
+
+==== Full Syntax
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/SearchCommandSpec/help.txt[]
+----
+
+[[_create]]
+=== Create Command
+
+The `create` command allows crate files in a repositories that contains files that matches a given search query.
+You have to specify the `path` within the repository, and you need to specify the content either on the command line as `--content` parameter or
+`--from` file. If the parameters are not provided then the user will be prompt for them.
+
+New pull request are created with a specified changes.
+
+[source,bash]
+----
+  -c, --content=<content>    The inline content of the newly created file
+      --from=<contentFrom>   The file to be uploaded to the repositories
+  -p, --path=<path>          The path inside the repository
+----
+
+==== Examples
+
+[source,bash]
+.Create AsciiDoc Configuration File for Better IntelliJ Support
+----
+pierrot create \
+  --path=.asciidoctorconfig \
+  --content=':root-dir: {asciidoctorconfigdir}' \
+  --branch=chore/asciidoctorconfig \
+  --title="Added AsciiDoc Config File" \
+  --message="Added AsciiDoc configuration file for better support in IntelliJ" \
+  extension:adoc
+----
+
+https://intellij-asciidoc-plugin.ahus1.de[AsciiDoc Plugin] can provide better support if you have https://intellij-asciidoc-plugin.ahus1.de/docs/users-guide/features/advanced/asciidoctorconfig-file.html[`.asciidoctorconfig` file] within your repository root.
+
+==== Full Syntax
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/CreateCommandSpec/help.txt[]
+----
+
+[[_delete]]
+=== Delete Command
+
+The `delete` command allows you to delete all files that match the given search query.
+
+New pull request are created with a specified changes.
+
+==== Examples
+
+[source,bash]
+.Delete All Travis CI Configuration File
+----
+pierrot delete \
+  --branch=chore/remove-travis \
+  --title="Remove Travis CI Config File" \
+  --message="Travis CI is no longer used so we can delete the configuration files" \
+  filename:.travis.yml
+----
+
+Travis CI was once popular continuous integration server but many projects has migrated to GitHub Actions instead.
+
+==== Full Syntax
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/DeleteCommandSpec/help.txt[]
+----
+
+[[_pull]]
+=== Pull Command
+The `pull` command pulls the files from multiple repositories into a workspace. You can then make local changes and
+use `push` command to create new pull requests for changes.
+
+The workspace layout is in a format `organization/repository/files`:
+
+[source,bash]
+.Workspace Layout Example
+----
+pierrot-workspace
+└── myorg
+    ├── repo1
+    │   └── build.gradle
+    └── repo2
+        └── build.gradle
+
+----
+
+==== Examples
+
+[source,bash]
+.Find All Usages of JCenter Repository within Gradle's Build Files and Pull the Files Locally
+----
+pierrot pull extension:gradle jcenter
+----
+
+JCenter has been shut down so if you still have a references in the build files then you should remove them.
+
+==== Full Syntax
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PullCommandSpec/help.txt[]
+----
+
+[[_push]]
+=== Push Command
+The `push` command creates new pull requests for changes performed in a local workspace.
+
+The workspace layout is in a format `organization/repository/files`:
+
+[source,bash]
+.Workspace Layout Example
+----
+pierrot-workspace
+└── myorg
+    ├── repo1
+    │   └── build.gradle
+    └── repo2
+        └── build.gradle
+
+----
+
+==== Examples
+
+[source,bash]
+.Push Local Changes to GitHub
+----
+pierrot push \
+  --branch=chore/removed-jcenter \
+  --title="Removed JCenter from the Gradle Files" \
+  --message="JCenter has been shut down so we need to delete all references"
+----
+
+JCenter has been shut down so if you still have a references in the build files then you should remove them.
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PushCommandSpec/help.txt[]
+----
+
+[[_replace]]
+=== Replace Command
+The `replace` command allows you to find and replace text in the all files that match the given search query.
+
+You need to specify Java-style pattern with the `--pattern` parameter and the replacement with `--replacement` parameter.
+
+New pull request are created with a specified changes.
+
+[source,bash]
+----
+  -p, --pattern=<pattern>   The Java-style regular expression pattern to
+                              execute on the matched files
+  -r, --replacement=<replacement>
+                            The Java-style regular expression replacement
+----
+
+
+==== Examples
+
+[source,bash]
+.Update Micronaut Version
+----
+pierrot delete \
+  --pattern='micronautVersion = (.*)' \
+  --replacement='micronautVersion = 3.1.0' \
+  --branch=chore/upgrade-micronaut \
+  --title="Upgraded Micronaut to 3.1.0" \
+  --message="Upgraded Micronaut to the latest version 3.1.0" \
+  filename:gradle.properties micronautVersion
+----
+
+Versions declared in `gradle.properties` files are not well handled by the tools like Snyk or Dependabot.
+
+==== Full Syntax
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/ReplaceCommandSpec/help.txt[]
+----
+
+[[_status]]
+=== Status Command
+
+The `status` command allows search pull requests and display their status.
+
+==== Examples
+
+[source,bash]
+.Display Update Micronaut Version Pull Requests and Assign Them to the Project
+----
+pierrot status \
+  --all \
+  --project='Micronaut Upgrade' \
+  Micronaut Upgrade 3.1.0
+----
+
+Adding to the project will allow displaying all the running PRs in a status board.
+
+==== Full Syntax
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/StatusCommandSpec/help.txt[]
+----
+
