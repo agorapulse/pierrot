@@ -1,0 +1,7 @@
+com.agorapulse.pierrot.api
+com.agorapulse.pierrot.api.source
+com.agorapulse.pierrot.api.util
+com.agorapulse.pierrot.api.ws
+com.agorapulse.pierrot.cli
+com.agorapulse.pierrot.cli.mixin
+com.agorapulse.pierrot.hub4j
