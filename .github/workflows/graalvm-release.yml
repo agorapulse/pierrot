@@ -1,0 +1,101 @@
+name: GraalVM Release
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    name: 'Build with Graal on ${{ matrix.os }}'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        gu-binary: [ gu, gu.cmd ]
+        exclude:
+          - os: ubuntu-latest
+            gu-binary: gu.cmd
+          - os: macos-latest
+            gu-binary: gu.cmd
+          - os: windows-latest
+            gu-binary: gu
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.m2/repository
+          key: ${{ runner.os }}-gradle-test-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-test-
+      - name: 'Add Developer Command Prompt for Microsoft Visual C++ '
+        if: ${{ runner.os == 'Windows' }}
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup GraalVM CE
+        uses: DeLaGuardo/setup-graalvm@3.1
+        with:
+          graalvm-version: 21.2.0.java11
+      - name: Install Native Image
+        run: ${{ matrix.gu-binary }} install native-image
+      - name: Build Native Image Snapshot
+        run: |
+          ./gradlew :pierrot:buildLayers --no-daemon
+          ./gradlew :pierrot:shadowJar --no-daemon
+          native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
+      - name: Windows Archive
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
+          Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64/bin"
+          Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
+          Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
+      - name: macOS Archive
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          mkdir -p pierrot-darwin-amd64/bin
+          mv ./pierrot pierrot-darwin-amd64/bin
+          cp ./LICENSE pierrot-darwin-amd64/
+          zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
+      - name: Linux Archive
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          mkdir -p pierrot-linux-amd64/bin
+          mv ./pierrot pierrot-linux-amd64/bin
+          cp ./LICENSE pierrot-linux-amd64/
+          zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pierrot-${{ matrix.os }}.zip
+          path: pierrot-*.zip
+      - name: Docker login (master and Linux only)
+        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY_URL }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build And Push Docker Image Snapshot (master and Linux only)
+        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
+        env:
+          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+        run: |
+          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
+          ./gradlew :pierrot:dockerPushNative --no-daemon
+  upload_to_release:
+    name: Upload to Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      id: download
+    - name: Semantic Version
+      id: version
+      uses: ncipollo/semantic-version-action@v1
+    - name: Release Script
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_VERSION: ${{ steps.version.outputs.tag }}
+        UPLOAD_URL: https://uploads.github.com/repos/${{ github.event.repository.full_name }}/releases/${{ github.event.release.id }}/assets
+        ARTIFACT_DIRECTORY:  ${{steps.download.outputs.download-path}}
+      run: .github/workflows/upload_to_release.sh
