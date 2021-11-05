@@ -8,3 +8,5 @@ then you should see the following message when you run the `pierrot` command:
 ----
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help-no-token.txt[]
 ----
+
+TIP: You can run `xattr -d com.apple.quarantine pierrot` to remove quarantine from the downloaded file on macOS.
