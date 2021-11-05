@@ -245,6 +245,7 @@ pierrot push \
 
 JCenter has been shut down so if you still have a references in the build files then you should remove them.
 
+==== Full Syntax
 [source,bash]
 ----
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PushCommandSpec/help.txt[]

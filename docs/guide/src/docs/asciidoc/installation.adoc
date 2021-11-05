@@ -6,5 +6,5 @@ Download and extract https://github.com/agorapulse/micronaut-worker/releases/lat
 then you should see the following message when you run the `pierrot` command:
 
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PierrotCommandSpec/help-no-token.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help-no-token.txt[]
 ----
