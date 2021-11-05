@@ -15,32 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.hub4j;
+package com.agorapulse.pierrot.api;
 
-import com.agorapulse.pierrot.api.CheckRun;
-import org.kohsuke.github.GHCheckRun;
+public interface Ignorable {
 
-public class DefaultCheckRun implements CheckRun {
-
-    private final GHCheckRun run;
-
-    public DefaultCheckRun(GHCheckRun run) {
-        this.run = run;
-    }
-
-    @Override
-    public String getName() {
-        return run.getName();
-    }
-
-    @Override
-    public String getStatus() {
-        return run.getStatus().toString().toLowerCase();
-    }
-
-    @Override
-    public String getConclusion() {
-        return run.getConclusion().toString().toLowerCase();
-    }
+    boolean canBeIgnored();
 
 }

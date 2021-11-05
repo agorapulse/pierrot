@@ -15,18 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.api.source;
+
+import com.agorapulse.pierrot.api.Project;
+import com.agorapulse.pierrot.api.PullRequest;
 
 import java.util.Optional;
 
-public interface Repository {
+public interface ProjectSource {
+    Optional<Project> getProject();
 
-    String getFullName();
-    String getName();
-    String getOwnerName();
-    boolean isArchived();
-    boolean canWrite();
-    boolean createBranch(String name);
-    Optional<PullRequest> createPullRequest(String branch, String title, String message);
-    boolean writeFile(String branch, String message, String path, String text);
+    String getColumnNameForPullRequest(PullRequest pr);
 }

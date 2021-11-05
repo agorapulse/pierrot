@@ -15,31 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.api;
 
-import java.net.URL;
-import java.util.stream.Stream;
-
-public interface PullRequest extends Ignorable {
-
-    Repository getRepository();
-
-    String getTitle();
-
-    String getBody();
-
-    boolean isMerged();
-
-    boolean isMergeable();
-
-    String getMergeableState();
-
-    Stream<? extends CheckRun> getChecks();
-
-    @Override
-    default boolean canBeIgnored() {
-        return isMerged();
-    }
-
-    URL getHtmlUrl();
+public interface CheckRun {
+    String getName();
+    String getStatus();
+    String getConclusion();
 }

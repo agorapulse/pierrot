@@ -44,7 +44,7 @@ dependencies {
 
 
 application {
-    mainClass.set("com.agorapulse.pierrot.PierrotCommand")
+    mainClass.set("com.agorapulse.pierrot.cli.PierrotCommand")
 }
 
 dockerBuild {

@@ -15,10 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.api;
 
-public interface CheckRun {
-    String getName();
-    String getStatus();
-    String getConclusion();
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public interface GitHubService {
+    Stream<Content> searchContent(String query, boolean global);
+
+    Optional<Repository> getRepository(String repositoryFullName);
+
+    Stream<? extends PullRequest> searchPullRequests(String query, boolean openOnly, boolean global);
+
+    Optional<Project>  findOrCreateProject(String org, String project, String column);
 }

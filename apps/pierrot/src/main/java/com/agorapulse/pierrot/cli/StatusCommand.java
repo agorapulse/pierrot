@@ -17,8 +17,8 @@
  */
 package com.agorapulse.pierrot.cli;
 
-import com.agorapulse.pierrot.core.CheckRun;
-import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.api.CheckRun;
+import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.cli.mixin.ProjectMixin;
 import com.agorapulse.pierrot.cli.mixin.SearchMixin;
 import jakarta.inject.Inject;

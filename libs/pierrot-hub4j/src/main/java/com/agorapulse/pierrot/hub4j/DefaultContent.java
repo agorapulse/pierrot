@@ -17,10 +17,10 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.Content;
-import com.agorapulse.pierrot.core.GitHubConfiguration;
-import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.Content;
+import com.agorapulse.pierrot.api.GitHubConfiguration;
+import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;

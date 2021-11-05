@@ -17,7 +17,8 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.source.ContentSource;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import picocli.CommandLine;
@@ -30,7 +31,7 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public class FileMixin {
+public class FileMixin implements ContentSource {
 
     // the field is not static to prevent GraalVM FileAppender issues
     private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(FileMixin.class);
@@ -62,6 +63,7 @@ public class FileMixin {
     )
     File contentFrom;
 
+    @Override
     public String readPath() {
         if (StringUtils.isEmpty(path) && contentFrom != null && contentFrom.exists()) {
             return contentFrom.getName();
@@ -74,6 +76,7 @@ public class FileMixin {
         return path;
     }
 
+    @Override
     public String readContent() {
         // it's more convenient for the user to always ask for the path first, before the content
         readPath();

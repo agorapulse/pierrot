@@ -17,13 +17,12 @@
  */
 package com.agorapulse.pierrot.cli
 
-
-import com.agorapulse.pierrot.core.CheckRun
-import com.agorapulse.pierrot.core.Content
-import com.agorapulse.pierrot.core.GitHubService
-import com.agorapulse.pierrot.core.Project
-import com.agorapulse.pierrot.core.PullRequest
-import com.agorapulse.pierrot.core.Repository
+import com.agorapulse.pierrot.api.CheckRun
+import com.agorapulse.pierrot.api.Content
+import com.agorapulse.pierrot.api.GitHubService
+import com.agorapulse.pierrot.api.Project
+import com.agorapulse.pierrot.api.PullRequest
+import com.agorapulse.pierrot.api.Repository
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext

@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.GitHubConfiguration;
+import com.agorapulse.pierrot.api.GitHubConfiguration;
 import io.micronaut.context.annotation.ConfigurationProperties;
 
 @ConfigurationProperties("github")

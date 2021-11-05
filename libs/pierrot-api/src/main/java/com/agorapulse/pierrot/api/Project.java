@@ -15,32 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.hub4j;
+package com.agorapulse.pierrot.api;
 
-import com.agorapulse.pierrot.api.CheckRun;
-import org.kohsuke.github.GHCheckRun;
+import java.net.URL;
 
-public class DefaultCheckRun implements CheckRun {
+public interface Project {
 
-    private final GHCheckRun run;
+    void addToColumn(String column, PullRequest pr);
 
-    public DefaultCheckRun(GHCheckRun run) {
-        this.run = run;
-    }
+    URL getHttpUrl();
 
-    @Override
-    public String getName() {
-        return run.getName();
-    }
-
-    @Override
-    public String getStatus() {
-        return run.getStatus().toString().toLowerCase();
-    }
-
-    @Override
-    public String getConclusion() {
-        return run.getConclusion().toString().toLowerCase();
-    }
+    String getName();
 
 }

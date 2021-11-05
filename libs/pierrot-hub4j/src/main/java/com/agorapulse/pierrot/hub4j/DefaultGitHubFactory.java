@@ -17,8 +17,8 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.GitHubConfiguration;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.GitHubConfiguration;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.util.StringUtils;

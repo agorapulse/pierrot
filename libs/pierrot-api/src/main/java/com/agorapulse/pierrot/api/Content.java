@@ -15,32 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.hub4j;
+package com.agorapulse.pierrot.api;
 
-import com.agorapulse.pierrot.api.CheckRun;
-import org.kohsuke.github.GHCheckRun;
+import java.io.File;
+import java.io.InputStream;
 
-public class DefaultCheckRun implements CheckRun {
+public interface Content extends Ignorable {
 
-    private final GHCheckRun run;
+    String getName();
+    String getPath();
+    String getHtmlUrl();
+    Repository getRepository();
+    InputStream getContent();
+    String getTextContent();
+    String getSha();
 
-    public DefaultCheckRun(GHCheckRun run) {
-        this.run = run;
-    }
+    boolean delete(String branchName, String message);
+    boolean replace(String branchName, String message, String regexp, String replacement);
 
-    @Override
-    public String getName() {
-        return run.getName();
-    }
+    void writeTo(File toPath);
 
-    @Override
-    public String getStatus() {
-        return run.getStatus().toString().toLowerCase();
-    }
 
     @Override
-    public String getConclusion() {
-        return run.getConclusion().toString().toLowerCase();
+    default boolean canBeIgnored() {
+        return getRepository().isArchived();
     }
 
 }

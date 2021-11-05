@@ -17,11 +17,11 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.CheckRun;
-import com.agorapulse.pierrot.core.GitHubConfiguration;
-import com.agorapulse.pierrot.core.PullRequest;
-import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.CheckRun;
+import com.agorapulse.pierrot.api.GitHubConfiguration;
+import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;

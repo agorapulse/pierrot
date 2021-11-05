@@ -17,11 +17,12 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
+import com.agorapulse.pierrot.api.source.WorkspaceSource;
 import picocli.CommandLine.Option;
 
 import java.io.File;
 
-public class WorkspaceMixin {
+public class WorkspaceMixin implements WorkspaceSource {
 
     @Option(
         names = {"-w", "--workspace"},
@@ -30,6 +31,7 @@ public class WorkspaceMixin {
     )
     File workspace;
 
+    @Override
     public File getWorkspace() {
         return workspace;
     }

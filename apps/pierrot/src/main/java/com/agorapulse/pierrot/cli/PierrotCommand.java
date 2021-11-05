@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot.cli;
 
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;

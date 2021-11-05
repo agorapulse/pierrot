@@ -17,13 +17,13 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.Content;
-import com.agorapulse.pierrot.core.GitHubConfiguration;
-import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Project;
-import com.agorapulse.pierrot.core.PullRequest;
-import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.Content;
+import com.agorapulse.pierrot.api.GitHubConfiguration;
+import com.agorapulse.pierrot.api.GitHubService;
+import com.agorapulse.pierrot.api.Project;
+import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;

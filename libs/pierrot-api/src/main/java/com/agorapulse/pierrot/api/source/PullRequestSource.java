@@ -15,30 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.api.source;
 
-import java.io.File;
-import java.io.InputStream;
-
-public interface Content extends Ignorable {
-
-    String getName();
-    String getPath();
-    String getHtmlUrl();
-    Repository getRepository();
-    InputStream getContent();
-    String getTextContent();
-    String getSha();
-
-    boolean delete(String branchName, String message);
-    boolean replace(String branchName, String message, String regexp, String replacement);
-
-    void writeTo(File toPath);
+public interface PullRequestSource {
 
 
-    @Override
-    default boolean canBeIgnored() {
-        return getRepository().isArchived();
-    }
+    String readBranch();
 
+    String readTitle();
+
+    String readMessage();
 }

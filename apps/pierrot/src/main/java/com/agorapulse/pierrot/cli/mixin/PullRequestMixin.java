@@ -17,10 +17,11 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
-import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.PullRequest;
-import com.agorapulse.pierrot.core.Repository;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.GitHubService;
+import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.source.PullRequestSource;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.util.StringUtils;
 import org.slf4j.Logger;
 import picocli.CommandLine;
@@ -34,7 +35,7 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public class PullRequestMixin {
+public class PullRequestMixin implements PullRequestSource {
 
     public interface RepositoryChange {
 
@@ -116,7 +117,8 @@ public class PullRequestMixin {
         return  Optional.empty();
     }
 
-    private String readBranch() {
+    @Override
+    public String readBranch() {
         while (StringUtils.isEmpty(branch)) {
             this.branch = reader.apply("Branch Name: ");
         }
@@ -124,14 +126,16 @@ public class PullRequestMixin {
         return branch;
     }
 
-    private String readTitle() {
+    @Override
+    public String readTitle() {
         while (StringUtils.isEmpty(title)) {
             this.title = reader.apply("Pull Request Title: ");
         }
         return title;
     }
 
-    private String readMessage() {
+    @Override
+    public String readMessage() {
         // it's more convenient for the user to always ask for the title first, before the message
         readTitle();
 

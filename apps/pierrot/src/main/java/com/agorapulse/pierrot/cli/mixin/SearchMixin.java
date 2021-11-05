@@ -17,10 +17,10 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
-import com.agorapulse.pierrot.core.Content;
-import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Ignorable;
-import com.agorapulse.pierrot.core.PullRequest;
+import com.agorapulse.pierrot.api.Content;
+import com.agorapulse.pierrot.api.GitHubService;
+import com.agorapulse.pierrot.api.Ignorable;
+import com.agorapulse.pierrot.api.PullRequest;
 import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;

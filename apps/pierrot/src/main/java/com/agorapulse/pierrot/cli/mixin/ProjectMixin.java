@@ -17,16 +17,17 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
-import com.agorapulse.pierrot.core.GitHubService;
-import com.agorapulse.pierrot.core.Project;
-import com.agorapulse.pierrot.core.PullRequest;
+import com.agorapulse.pierrot.api.GitHubService;
+import com.agorapulse.pierrot.api.Project;
+import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.source.ProjectSource;
 import io.micronaut.core.util.StringUtils;
 import picocli.CommandLine;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ProjectMixin {
+public class ProjectMixin implements ProjectSource {
 
     private static final List<String> IN_PROGRESS_MERGEABLE_STATES = List.of(
         // The merge is blocked.
@@ -86,11 +87,13 @@ public class ProjectMixin {
         });
     }
 
+    @Override
     public Optional<Project> getProject() {
         return Optional.ofNullable(board);
     }
 
-    private String getColumnNameForPullRequest(PullRequest pr) {
+    @Override
+    public String getColumnNameForPullRequest(PullRequest pr) {
         if (pr.isMerged()) {
             return doneColumn;
         }

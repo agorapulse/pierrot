@@ -17,9 +17,9 @@
  */
 package com.agorapulse.pierrot.hub4j;
 
-import com.agorapulse.pierrot.core.Project;
-import com.agorapulse.pierrot.core.PullRequest;
-import com.agorapulse.pierrot.core.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.Project;
+import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import org.kohsuke.github.GHProject;
 import org.kohsuke.github.HttpException;
 import org.slf4j.Logger;

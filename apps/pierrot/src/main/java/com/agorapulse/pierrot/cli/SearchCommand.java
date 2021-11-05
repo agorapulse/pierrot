@@ -17,7 +17,7 @@
  */
 package com.agorapulse.pierrot.cli;
 
-import com.agorapulse.pierrot.core.GitHubService;
+import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.cli.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;

@@ -15,16 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agorapulse.pierrot.core;
+package com.agorapulse.pierrot.api;
 
-import java.net.URL;
+public interface GitHubConfiguration {
 
-public interface Project {
-
-    void addToColumn(String column, PullRequest pr);
-
-    URL getHttpUrl();
-
-    String getName();
+    String getToken();
+    String getDefaultBranch();
+    String getOrganization();
 
 }
