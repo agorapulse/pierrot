@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="Vladimir Orany">
-<title>Pierrot the PR Pilot</title>
+<title>Pierrot - Multi-repository GitHub Governance Tool</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -14,6 +14,17 @@
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 <link rel="manifest" href="images/site.webmanifest">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@agorapulse">
+<meta name="twitter:creator" content="@musketyr">
+<meta name="twitter:title" content="Pierrot - Multi-repository GitHub Governance Tool">
+<meta name="twitter:description" content="Pierrot is a tool which helps you to manage many GitHub repositories with single command. The typical use cases are:Upgrade the version of dependency or tool within the GitHub organization,Migrate deprecated code across many repositories,Batch create or delete files within the GitHub organization (license files, security documents),Compare configuration files across many repositories (e.g. GitHub workflow files).">
+<meta name="twitter:image" content="https://agorapulse.github.io/pierrot/images/pierrot.png">
+
+<meta property="og:title" content="Pierrot - Multi-repository GitHub Governance Tool" />
+<meta property="og:url" content="https://agorapulse.github.io/pierrot/" />
+<meta property="og:image" content="https://agorapulse.github.io/pierrot/images/pierrot.png" />
 <style>
 .hidden {
     display: none;
@@ -93,10 +104,10 @@ $(addBlockSwitches);
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>Pierrot the PR Pilot</h1>
+<h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.9.1</span>
+<span id="revnumber">version 0.9.3</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -143,18 +154,19 @@ $(addBlockSwitches);
 <li><a href="#_push">3.2.5. Push Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_5">Examples</a></li>
+<li><a href="#_full_syntax_5">Full Syntax</a></li>
 </ul>
 </li>
 <li><a href="#_replace">3.2.6. Replace Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_6">Examples</a></li>
-<li><a href="#_full_syntax_5">Full Syntax</a></li>
+<li><a href="#_full_syntax_6">Full Syntax</a></li>
 </ul>
 </li>
 <li><a href="#_status">3.2.7. Status Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_7">Examples</a></li>
-<li><a href="#_full_syntax_6">Full Syntax</a></li>
+<li><a href="#_full_syntax_7">Full Syntax</a></li>
 </ul>
 </li>
 </ul>
@@ -207,8 +219,41 @@ then you should see the following message when you run the <code>pierrot</code> 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in installation.adoc - include::/home/runner/work/pierrot/pierrot/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PierrotCommandSpec/help-no-token.txt[]</pre>
+<pre>GitHub client is not authenticated. Please, set up your GitHub token
+    GITHUB_TOKEN environment variable
+  --github-token=&lt;token&gt; command line parameter
+Alternatively, see other authentication options in the GitHub API docs:
+
+    https://github-api.kohsuke.org
+
+Usage: pierrot [-hsV] [--github-token=&lt;token&gt;] [COMMAND]
+The GitHub cross-repository governance tool
+      --github-token=&lt;token&gt;
+                     The GitHub token
+  -h, --help         Show this help message and exit.
+  -s, --stacktrace   Print stack traces
+  -V, --version      Print version information and exit.
+Commands:
+  create   creates a file in a matching repositories and creates PRs
+  delete   creates PRs to delete files
+  pull     pulls the matching files locally
+  push     pushes the the local changes and creates PRs
+  replace  replaces content in the files and creates PRs
+  search   searches GitHub and prints the matching files
+  status   searches GitHub Pull Requests and prints their statuses</pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can run <code>xattr -d com.apple.quarantine pierrot</code> to remove quarantine from the downloaded file on macOS.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -591,6 +636,9 @@ pulls the matching files locally
 <div class="paragraph">
 <p>JCenter has been shut down so if you still have a references in the build files then you should remove them.</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_full_syntax_5"><a class="anchor" href="#_full_syntax_5"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot push [-hsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
@@ -660,7 +708,7 @@ pushes the the local changes and creates PRs
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_5"><a class="anchor" href="#_full_syntax_5"></a>Full Syntax</h5>
+<h5 id="_full_syntax_6"><a class="anchor" href="#_full_syntax_6"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot replace [-aghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
@@ -721,7 +769,7 @@ replaces content in the files and creates PRs
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_6"><a class="anchor" href="#_full_syntax_6"></a>Full Syntax</h5>
+<h5 id="_full_syntax_7"><a class="anchor" href="#_full_syntax_7"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot status [-aghPsV] [--done-column=&lt;doneColumn&gt;]
@@ -757,8 +805,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.9.1<br>
-Last updated 2021-11-05 10:56:56 UTC
+Version 0.9.3<br>
+Last updated 2021-11-05 14:37:08 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
