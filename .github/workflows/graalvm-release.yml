@@ -51,7 +51,7 @@ jobs:
           New-Item "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}/bin" -ItemType Directory -ea 0
           Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}/bin"
           Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}"
-          Compress-Archive -Path "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}" -Update -DestinationPath ./pierrot-win-amd64.zip
+          Compress-Archive -Path "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}" -Update -DestinationPath ./pierrot-win-amd64-v${{ steps.version.outputs.tag }}.zip
       - name: macOS Archive
         if: ${{ runner.os == 'macOS' }}
         run: |
