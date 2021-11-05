@@ -20,6 +20,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: Semantic Version
+        id: version
+        uses: ncipollo/semantic-version-action@v1
       - uses: actions/cache@v2
         with:
           path: |
@@ -39,33 +42,32 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - name: Build Native Image Snapshot
         run: |
-          ./gradlew :pierrot:buildLayers --no-daemon
-          ./gradlew :pierrot:shadowJar --no-daemon
+          ./gradlew :pierrot:buildLayers --no-daemon -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
+          ./gradlew :pierrot:shadowJar --no-daemon -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
           native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
-          New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
-          Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64/bin"
-          Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
-          Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
+          New-Item "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}/bin" -ItemType Directory -ea 0
+          Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}/bin"
+          Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}"
+          Compress-Archive -Path "./pierrot-win-amd64-v${{ steps.version.outputs.tag }}" -Update -DestinationPath ./pierrot-win-amd64.zip
       - name: macOS Archive
         if: ${{ runner.os == 'macOS' }}
         run: |
-          mkdir -p pierrot-darwin-amd64/bin
-          mv ./pierrot pierrot-darwin-amd64/bin
-          cp ./LICENSE pierrot-darwin-amd64/
-          zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
+          mkdir -p pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/bin
+          mv ./pierrot pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/bin
+          cp ./LICENSE pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/
+          zip -r pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
       - name: Linux Archive
         if: ${{ runner.os == 'Linux' }}
         run: |
-          mkdir -p pierrot-linux-amd64/bin
-          mv ./pierrot pierrot-linux-amd64/bin
-          cp ./LICENSE pierrot-linux-amd64/
-          zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
-      - uses: actions/upload-artifact@v2
+          mkdir -p pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/bin
+          mv ./pierrot pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/bin
+          cp ./LICENSE pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/
+          zip -r pierrot-linux-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-linux-amd64-v${{ steps.version.outputs.tag }}      - uses: actions/upload-artifact@v2
         with:
-          name: pierrot-${{ matrix.os }}.zip
+          name: pierrot-${{ matrix.os }}
           path: pierrot-*.zip
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
@@ -81,7 +83,7 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
         run: |
           export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew :pierrot:dockerPushNative --no-daemon
+          ./gradlew :pierrot:dockerPushNative --no-daemon -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
   upload_to_release:
     name: Upload to Release
     needs: [build]
