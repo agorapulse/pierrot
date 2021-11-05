@@ -7,7 +7,7 @@ of available commands when you run the `pierrot` command without any parameters:
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PierrotCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help.txt[]
 ----
 
 Pierrot requires being authenticated to GitHub. You can either set up `GITHUB_TOKEN` or pass the token as `--github-token` parameter.
@@ -110,7 +110,7 @@ JCenter has been shut down so if you still have a references in the build files 
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/SearchCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/SearchCommandSpec/help.txt[]
 ----
 
 [[_create]]
@@ -149,7 +149,7 @@ https://intellij-asciidoc-plugin.ahus1.de[AsciiDoc Plugin] can provide better su
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/CreateCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/CreateCommandSpec/help.txt[]
 ----
 
 [[_delete]]
@@ -176,7 +176,7 @@ Travis CI was once popular continuous integration server but many projects has m
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/DeleteCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/DeleteCommandSpec/help.txt[]
 ----
 
 [[_pull]]
@@ -211,7 +211,7 @@ JCenter has been shut down so if you still have a references in the build files 
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PullCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PullCommandSpec/help.txt[]
 ----
 
 [[_push]]
@@ -247,7 +247,7 @@ JCenter has been shut down so if you still have a references in the build files 
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/PushCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PushCommandSpec/help.txt[]
 ----
 
 [[_replace]]
@@ -286,7 +286,7 @@ Versions declared in `gradle.properties` files are not well handled by the tools
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/ReplaceCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/ReplaceCommandSpec/help.txt[]
 ----
 
 [[_status]]
@@ -311,6 +311,6 @@ Adding to the project will allow displaying all the running PRs in a status boar
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/StatusCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/StatusCommandSpec/help.txt[]
 ----
 

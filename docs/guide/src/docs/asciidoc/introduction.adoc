@@ -1,6 +1,6 @@
-
 [[_introduction]]
 = Introduction
+
 
 Pierrot is a tool which helps you to manage many GitHub repositories with single command. The typical use cases are
 

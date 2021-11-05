@@ -15,8 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-dependencies {
-    implementation project(":pierrot-hub4j")
+package com.agorapulse.pierrot.cli
 
-    // add example project's dependencies
+class StatusCommandSpec extends AbstractCommandSpec {
+
+    List<String> args = [
+        'status',
+        '--project',
+        PROJECT,
+        '-P',
+        PR_SEARCH_TERM,
+    ]
+
 }

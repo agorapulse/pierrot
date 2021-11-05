@@ -15,8 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-dependencies {
-    implementation project(":pierrot-hub4j")
+package com.agorapulse.pierrot.cli.mixin;
 
-    // add example project's dependencies
+import picocli.CommandLine.Option;
+
+import java.io.File;
+
+public class WorkspaceMixin {
+
+    @Option(
+        names = {"-w", "--workspace"},
+        description = "The working directory to pull found files",
+        defaultValue = "."
+    )
+    File workspace;
+
+    public File getWorkspace() {
+        return workspace;
+    }
 }
+

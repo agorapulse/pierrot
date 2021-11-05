@@ -93,6 +93,18 @@ config {
         }
     }
 
+    docs {
+        groovydoc {
+            enabled = false
+            aggregate  {
+                enabled = false
+            }
+        }
+        sourceHtml {
+            enabled = false
+        }
+    }
+
 }
 
 nexusPublishing {

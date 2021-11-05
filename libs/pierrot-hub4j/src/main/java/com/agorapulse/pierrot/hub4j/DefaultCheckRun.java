@@ -15,8 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-dependencies {
-    implementation project(":pierrot-hub4j")
+package com.agorapulse.pierrot.hub4j;
 
-    // add example project's dependencies
+import com.agorapulse.pierrot.core.CheckRun;
+import org.kohsuke.github.GHCheckRun;
+
+public class DefaultCheckRun implements CheckRun {
+
+    private final GHCheckRun run;
+
+    public DefaultCheckRun(GHCheckRun run) {
+        this.run = run;
+    }
+
+    @Override
+    public String getName() {
+        return run.getName();
+    }
+
+    @Override
+    public String getStatus() {
+        return run.getStatus().toString().toLowerCase();
+    }
+
+    @Override
+    public String getConclusion() {
+        return run.getConclusion().toString().toLowerCase();
+    }
+
 }
