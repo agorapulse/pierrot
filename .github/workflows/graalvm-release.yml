@@ -58,14 +58,14 @@ jobs:
           mkdir -p pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/bin
           mv ./pierrot pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/bin
           cp ./LICENSE pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}/
-          zip -r pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
+          zip -r pierrot-darwin-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-darwin-amd64-v${{ steps.version.outputs.tag }} -x '*.DS_Store*' -x '__MAC_OSX'
       - name: Linux Archive
         if: ${{ runner.os == 'Linux' }}
         run: |
           mkdir -p pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/bin
           mv ./pierrot pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/bin
           cp ./LICENSE pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/
-          zip -r pierrot-linux-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-linux-amd64-v${{ steps.version.outputs.tag }}      - uses: actions/upload-artifact@v2
+          zip -r pierrot-linux-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-linux-amd64-v${{ steps.version.outputs.tag }}
       - uses: actions/upload-artifact@v2
         with:
           name: pierrot-${{ matrix.os }}
