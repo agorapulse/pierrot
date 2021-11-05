@@ -66,6 +66,7 @@ jobs:
           mv ./pierrot pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/bin
           cp ./LICENSE pierrot-linux-amd64-v${{ steps.version.outputs.tag }}/
           zip -r pierrot-linux-amd64-v${{ steps.version.outputs.tag }}.zip ./pierrot-linux-amd64-v${{ steps.version.outputs.tag }}      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: pierrot-${{ matrix.os }}
           path: pierrot-*.zip
