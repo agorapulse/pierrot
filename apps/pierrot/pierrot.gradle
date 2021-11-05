@@ -24,7 +24,8 @@ micronaut {
 }
 
 dependencies {
-    implementation project(':pierrot-core')
+    implementation project(':pierrot-api')
+    implementation project(':pierrot-hub4j')
 
     annotationProcessor("io.micronaut:micronaut-graal")
     annotationProcessor("info.picocli:picocli-codegen")
@@ -43,7 +44,7 @@ dependencies {
 
 
 application {
-    mainClass.set("com.agorapulse.pierrot.PierrotCommand")
+    mainClass.set("com.agorapulse.pierrot.cli.PierrotCommand")
 }
 
 dockerBuild {

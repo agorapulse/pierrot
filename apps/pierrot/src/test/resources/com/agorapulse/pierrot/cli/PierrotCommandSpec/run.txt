@@ -1,0 +1,15 @@
+Usage: pierrot [-hsV] [--github-token=<token>] [COMMAND]
+The GitHub cross-repository governance tool
+      --github-token=<token>
+                     The GitHub token
+  -h, --help         Show this help message and exit.
+  -s, --stacktrace   Print stack traces
+  -V, --version      Print version information and exit.
+Commands:
+  create   creates a file in a matching repositories and creates PRs
+  delete   creates PRs to delete files
+  pull     pulls the matching files locally
+  push     pushes the the local changes and creates PRs
+  replace  replaces content in the files and creates PRs
+  search   searches GitHub and prints the matching files
+  status   searches GitHub Pull Requests and prints their statuses

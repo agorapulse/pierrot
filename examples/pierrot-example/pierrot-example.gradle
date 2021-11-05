@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 dependencies {
-    implementation project(":pierrot-core")
+    implementation project(":pierrot-hub4j")
 
     // add example project's dependencies
 }
