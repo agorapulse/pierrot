@@ -87,6 +87,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
       id: download
     - name: Semantic Version
