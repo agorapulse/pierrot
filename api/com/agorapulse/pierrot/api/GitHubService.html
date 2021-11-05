@@ -150,26 +150,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="Project.html" title="interface in com.agorapulse.pierrot.api">Project</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findOrCreateProject(java.lang.String,java.lang.String,java.lang.String)">findOrCreateProject</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;org,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;project,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;column)</code></th>
+<td class="colFirst"><code>java.util.Optional&lt;<a href="Project.html" title="interface in com.agorapulse.pierrot.api">Project</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findOrCreateProject(java.lang.String,java.lang.String,java.lang.String)">findOrCreateProject</a></span>&#8203;(java.lang.String&nbsp;org,
+                   java.lang.String&nbsp;project,
+                   java.lang.String&nbsp;column)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="Repository.html" title="interface in com.agorapulse.pierrot.api">Repository</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRepository(java.lang.String)">getRepository</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;repositoryFullName)</code></th>
+<td class="colFirst"><code>java.util.Optional&lt;<a href="Repository.html" title="interface in com.agorapulse.pierrot.api">Repository</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRepository(java.lang.String)">getRepository</a></span>&#8203;(java.lang.String&nbsp;repositoryFullName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream" class="externalLink">Stream</a>&lt;<a href="Content.html" title="interface in com.agorapulse.pierrot.api">Content</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchContent(java.lang.String,boolean)">searchContent</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
+<td class="colFirst"><code>java.util.stream.Stream&lt;<a href="Content.html" title="interface in com.agorapulse.pierrot.api">Content</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchContent(java.lang.String,boolean)">searchContent</a></span>&#8203;(java.lang.String&nbsp;query,
              boolean&nbsp;global)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream" class="externalLink">Stream</a>&lt;? extends <a href="PullRequest.html" title="interface in com.agorapulse.pierrot.api">PullRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchPullRequests(java.lang.String,boolean,boolean)">searchPullRequests</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
+<td class="colFirst"><code>java.util.stream.Stream&lt;? extends <a href="PullRequest.html" title="interface in com.agorapulse.pierrot.api">PullRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchPullRequests(java.lang.String,boolean,boolean)">searchPullRequests</a></span>&#8203;(java.lang.String&nbsp;query,
                   boolean&nbsp;openOnly,
                   boolean&nbsp;global)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -197,8 +197,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>searchContent</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream" class="externalLink">Stream</a>&lt;<a href="Content.html" title="interface in com.agorapulse.pierrot.api">Content</a>&gt;&nbsp;searchContent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
-                              boolean&nbsp;global)</pre>
+<pre class="methodSignature">java.util.stream.Stream&lt;<a href="Content.html" title="interface in com.agorapulse.pierrot.api">Content</a>&gt;&nbsp;searchContent&#8203;(java.lang.String&nbsp;query,
+                                               boolean&nbsp;global)</pre>
 </li>
 </ul>
 <a id="getRepository(java.lang.String)">
@@ -207,7 +207,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>getRepository</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="Repository.html" title="interface in com.agorapulse.pierrot.api">Repository</a>&gt;&nbsp;getRepository&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;repositoryFullName)</pre>
+<pre class="methodSignature">java.util.Optional&lt;<a href="Repository.html" title="interface in com.agorapulse.pierrot.api">Repository</a>&gt;&nbsp;getRepository&#8203;(java.lang.String&nbsp;repositoryFullName)</pre>
 </li>
 </ul>
 <a id="searchPullRequests(java.lang.String,boolean,boolean)">
@@ -216,9 +216,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>searchPullRequests</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream" class="externalLink">Stream</a>&lt;? extends <a href="PullRequest.html" title="interface in com.agorapulse.pierrot.api">PullRequest</a>&gt;&nbsp;searchPullRequests&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
-                                                 boolean&nbsp;openOnly,
-                                                 boolean&nbsp;global)</pre>
+<pre class="methodSignature">java.util.stream.Stream&lt;? extends <a href="PullRequest.html" title="interface in com.agorapulse.pierrot.api">PullRequest</a>&gt;&nbsp;searchPullRequests&#8203;(java.lang.String&nbsp;query,
+                                                                  boolean&nbsp;openOnly,
+                                                                  boolean&nbsp;global)</pre>
 </li>
 </ul>
 <a id="findOrCreateProject(java.lang.String,java.lang.String,java.lang.String)">
@@ -227,9 +227,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockListLast">
 <li class="blockList">
 <h4>findOrCreateProject</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="Project.html" title="interface in com.agorapulse.pierrot.api">Project</a>&gt;&nbsp;findOrCreateProject&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;org,
-                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;project,
-                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;column)</pre>
+<pre class="methodSignature">java.util.Optional&lt;<a href="Project.html" title="interface in com.agorapulse.pierrot.api">Project</a>&gt;&nbsp;findOrCreateProject&#8203;(java.lang.String&nbsp;org,
+                                                java.lang.String&nbsp;project,
+                                                java.lang.String&nbsp;column)</pre>
 </li>
 </ul>
 </li>
