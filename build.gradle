@@ -35,7 +35,7 @@ config {
     info {
         name        = 'Pierrot'
         vendor      = 'Agorapulse'
-        description = 'Pierrot the PR Pilot'
+        description = 'Pierrot - Multi-repository GitHub Governance Tool'
 
         links {
             website      = 'https://github.com/' + slug
