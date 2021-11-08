@@ -79,7 +79,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build And Push Docker Image Snapshot (master and Linux only)
-        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
+        if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
         env:
           DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
