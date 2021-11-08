@@ -86,11 +86,14 @@ public class PierrotCommand implements Runnable {
             .builder(PierrotCommand.class, Environment.CLI)
             .propertySources(commandLinePropertySource, mapSource);
 
+        int exitCode;
+
         try (ApplicationContext ctx = builder.start()) {
             CommandLine cmd = new CommandLine(PierrotCommand.class, new MicronautFactory(ctx));
-            cmd.setExitCodeExceptionMapper(e -> CommandLine.ExitCode.SOFTWARE);
-            cmd.execute(args);
+            exitCode = cmd.execute(args);
         }
+
+        System.exit(exitCode);
     }
 
     public void run() {
