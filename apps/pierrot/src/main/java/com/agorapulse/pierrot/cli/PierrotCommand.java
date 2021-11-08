@@ -18,7 +18,7 @@
 package com.agorapulse.pierrot.cli;
 
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
-import io.micronaut.configuration.picocli.PicocliRunner;
+import io.micronaut.configuration.picocli.MicronautFactory;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.CommandLinePropertySource;
@@ -86,9 +86,14 @@ public class PierrotCommand implements Runnable {
             .builder(PierrotCommand.class, Environment.CLI)
             .propertySources(commandLinePropertySource, mapSource);
 
+        int exitCode;
+
         try (ApplicationContext ctx = builder.start()) {
-            PicocliRunner.run(PierrotCommand.class, ctx, args);
+            CommandLine cmd = new CommandLine(PierrotCommand.class, new MicronautFactory(ctx));
+            exitCode = cmd.execute(args);
         }
+
+        System.exit(exitCode);
     }
 
     public void run() {
