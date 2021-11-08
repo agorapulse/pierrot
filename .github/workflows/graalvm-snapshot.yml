@@ -53,6 +53,7 @@ jobs:
           GITHUB_ORG: agorapulse
         run: |
           ./pierrot search org:agorapulse search filename:.testfile
+          ./pierrot status author:musketyr repo:agorapulse/pierrot
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
