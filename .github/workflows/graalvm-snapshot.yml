@@ -48,6 +48,9 @@ jobs:
           native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Verify Binary
         if: ${{ runner.os == 'Linux' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
+          GITHUB_ORG: agorapulse
         run: |
           ./pierrot search org:agorapulse search filename:.testfile
       - name: Windows Archive
