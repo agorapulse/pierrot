@@ -52,8 +52,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
           GITHUB_ORG: agorapulse
         run: |
-          ./pierrot search org:agorapulse search filename:.testfile
-          ./pierrot status author:musketyr repo:agorapulse/pierrot
+          ./pierrot search repo:agorapulse/pierrot filename:.testfile
+          ./pierrot status repo:agorapulse/pierrot author:musketyr
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
