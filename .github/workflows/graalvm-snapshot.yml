@@ -72,7 +72,7 @@ jobs:
           name: pierrot-${{ matrix.os }}.zip
           path: pierrot-*.zip
       - name: Docker login (master and Linux only)
-        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
+        if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.DOCKER_REGISTRY_URL }}
