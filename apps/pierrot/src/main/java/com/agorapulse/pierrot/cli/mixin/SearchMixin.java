@@ -134,6 +134,12 @@ public class SearchMixin {
         }
     }
 
+    public void constraintToRepositories(List<String> repositoryFullNames) {
+        if (!repositoryFullNames.isEmpty()) {
+            queries.add("repo:" + String.join(",", repositoryFullNames));
+        }
+    }
+
     private boolean isNoPage() {
         if (noPage) {
             return true;
