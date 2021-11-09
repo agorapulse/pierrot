@@ -198,6 +198,14 @@ pierrot-workspace
 
 ----
 
+You can use `--workspace-repositories-only` flag to only search within the exisiting workspace repositories.
+
+[source,bash]
+----
+  -o, --workspace-repositories-only
+                     Search only within the existing workspace repositories
+----
+
 ==== Examples
 
 [source,bash]

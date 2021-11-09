@@ -23,10 +23,17 @@ class PullCommandSpec extends AbstractCommandSpec {
         return [
             'pull',
             '-P',
+            '-o',
             '-w',
             workspace.canonicalPath,
             CONTENT_SEARCH_TERM,
         ]
+    }
+
+    void setup() {
+        File file = new File(workspace, "$REPOSITORY_ONE/.keepme")
+        file.parentFile.mkdirs()
+        file.createNewFile()
     }
 
     @Override

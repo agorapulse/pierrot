@@ -169,6 +169,10 @@ abstract class AbstractCommandSpec extends Specification {
             Stream.of(content1, content2, content3)
         }
 
+        searchContent("$CONTENT_SEARCH_TERM repo:$REPOSITORY_ONE", false) >> {
+            Stream.of(content1, content2, content3)
+        }
+
         searchPullRequests(PR_SEARCH_TERM, true, false) >> {
             Stream.of(pullRequest1, pullRequest2)
         }
