@@ -107,7 +107,7 @@ $(addBlockSwitches);
 <h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.9.4</span>
+<span id="revnumber">version 0.9.5</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -569,6 +569,15 @@ use <code>push</code> command to create new pull requests for changes.</p>
         └── build.gradle</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can use <code>--workspace-repositories-only</code> flag to only search within the exisiting workspace repositories.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">  -o, --workspace-repositories-only
+                     Search only within the existing workspace repositories</code></pre>
+</div>
+</div>
 <div class="sect4">
 <h5 id="_examples_4"><a class="anchor" href="#_examples_4"></a>Examples</h5>
 <div class="listingblock">
@@ -585,7 +594,8 @@ use <code>push</code> command to create new pull requests for changes.</p>
 <h5 id="_full_syntax_4"><a class="anchor" href="#_full_syntax_4"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghPsV] [--github-token=&lt;token&gt;] [-w=&lt;workspace&gt;] QUERY...
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghoPsV] [--github-token=&lt;token&gt;] [-w=&lt;workspace&gt;]
+                    QUERY...
 pulls the matching files locally
       QUERY...       The search term such as 'org:agorapulse filename:build.
                        gradle'
@@ -594,6 +604,8 @@ pulls the matching files locally
       --github-token=&lt;token&gt;
                      The GitHub token
   -h, --help         Show this help message and exit.
+  -o, --workspace-repositories-only
+                     Search only within the existing workspace repositories
   -P, --no-page      Do not wait after each result
   -s, --stacktrace   Print stack traces
   -V, --version      Print version information and exit.
@@ -805,8 +817,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.9.4<br>
-Last updated 2021-11-08 17:22:36 UTC
+Version 0.9.5<br>
+Last updated 2021-11-09 10:24:24 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
