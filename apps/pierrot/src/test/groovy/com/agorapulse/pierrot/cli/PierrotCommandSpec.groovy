@@ -31,7 +31,7 @@ class PierrotCommandSpec extends AbstractCommandSpec {
     void 'run main'() {
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.main('--help', '--github-token=token', '-s')
+                PierrotCommand.execute('--help', '--github-token=token', '-s')
             }
 
         then:
@@ -41,7 +41,7 @@ class PierrotCommandSpec extends AbstractCommandSpec {
     void 'run main without token'() {
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.main('--help')
+                PierrotCommand.execute('--help')
             }
 
         then:

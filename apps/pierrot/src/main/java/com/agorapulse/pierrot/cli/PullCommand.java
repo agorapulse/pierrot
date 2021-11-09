@@ -18,6 +18,7 @@
 package com.agorapulse.pierrot.cli;
 
 import com.agorapulse.pierrot.api.GitHubService;
+import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.ws.Workspace;
 import com.agorapulse.pierrot.cli.mixin.SearchMixin;
 import com.agorapulse.pierrot.cli.mixin.WorkspaceMixin;
@@ -51,17 +52,42 @@ public class PullCommand implements Runnable {
 
     @Override
     public void run() {
+        List<String> repositoryFullNames = new ArrayList<>();
         if (workspaceRepositoriesOnly) {
             Workspace w = new Workspace(workspace.getWorkspace());
-            List<String> repositoryFullNames = new ArrayList<>();
             w.visitRepositories(r -> repositoryFullNames.add(r.getName()));
-            search.constraintToRepositories(repositoryFullNames);
         }
 
         search.searchContent(service, content -> {
-            File location = new File(workspace.getWorkspace(), String.format("%s/%s", content.getRepository().getFullName(), content.getPath()));
+            String repositoryFullName = content.getRepository().getFullName();
+
+            if (!repositoryFullNames.isEmpty() && !repositoryFullNames.contains(repositoryFullName)) {
+                System.out.printf("Ignoring %s/%s as the repository is not pulled%n", repositoryFullName, content.getPath());
+                return Optional.empty();
+            }
+
+            Optional<Repository> maybeRepository = service.getRepository(repositoryFullName);
+
+            if (maybeRepository.isEmpty()) {
+                System.out.printf("Repository %s is not available.%n", repositoryFullName);
+                return Optional.empty();
+            }
+
+            Repository ghr = maybeRepository.get();
+
+            if (ghr.isArchived()) {
+                System.out.printf("Repository %s is archived.%n", ghr.getFullName());
+                return Optional.empty();
+            }
+
+            if (!ghr.canWrite()) {
+                System.out.printf("Current user does not have write rights to the repository %s.%n", ghr.getFullName());
+                return Optional.empty();
+            }
+
+            File location = new File(workspace.getWorkspace(), String.format("%s/%s", repositoryFullName, content.getPath()));
             content.writeTo(location);
-            System.out.printf("Fetched %s/%s%n", content.getRepository().getFullName(), content.getPath());
+            System.out.printf("Fetched %s/%s%n", repositoryFullName, content.getPath());
             return Optional.of(location.toURI());
         });
 
