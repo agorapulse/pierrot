@@ -67,6 +67,10 @@ public class PierrotCommand implements Runnable {
     String token;
 
     public static void main(String[] args) {
+        System.exit(execute(args));
+    }
+
+    static int execute(String[] args) {
         if (args.length == 0) {
             args = new String[] {"--help"};
         }
@@ -92,8 +96,7 @@ public class PierrotCommand implements Runnable {
             CommandLine cmd = new CommandLine(PierrotCommand.class, new MicronautFactory(ctx));
             exitCode = cmd.execute(args);
         }
-
-        System.exit(exitCode);
+        return exitCode;
     }
 
     public void run() {

@@ -44,10 +44,8 @@ class PullCommandSpec extends AbstractCommandSpec {
 
         assert file1.exists()
         assert file1.text == CONTENT
-        assert file2.exists()
-        assert file2.text == CONTENT.reverse()
-        assert file3.exists()
-        assert file3.text == CONTENT
+        assert !file2.exists()
+        assert !file3.exists()
 
         return true
     }

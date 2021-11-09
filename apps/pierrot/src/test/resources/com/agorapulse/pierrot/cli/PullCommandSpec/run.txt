@@ -1,5 +1,5 @@
-Searching content for 'org:agorapulse filename:.testfile repo:agorapulse/pierrot'!
+Searching content for 'org:agorapulse filename:.testfile'!
 Fetched agorapulse/pierrot/.testfile
-Fetched agorapulse/oss/.testfile
-Fetched agorapulse/oss/prefix/.testfile
+Ignoring agorapulse/oss/.testfile as the repository is not pulled
+Ignoring agorapulse/oss/prefix/.testfile as the repository is not pulled
 Found 3 results!

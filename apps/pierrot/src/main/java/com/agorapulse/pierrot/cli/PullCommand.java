@@ -62,7 +62,7 @@ public class PullCommand implements Runnable {
             String repositoryFullName = content.getRepository().getFullName();
 
             if (!repositoryFullNames.isEmpty() && !repositoryFullNames.contains(repositoryFullName)) {
-                System.out.printf("Repository %s is present in the current workspace.%n", repositoryFullName);
+                System.out.printf("Ignoring %s/%s as the repository is not pulled%n", repositoryFullName, content.getPath());
                 return Optional.empty();
             }
 
