@@ -43,6 +43,7 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - name: Build Native Image Snapshot
         run: |
+          ./gradlew :docs:html2text
           ./gradlew :pierrot:buildLayers --no-daemon
           ./gradlew :pierrot:shadowJar --no-daemon
           native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
@@ -60,6 +61,7 @@ jobs:
           New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
           Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64/bin"
           Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
+          Copy-Item "./docs/guide/build/html2text/README" -Destination "./pierrot-win-amd64/README"
           Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
       - name: macOS Archive
         if: ${{ runner.os == 'macOS' }}
@@ -67,6 +69,7 @@ jobs:
           mkdir -p pierrot-darwin-amd64/bin
           mv ./pierrot pierrot-darwin-amd64/bin
           cp ./LICENSE pierrot-darwin-amd64/
+          cp ./docs/guide/build/html2text/README pierrot-darwin-amd64/README
           zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
       - name: Linux Archive
         if: ${{ runner.os == 'Linux' }}
@@ -74,6 +77,7 @@ jobs:
           mkdir -p pierrot-linux-amd64/bin
           mv ./pierrot pierrot-linux-amd64/bin
           cp ./LICENSE pierrot-linux-amd64/
+          cp ./docs/guide/build/html2text/README pierrot-linux-amd64/README
           zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
       - uses: actions/upload-artifact@v2
         with:

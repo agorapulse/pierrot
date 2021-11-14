@@ -15,6 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.jsoup.Jsoup
+
+import java.nio.charset.StandardCharsets
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jsoup:jsoup:1.14.3'
+    }
+}
+
 plugins {
     id 'org.kordamp.gradle.guide'
     id 'org.ajoberstar.git-publish'
@@ -50,4 +64,31 @@ asciidoctor {
         'project-slug': slug
     ]
 
+}
+
+tasks.register('html2text') { Task task ->
+    File indexFile = new File(createGuide.destinationDir, 'index.html')
+    File outputFile = new File(project.buildDir, 'html2text/README')
+
+    task.dependsOn(createGuide)
+    task.group('documentation')
+    task.inputs.file(indexFile)
+    task.outputs.file(outputFile)
+
+    task.doFirst {
+        String text = Jsoup.parse(indexFile, 'UTF-8')
+            // the whole text containing line breaks
+            .wholeText()
+            // reduce line-breaks to the maximum of two
+            .replaceAll(/(\n\n)(\n+)/, /$1/)
+            // remove extra whitespace at the beginning and at the end
+            .trim()
+            // remove the duplicate heading
+            .replaceFirst(/.*\n/, '')
+            // clean up the extra whitespaces again
+            .trim()
+
+        outputFile.parentFile.mkdirs()
+        outputFile.text = text
+    }
 }
