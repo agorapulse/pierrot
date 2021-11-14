@@ -18,8 +18,6 @@
 
 import org.jsoup.Jsoup
 
-import java.nio.charset.StandardCharsets
-
 buildscript {
     repositories {
         mavenCentral()
