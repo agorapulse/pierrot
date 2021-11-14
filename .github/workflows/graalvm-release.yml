@@ -42,7 +42,7 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - name: Build Native Image Snapshot
         run: |
-          ./gradlew :docs:html2text --no-daemon -Pversion="${{ steps.version.outputs.tag }}" -Prelease=true
+          ./gradlew :guide:html2text --no-daemon -Pversion="${{ steps.version.outputs.tag }}" -Prelease=true
           ./gradlew :pierrot:buildLayers --no-daemon -Pversion="${{ steps.version.outputs.tag }}" -Prelease=true
           ./gradlew :pierrot:shadowJar --no-daemon -Pversion="${{ steps.version.outputs.tag }}" -Prelease=true
           native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
