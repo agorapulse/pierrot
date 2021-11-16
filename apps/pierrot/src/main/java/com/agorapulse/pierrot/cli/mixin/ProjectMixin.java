@@ -87,6 +87,21 @@ public class ProjectMixin implements ProjectSource {
         });
     }
 
+    public Optional<PullRequest> removeFromProject(GitHubService service, Optional<PullRequest> pullRequest) {
+        if (StringUtils.isEmpty(project)) {
+            // project must be specified to remove from project
+            return pullRequest;
+        }
+        return pullRequest.map(pr -> {
+            String defaultOrganization = pr.getRepository().getOwnerName();
+            service.findProject(defaultOrganization, project).ifPresent(p -> {
+                p.remove(pr);
+                board = p;
+            });
+            return pr;
+        });
+    }
+
     @Override
     public Optional<Project> getProject() {
         return Optional.ofNullable(board);
@@ -105,4 +120,8 @@ public class ProjectMixin implements ProjectSource {
         return todoColumn;
     }
 
+    @Override
+    public boolean hasProject() {
+        return StringUtils.isNotEmpty(project);
+    }
 }

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class DefaultProject implements Project {
@@ -50,7 +51,7 @@ public class DefaultProject implements Project {
                     try {
                         return Optional.of(project.createColumn(column));
                     } catch (IOException e) {
-                        LOGGER.error("Exception creating column " + column + " in project " + project.getName(), e);
+                        LOGGER.error(String.format("Exception creating column %s in project %s", column, project.getName()), e);
                         return Optional.empty();
                     }
                 })
@@ -60,17 +61,50 @@ public class DefaultProject implements Project {
                             col.createCard(((DefaultPullRequest) pr).getNativePullRequest());
                         } catch (HttpException e) {
                             if (e.getResponseCode() != 422) {
-                                LOGGER.error("Exception while adding PR to the column " + column + " in project " + project.getName(), e);
+                                LOGGER.error(String.format("Exception while adding PR to the column %s in project %s", column, project.getName()), e);
                             }
                         } catch (IOException e) {
-                            LOGGER.error("Exception while adding PR to the column " + column + " in project " + project.getName(), e);
+                            LOGGER.error(String.format("Exception while adding PR to the column %s in project %s", column, project.getName()), e);
                         }
                     } else {
-                        LOGGER.error("Cannot add PR to the column " + column + " in project " + project.getName() + " - wrong type");
+                        LOGGER.error(String.format("Cannot add PR to the column %s in project %s - wrong type", column, project.getName()));
                     }
                 });
         } catch (IOException e) {
-            LOGGER.error("Exception adding PR to the column " + column + " in project " + project.getName(), e);
+            LOGGER.error(String.format("Exception adding PR to the column %s in project %s", column, project.getName()), e);
+        }
+    }
+
+    @Override
+    public void remove(PullRequest pr) {
+        try {
+            StreamSupport.stream(project.listColumns().spliterator(), false)
+                .flatMap(col -> {
+                    try {
+                        return StreamSupport.stream(col.listCards().spliterator(), false);
+                    } catch (IOException e) {
+                        LOGGER.error(String.format("Cannot list project cards from column %s in %s", col, project.getName()), e);
+                        return Stream.empty();
+                    }
+                })
+                .filter(card -> {
+                    try {
+                        return card.getContent().getHtmlUrl().equals(pr.getHtmlUrl());
+                    } catch (IOException e) {
+                        LOGGER.error(String.format("Cannot fetch content of project card %d from %s", card.getId(), project.getName()), e);
+                        return false;
+                    }
+                })
+                .findFirst()
+                .ifPresent(card -> {
+                    try {
+                        card.delete();
+                    } catch (IOException e) {
+                        LOGGER.error(String.format("Cannot remove project card %d from %s", card.getId(), project.getName()), e);
+                    }
+                });
+        } catch (IOException e) {
+            LOGGER.error(String.format("Exception removing PR %s from project %s", pr.getTitle(), project.getName()), e);
         }
     }
 

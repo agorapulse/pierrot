@@ -42,4 +42,6 @@ public interface PullRequest extends Ignorable {
     }
 
     URL getHtmlUrl();
+
+    boolean close(boolean delete);
 }

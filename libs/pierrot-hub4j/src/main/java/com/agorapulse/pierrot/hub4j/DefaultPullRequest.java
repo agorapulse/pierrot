@@ -22,6 +22,12 @@ import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.core.util.StringUtils;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
@@ -41,17 +47,19 @@ public class DefaultPullRequest implements PullRequest {
     private final GHRepository repository;
     private final GHUser myself;
     private final GitHubConfiguration configuration;
+    private final HttpClient client;
 
-    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
+    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
         this.pr = pr;
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
+        this.client = client;
     }
 
     @Override
     public Repository getRepository() {
-        return new DefaultRepository(repository, myself, configuration);
+        return new DefaultRepository(repository, myself, configuration, client);
     }
 
     @Override
@@ -107,6 +115,48 @@ public class DefaultPullRequest implements PullRequest {
     @Override
     public URL getHtmlUrl() {
         return pr.getHtmlUrl();
+    }
+
+    @Override
+    public boolean close(boolean delete) {
+        String repoName = pr.getRepository().getFullName();
+
+        if (GHIssueState.CLOSED.equals(pr.getState())) {
+            return true;
+        }
+
+        try {
+            pr.close();
+            LOGGER.info("Closed #{}/{}: {}", repoName, pr.getId(), pr.getTitle());
+        } catch (IOException e) {
+            LOGGER.error(String.format("Exception closing pull request for #%d: %s", pr.getId(), pr.getTitle()), e);
+            return false;
+        }
+
+        if (!delete) {
+            return false;
+        }
+
+        String branchName = pr.getHead().getRef();
+
+        if (StringUtils.isEmpty(configuration.getToken())) {
+            LOGGER.error("Missing token, cannot delete pull request branch {} for #{}: {}", branchName, pr.getId(), pr.getTitle());
+            return false;
+        }
+
+        MutableHttpRequest<Object> request = HttpRequest
+            .DELETE("https://api.github.com/repos/" + repoName + "/git/refs/heads/" + branchName)
+            .header("User-Agent", "Pierrot")
+            .header("Authorization", "token " + configuration.getToken());
+
+        try {
+            client.toBlocking().exchange(request);
+            LOGGER.info("Deleted branch {} in {}", branchName, repoName);
+            return true;
+        } catch (HttpClientResponseException e) {
+            LOGGER.error(String.format("Cannot delete pull request branch %s for #%s: %s", branchName, pr.getId(), pr.getTitle()), e);
+            return false;
+        }
     }
 
     GHPullRequest getNativePullRequest() {

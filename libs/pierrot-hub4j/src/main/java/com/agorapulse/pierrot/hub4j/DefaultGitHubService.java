@@ -26,6 +26,7 @@ import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
+import io.micronaut.http.client.HttpClient;
 import jakarta.inject.Singleton;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHMyself;
@@ -374,25 +375,27 @@ public class DefaultGitHubService implements GitHubService {
 
     private final GitHubConfiguration configuration;
     private final GitHub client;
+    private final HttpClient httpClient;
 
     private GHMyself myself;
 
-    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client) {
+    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client, HttpClient httpClient) {
         this.configuration = configuration;
         this.client = client;
+        this.httpClient = httpClient;
     }
 
     @Override
     public Stream<Content> searchContent(String query, boolean global) {
         return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
-            new DefaultContent(content, content.getOwner(), getMyself(), configuration)
+            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient)
         );
     }
 
     @Override
     public Optional<Repository> getRepository(String repositoryFullName) {
         try {
-            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration));
+            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
         } catch (IOException e) {
             LOGGER.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
@@ -412,7 +415,7 @@ public class DefaultGitHubService implements GitHubService {
                     String repoFullName = url.substring(PR_URL_REPO_PREFIX.length(), url.lastIndexOf(PR_URL_REPO_SUFFIX));
                     GHRepository repository = client.getRepository(repoFullName);
                     GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
-                    return new DefaultPullRequest(pullRequest, repository, myself, configuration);
+                    return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
                 } catch (IOException e) {
                     LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
                     return null;
@@ -422,29 +425,40 @@ public class DefaultGitHubService implements GitHubService {
     }
 
     @Override
-    public Optional<Project> findOrCreateProject(String org, String project, String column) {
+    public Optional<Project> findProject(String org, String project) {
         try {
             return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
                 .filter(p -> project.equals(p.getName()))
                 .findFirst()
-                .or(() -> {
-                    try {
-                        GHProject newProject = client.getOrganization(org).createProject(project, "Created by Pierrot");
-                        newProject.createColumn(column);
-                        LOGGER.info("New project created, you will need to add more column and set up automation yourself!");
-                        LOGGER.info("    {}", newProject.getHtmlUrl());
-                        return Optional.of(newProject);
-                    } catch (IOException e) {
-                        LOGGER.error("Exception creating project " + project + " in organization " + org, e);
-                        return Optional.empty();
-                    }
-                })
                 .map(DefaultProject::new);
-
         } catch (IOException e) {
             LOGGER.error("Exception fetching organization " + org, e);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<Project> findOrCreateProject(String org, String project, String column) {
+        return findProject(org, project)
+            .or(() -> {
+                try {
+                    GHProject newProject = client.getOrganization(org).createProject(project, "Created by Pierrot");
+                    for (String newColumn : configuration.getProjectColumns()) {
+                        newProject.createColumn(newColumn);
+                    }
+
+                    if (!configuration.getProjectColumns().contains(column)) {
+                        newProject.createColumn(column);
+                    }
+
+                    LOGGER.info("New project created, you will need set up column automation yourself!");
+                    LOGGER.info("    {}", newProject.getHtmlUrl());
+                    return Optional.of(new DefaultProject(newProject));
+                } catch (IOException e) {
+                    LOGGER.error("Exception creating project " + project + " in organization " + org, e);
+                    return Optional.empty();
+                }
+            });
     }
 
     private GHUser getMyself() {
