@@ -107,3 +107,15 @@ jobs:
         UPLOAD_URL: https://uploads.github.com/repos/${{ github.event.repository.full_name }}/releases/${{ github.event.release.id }}/assets
         ARTIFACT_DIRECTORY:  ${{steps.download.outputs.download-path}}
       run: .github/workflows/upload_to_release.sh
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      env:
+        SDKMAN_KEY: ${{ secrets.SDKMAN_KEY }}
+        SDKMAN_TOKEN: ${{ secrets.SDKMAN_TOKEN }}
+      with:
+        # skip announce while under active development
+        # change to sdkMajorRelease once stabilized
+        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion
