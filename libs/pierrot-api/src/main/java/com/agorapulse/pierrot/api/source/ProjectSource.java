@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot.api.source;
 
-import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.api.Project;
 import com.agorapulse.pierrot.api.PullRequest;
 
