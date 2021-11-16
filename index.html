@@ -107,7 +107,7 @@ $(addBlockSwitches);
 <h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.9.8</span>
+<span id="revnumber">version 0.9.9</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -214,8 +214,19 @@ $(addBlockSwitches);
 <h2 id="_installation"><a class="anchor" href="#_installation"></a>2. Installation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Download and extract <a href="https://github.com/agorapulse/micronaut-worker/releases/latest"> the latest binaries from the release page</a> and add the <code>bin</code> folder to your <code>PATH</code>
-then you should see the following message when you run the <code>pierrot</code> command:</p>
+<p>Pierrot can be installed using <a href="https://sdkman.io/sdks#pierrot">SDKMAN!</a></p>
+</div>
+<hr>
+<div class="paragraph">
+<p>sdk update
+sdk install pierrot
+---</p>
+</div>
+<div class="paragraph">
+<p>Alternatively Download and extract <a href="https://github.com/agorapulse/micronaut-worker/releases/latest"> the latest binaries from the release page</a> and add the <code>bin</code> folder to your <code>PATH</code>.</p>
+</div>
+<div class="paragraph">
+<p>Once installed, you should see the following message when you run the <code>pierrot</code> command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -763,7 +774,18 @@ replaces content in the files and creates PRs
 <div class="sect3">
 <h4 id="_status"><a class="anchor" href="#_status"></a>3.2.7. Status Command</h4>
 <div class="paragraph">
-<p>The <code>status</code> command allows search pull requests and display their status.</p>
+<p>The <code>status</code> command allows search pull requests and display their status. If the project name is defined using <code>--project</code> then the PRs are
+also added from the given project.</p>
+</div>
+<div class="paragraph">
+<p>You can also batch-close the pull request that matches given search terms using <code>--close</code> or <code>--delete</code>
+flags. If the project name is defined using <code>--project</code> then the PRs are also removed from the given project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">  -c, --close               Close the pull requests
+  -d, --delete              Also delete PR branches, implies --close</code></pre>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_examples_7"><a class="anchor" href="#_examples_7"></a>Examples</h5>
@@ -773,7 +795,7 @@ replaces content in the files and creates PRs
 <pre class="prettyprint highlight"><code data-lang="bash">pierrot status \
   --all \
   --project='Micronaut Upgrade' \
-  Micronaut Upgrade 3.1.0</code></pre>
+  "Micronaut Upgrade 3.1.0"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -784,7 +806,7 @@ replaces content in the files and creates PRs
 <h5 id="_full_syntax_7"><a class="anchor" href="#_full_syntax_7"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot status [-aghPsV] [--done-column=&lt;doneColumn&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot status [-acdghPsV] [--done-column=&lt;doneColumn&gt;]
                       [--github-token=&lt;token&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
                       [--project=&lt;project&gt;] [--todo-column=&lt;todoColumn&gt;]
@@ -793,6 +815,8 @@ searches GitHub Pull Requests and prints their statuses
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
   -a, --all                 Include archived and closed
+  -c, --close               Close the pull requests
+  -d, --delete              Also delete PR branches, implies --close
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
@@ -817,8 +841,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.9.8<br>
-Last updated 2021-11-14 06:11:05 UTC
+Version 0.9.9<br>
+Last updated 2021-11-16 12:30:39 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
