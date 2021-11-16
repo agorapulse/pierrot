@@ -34,7 +34,9 @@ class CreateCommandSpec extends AbstractCommandSpec {
         '--project',
         PROJECT,
         '-P',
-        CONTENT_SEARCH_TERM,
+        CONTENT_SEARCH_TERM_1,
+        CONTENT_SEARCH_TERM_2,
+        CONTENT_SEARCH_TERM_3,
     ]
 
     void 'use file to upload content'() {
@@ -53,7 +55,9 @@ class CreateCommandSpec extends AbstractCommandSpec {
                 '--from',
                 content.canonicalPath,
                 '-P',
-                CONTENT_SEARCH_TERM,
+                CONTENT_SEARCH_TERM_1,
+                CONTENT_SEARCH_TERM_2,
+                CONTENT_SEARCH_TERM_3,
             ])
     }
 

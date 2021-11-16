@@ -38,7 +38,10 @@ import java.util.stream.Stream
 abstract class AbstractCommandSpec extends Specification {
 
     public static final String OWNER = 'agorapulse'
-    public static final String CONTENT_SEARCH_TERM = 'org:agorapulse filename:.testfile'
+    public static final String CONTENT_SEARCH_TERM_1 = 'org:agorapulse'
+    public static final String CONTENT_SEARCH_TERM_2 = 'filename:.testfile'
+    public static final String CONTENT_SEARCH_TERM_3 = 'hello world'
+    public static final String CONTENT_SEARCH_TERM_EXPECTED = "$CONTENT_SEARCH_TERM_1 $CONTENT_SEARCH_TERM_2 \"$CONTENT_SEARCH_TERM_3\""
     public static final String BRANCH = 'chore/test'
     public static final String TITLE = 'Test Title'
     public static final String MESSAGE = 'Test Message'
@@ -165,11 +168,11 @@ abstract class AbstractCommandSpec extends Specification {
         getRepository(REPOSITORY_ONE) >> Optional.of(repository1)
         getRepository(REPOSITORY_TWO) >> Optional.of(repository2)
 
-        searchContent(CONTENT_SEARCH_TERM, false) >> {
+        searchContent(CONTENT_SEARCH_TERM_EXPECTED, false) >> {
             Stream.of(content1, content2, content3)
         }
 
-        searchPullRequests(PR_SEARCH_TERM, true, false) >> {
+        searchPullRequests("\"$PR_SEARCH_TERM\"".toString(), true, false) >> {
             Stream.of(pullRequest1, pullRequest2)
         }
 

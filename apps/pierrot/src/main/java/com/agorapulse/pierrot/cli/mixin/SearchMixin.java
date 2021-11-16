@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SearchMixin {
 
@@ -90,7 +91,13 @@ public class SearchMixin {
     }
 
     private String getQuery() {
-        return String.join(" ", queries);
+        return queries.stream().map(q -> {
+            if (q.contains(" ")) {
+                // the query has been probably entered with quotes
+                return "\"" + q + "\"";
+            }
+            return q;
+        }).collect(Collectors.joining(" "));
     }
 
     private boolean shouldProceedToNextResult() {
