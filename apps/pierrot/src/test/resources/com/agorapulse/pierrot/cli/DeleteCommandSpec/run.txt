@@ -1,4 +1,4 @@
-Searching content for 'org:agorapulse filename:.testfile'!
+Searching content for 'org:agorapulse filename:.testfile "hello world"'!
 Deleting agorapulse/pierrot/.testfile
 Deleted agorapulse/pierrot/.testfile
 PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pulls/1

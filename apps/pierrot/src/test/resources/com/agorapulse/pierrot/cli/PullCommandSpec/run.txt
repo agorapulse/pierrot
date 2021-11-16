@@ -1,4 +1,4 @@
-Searching content for 'org:agorapulse filename:.testfile'!
+Searching content for 'org:agorapulse filename:.testfile "hello world"'!
 Fetched agorapulse/pierrot/.testfile
 Ignoring agorapulse/oss/.testfile as the repository is not pulled
 Ignoring agorapulse/oss/prefix/.testfile as the repository is not pulled

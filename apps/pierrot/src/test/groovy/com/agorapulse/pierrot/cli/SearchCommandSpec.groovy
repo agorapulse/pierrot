@@ -22,7 +22,9 @@ class SearchCommandSpec extends AbstractCommandSpec {
     List<String> args = [
         'search',
         '-P',
-        CONTENT_SEARCH_TERM,
+        CONTENT_SEARCH_TERM_1,
+        CONTENT_SEARCH_TERM_2,
+        CONTENT_SEARCH_TERM_3,
     ]
 
 }

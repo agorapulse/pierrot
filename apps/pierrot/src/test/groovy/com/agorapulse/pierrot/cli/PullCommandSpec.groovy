@@ -26,7 +26,9 @@ class PullCommandSpec extends AbstractCommandSpec {
             '-o',
             '-w',
             workspace.canonicalPath,
-            CONTENT_SEARCH_TERM,
+            CONTENT_SEARCH_TERM_1,
+            CONTENT_SEARCH_TERM_2,
+            CONTENT_SEARCH_TERM_3,
         ]
     }
 

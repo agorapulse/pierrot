@@ -1,4 +1,4 @@
-Searching content for 'org:agorapulse filename:.testfile'!
+Searching content for 'org:agorapulse filename:.testfile "hello world"'!
 ========================================================================================================================
 | agorapulse/pierrot/.testfile
 ========================================================================================================================
