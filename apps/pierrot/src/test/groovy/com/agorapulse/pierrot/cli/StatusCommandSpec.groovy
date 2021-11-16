@@ -27,4 +27,16 @@ class StatusCommandSpec extends AbstractCommandSpec {
         PR_SEARCH_TERM,
     ]
 
+    void 'close PRs and delete branches'() {
+        expect:
+            runCommand('delete.txt', [
+                'status',
+                '-d',
+                '--project',
+                PROJECT,
+                '-P',
+                PR_SEARCH_TERM,
+            ])
+    }
+
 }

@@ -26,4 +26,6 @@ public interface ProjectSource {
     Optional<Project> getProject();
 
     String getColumnNameForPullRequest(PullRequest pr);
+
+    boolean hasProject();
 }

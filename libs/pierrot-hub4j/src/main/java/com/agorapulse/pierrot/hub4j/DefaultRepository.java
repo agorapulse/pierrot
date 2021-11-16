@@ -22,6 +22,7 @@ import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.http.client.HttpClient;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentBuilder;
 import org.kohsuke.github.GHIssueState;
@@ -45,11 +46,13 @@ public class DefaultRepository implements Repository {
     private final GHRepository repository;
     private final GHUser myself;
     private final GitHubConfiguration configuration;
+    private final HttpClient client;
 
-    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
+    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
+        this.client = client;
     }
 
     @Override
@@ -112,15 +115,15 @@ public class DefaultRepository implements Repository {
                     existing,
                     repository,
                     myself,
-                    configuration
-                ));
+                    configuration,
+                    client));
             }
             return Optional.of(new DefaultPullRequest(
                 repository.createPullRequest(title, branch, getDefaultBranch(), message),
                 repository,
                 myself,
-                configuration
-            ));
+                configuration,
+                client));
         } catch (IOException e) {
             LOGGER.error("Exception creating pull request " + title, e);
             return Optional.empty();
@@ -152,7 +155,7 @@ public class DefaultRepository implements Repository {
     private Optional<Content> getFile(String branch, String path) {
         try {
             GHContent fileContent = repository.getFileContent(path, branch);
-            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration));
+            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration, client));
         } catch (IOException e) {
             LOGGER.error("Exception fetching file " + path, e);
             return Optional.empty();

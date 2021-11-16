@@ -27,4 +27,6 @@ public interface Project {
 
     String getName();
 
+    void remove(PullRequest pr);
+
 }

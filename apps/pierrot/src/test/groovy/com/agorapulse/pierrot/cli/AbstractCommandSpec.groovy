@@ -177,6 +177,7 @@ abstract class AbstractCommandSpec extends Specification {
         }
 
         findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
+        findProject(OWNER, PROJECT) >> Optional.of(project)
     }
 
     void setup() {

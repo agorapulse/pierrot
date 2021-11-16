@@ -27,5 +27,7 @@ public interface GitHubService {
 
     Stream<? extends PullRequest> searchPullRequests(String query, boolean openOnly, boolean global);
 
+    Optional<Project>  findProject(String org, String project);
+
     Optional<Project>  findOrCreateProject(String org, String project, String column);
 }

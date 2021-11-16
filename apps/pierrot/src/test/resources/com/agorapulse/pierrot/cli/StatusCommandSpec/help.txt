@@ -1,4 +1,4 @@
-Usage: pierrot status [-aghPsV] [--done-column=<doneColumn>]
+Usage: pierrot status [-acdghPsV] [--done-column=<doneColumn>]
                       [--github-token=<token>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [--todo-column=<todoColumn>]
@@ -7,6 +7,8 @@ searches GitHub Pull Requests and prints their statuses
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
   -a, --all                 Include archived and closed
+  -c, --close               Close the pull requests
+  -d, --delete              Also delete PR branches, implies --close
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization

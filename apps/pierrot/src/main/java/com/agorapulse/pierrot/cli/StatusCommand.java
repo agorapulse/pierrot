@@ -24,6 +24,7 @@ import com.agorapulse.pierrot.cli.mixin.SearchMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Option;
 
 import java.util.Optional;
 
@@ -46,6 +47,18 @@ public class StatusCommand implements Runnable {
 
     @Inject GitHubService service;
 
+    @Option(
+        names = {"-d", "--delete"},
+        description = "Also delete PR branches, implies --close"
+    )
+    boolean delete;
+
+    @Option(
+        names = {"-c", "--close"},
+        description = "Close the pull requests"
+    )
+    boolean close;
+
     @Override
     public void run() {
         search.searchPullRequests(service, pr -> {
@@ -61,7 +74,14 @@ public class StatusCommand implements Runnable {
                     check.getName()
                 )
             );
-            project.addToProject(service, Optional.of(pr));
+
+            if (delete || close) {
+                pr.close(delete);
+                project.removeFromProject(service, Optional.of(pr));
+            } else {
+                project.addToProject(service, Optional.of(pr));
+            }
+
             return Optional.of(SearchMixin.toSafeUri(pr.getHtmlUrl()));
         });
 

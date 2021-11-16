@@ -301,7 +301,17 @@ include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/R
 [[_status]]
 === Status Command
 
-The `status` command allows search pull requests and display their status.
+The `status` command allows search pull requests and display their status. If the project name is defined using `--project` then the PRs are
+also added from the given project.
+
+You can also batch-close the pull request that matches given search terms using `--close` or `--delete`
+flags. If the project name is defined using `--project` then the PRs are also removed from the given project.
+
+[source,bash]
+----
+  -c, --close               Close the pull requests
+  -d, --delete              Also delete PR branches, implies --close
+----
 
 ==== Examples
 
@@ -311,7 +321,7 @@ The `status` command allows search pull requests and display their status.
 pierrot status \
   --all \
   --project='Micronaut Upgrade' \
-  Micronaut Upgrade 3.1.0
+  "Micronaut Upgrade 3.1.0"
 ----
 
 Adding to the project will allow displaying all the running PRs in a status board.

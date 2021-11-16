@@ -17,10 +17,13 @@
  */
 package com.agorapulse.pierrot.api;
 
+import java.util.List;
+
 public interface GitHubConfiguration {
 
     String getToken();
     String getDefaultBranch();
     String getOrganization();
+    List<String> getProjectColumns();
 
 }

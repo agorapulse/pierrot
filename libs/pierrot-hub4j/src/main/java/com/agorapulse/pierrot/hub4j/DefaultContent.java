@@ -21,6 +21,7 @@ import com.agorapulse.pierrot.api.Content;
 import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.http.client.HttpClient;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
@@ -38,9 +39,9 @@ public class DefaultContent implements Content {
     private final GHContent content;
     private final Repository repositoryWrapper;
 
-    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration) {
+    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
         this.content = content;
-        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration);
+        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration, client);
     }
 
     @Override

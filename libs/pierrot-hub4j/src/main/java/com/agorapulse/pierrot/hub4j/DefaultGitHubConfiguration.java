@@ -20,12 +20,15 @@ package com.agorapulse.pierrot.hub4j;
 import com.agorapulse.pierrot.api.GitHubConfiguration;
 import io.micronaut.context.annotation.ConfigurationProperties;
 
+import java.util.List;
+
 @ConfigurationProperties("github")
 public class DefaultGitHubConfiguration implements GitHubConfiguration {
 
     private String token;
     private String defaultBranch = "master";
     private String organization;
+    private List<String> projectColumns = List.of("To do", "In progress", "Done");
 
     @Override
     public String getToken() {
@@ -66,5 +69,14 @@ public class DefaultGitHubConfiguration implements GitHubConfiguration {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    @Override
+    public List<String> getProjectColumns() {
+        return projectColumns;
+    }
+
+    public void setProjectColumns(List<String> projectColumns) {
+        this.projectColumns = projectColumns;
     }
 }
