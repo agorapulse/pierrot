@@ -118,4 +118,9 @@ jobs:
       with:
         # skip announce while under active development
         # change to sdkMajorRelease once stabilized
-        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion
+        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion -Pversion="${{ steps.version.outputs.tag }}"
+    - uses: sdkman/sdkman-action@master
+      with:
+        candidate: pierrot
+        version: ${{ steps.version.outputs.tag }}
+    - run: pierrot --help
