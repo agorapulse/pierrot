@@ -17,16 +17,11 @@
  */
 package com.agorapulse.pierrot.cli;
 
-import com.agorapulse.pierrot.api.GitHubService;
-import com.agorapulse.pierrot.api.ws.Workspace;
 import com.agorapulse.pierrot.cli.mixin.ProjectMixin;
 import com.agorapulse.pierrot.cli.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.cli.mixin.WorkspaceMixin;
-import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
     name = "init",

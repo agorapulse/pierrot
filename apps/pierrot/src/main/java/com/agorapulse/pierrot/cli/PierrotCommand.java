@@ -37,6 +37,7 @@ import java.util.Map;
     subcommands = {
         CreateCommand.class,
         DeleteCommand.class,
+        InitCommand.class,
         PullCommand.class,
         PushCommand.class,
         ReplaceCommand.class,

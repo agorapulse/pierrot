@@ -181,7 +181,7 @@ public class PullRequestMixin implements PullRequestSource {
                     emptyLines = 0;
                 }
 
-                stringWriter.append(line);
+                stringWriter.append(line).append("\n");
             }
 
             this.message = stringWriter.toString();
