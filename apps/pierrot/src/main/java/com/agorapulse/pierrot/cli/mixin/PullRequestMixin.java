@@ -85,6 +85,20 @@ public class PullRequestMixin implements PullRequestSource {
         return pullRequestsCreated;
     }
 
+    public void defaultsFrom(PullRequestSource other) {
+        if (StringUtils.isEmpty(branch)) {
+            this.branch = other.readBranch();
+        }
+
+        if (StringUtils.isEmpty(title)) {
+            this.title = other.readTitle();
+        }
+
+        if (StringUtils.isEmpty(message) && messageFrom == null) {
+            this.message = other.readMessage();
+        }
+    }
+
     public Optional<PullRequest> createPullRequest(GitHubService service, String repositoryFullName, RepositoryChange withRepository) {
         Optional<Repository> maybeRepository = service.getRepository(repositoryFullName);
 

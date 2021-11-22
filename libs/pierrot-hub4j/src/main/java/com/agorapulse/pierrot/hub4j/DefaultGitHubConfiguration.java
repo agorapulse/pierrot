@@ -19,10 +19,12 @@ package com.agorapulse.pierrot.hub4j;
 
 import com.agorapulse.pierrot.api.GitHubConfiguration;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Value;
 
 import java.util.List;
+import java.util.Optional;
 
-@ConfigurationProperties("github")
+@ConfigurationProperties("pierrot")
 public class DefaultGitHubConfiguration implements GitHubConfiguration {
 
     private String token;
@@ -30,26 +32,20 @@ public class DefaultGitHubConfiguration implements GitHubConfiguration {
     private String organization;
     private List<String> projectColumns = List.of("To do", "In progress", "Done");
 
+    public DefaultGitHubConfiguration(
+        // compatibility with other tools
+        @Value("${github.token}") Optional<String> githubToken,
+        @Value("${github.oauth}") Optional<String> githubOauth
+    ) {
+        token = githubToken.or(() -> githubOauth).orElse(null);
+    }
+
     @Override
     public String getToken() {
         return token;
     }
 
     public void setToken(String token) {
-        this.token = token;
-    }
-
-    /**
-     * alias to {@link #getToken()}
-     */
-    public String getOauth() {
-        return token;
-    }
-
-    /**
-     * alias to {@link #setToken(String)} ()}
-     */
-    public void setOauth(String token) {
         this.token = token;
     }
 

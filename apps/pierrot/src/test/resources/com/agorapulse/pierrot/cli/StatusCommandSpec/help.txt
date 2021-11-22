@@ -1,5 +1,5 @@
 Usage: pierrot status [-acdghPsV] [--done-column=<doneColumn>]
-                      [--github-token=<token>]
+                      [--token=<token>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [--todo-column=<todoColumn>]
                       QUERY...
@@ -12,7 +12,7 @@ searches GitHub Pull Requests and prints their statuses
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=<token>
+      --token=<token>
                             The GitHub token
   -h, --help                Show this help message and exit.
   -P, --no-page             Do not wait after each result

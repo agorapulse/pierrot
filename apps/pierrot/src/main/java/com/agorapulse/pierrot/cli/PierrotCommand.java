@@ -24,6 +24,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.CommandLinePropertySource;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.MapPropertySource;
+import io.micronaut.context.env.yaml.YamlPropertySourceLoader;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -45,7 +46,7 @@ import java.util.Map;
 )
 public class PierrotCommand implements Runnable {
 
-    private static final String GITHUB_TOKEN_NAME = "github-token";
+    private static final String GITHUB_TOKEN_NAME = "token";
     private static final String GITHUB_TOKEN_PARAMETER = "--" + GITHUB_TOKEN_NAME;
 
     @CommandLine.Option(
@@ -80,7 +81,7 @@ public class PierrotCommand implements Runnable {
         CommandLinePropertySource commandLinePropertySource = new CommandLinePropertySource(commandLine);
 
         Map<String, Object> map = commandLine.getUndeclaredOptions().containsKey(GITHUB_TOKEN_NAME)
-            ? Map.of("github.token", commandLine.getUndeclaredOptions().get(GITHUB_TOKEN_NAME))
+            ? Map.of("pierrot.token", commandLine.getUndeclaredOptions().get(GITHUB_TOKEN_NAME))
             : Map.of();
 
 

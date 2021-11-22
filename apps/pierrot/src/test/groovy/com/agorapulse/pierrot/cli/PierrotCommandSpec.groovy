@@ -21,7 +21,7 @@ class PierrotCommandSpec extends AbstractCommandSpec {
 
     List<String> args = [
         '--help',
-        '--github-token=xazabc',
+        '--token=xazabc',
     ]
 
     List<String> helpArgs = [
@@ -31,7 +31,7 @@ class PierrotCommandSpec extends AbstractCommandSpec {
     void 'run main'() {
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.execute('--help', '--github-token=token', '-s')
+                PierrotCommand.execute('--help', '--token=token', '-s')
             }
 
         then:

@@ -1,6 +1,6 @@
-Usage: pierrot [-hsV] [--github-token=<token>] [COMMAND]
+Usage: pierrot [-hsV] [--token=<token>] [COMMAND]
 The GitHub cross-repository governance tool
-      --github-token=<token>
+      --token=<token>
                      The GitHub token
   -h, --help         Show this help message and exit.
   -s, --stacktrace   Print stack traces

@@ -29,34 +29,22 @@ import picocli.CommandLine.Mixin;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command(
-    name = "push",
-    description = "pushes the the local changes and creates PRs",
+    name = "init",
+    description = "initializes new workspace",
     mixinStandardHelpOptions = true
 )
-public class PushCommand implements Runnable {
+public class InitCommand implements Runnable {
 
     @Mixin WorkspaceMixin workspace;
     @Mixin PullRequestMixin pullRequest;
     @Mixin ProjectMixin project;
 
-    @Inject GitHubService service;
 
     @Override
     public void run() {
-        // init from the pierrot.yml
-        workspace.asPullRequestSource().ifPresent(pullRequest::defaultsFrom);
-        workspace.readProjectName().ifPresent(p -> project.setProjectName(p));
+        System.out.println("Initializing Pierrot workspace in " + workspace.getWorkspace().getAbsolutePath());
 
-        System.out.printf("Pushing changes from %s%n", workspace.getWorkspace());
-
-        Workspace ws = new Workspace(workspace.getWorkspace());
-        ws.visitRepositories(r ->
-            project.addToProject(service, pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -> {
-                AtomicBoolean changed = new AtomicBoolean(false);
-                r.visitFiles(f -> changed.set(ghr.writeFile(branch, message, f.getPath(), f.getText()) || changed.get()));
-                return changed.get();
-            })));
-        System.out.printf("Opened %d pull requests%n", pullRequest.getPullRequestsCreated());
+        workspace.initWorkspaceFiles(pullRequest, project);
     }
 
 }

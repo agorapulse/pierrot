@@ -1,5 +1,5 @@
 Usage: pierrot push [-hsV] [-b=<branch>] [--done-column=<doneColumn>]
-                    [--github-token=<token>] [-m=<message>]
+                    [--token=<token>] [-m=<message>]
                     [--message-from=<messageFrom>]
                     [--progress-column=<progressColumn>] [--project=<project>]
                     [-t=<title>] [--todo-column=<todoColumn>] [-w=<workspace>]
@@ -7,7 +7,7 @@ pushes the the local changes and creates PRs
   -b, --branch=<branch>     The pull request branch
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
-      --github-token=<token>
+      --token=<token>
                             The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message

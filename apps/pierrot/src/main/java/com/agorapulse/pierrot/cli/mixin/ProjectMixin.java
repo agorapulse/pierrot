@@ -124,4 +124,9 @@ public class ProjectMixin implements ProjectSource {
     public boolean hasProject() {
         return StringUtils.isNotEmpty(project);
     }
+
+    public void setProjectName(String project) {
+        this.project = project;
+    }
+
 }

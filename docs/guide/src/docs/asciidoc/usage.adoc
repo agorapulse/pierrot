@@ -10,12 +10,12 @@ of available commands when you run the `pierrot` command without any parameters:
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help.txt[]
 ----
 
-Pierrot requires being authenticated to GitHub. You can either set up `GITHUB_TOKEN` or pass the token as `--github-token` parameter.
+Pierrot requires being authenticated to GitHub. You can either set up `GITHUB_TOKEN` or pass the token as `--token` parameter.
 Alternatively, see other authentication options in https://github-api.kohsuke.org[the GitHub API for Java documentation].
 
 All the commands are based on https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax[GitHub search syntax].
 Pierrot works the best if you constrain the searches to an organization. If you don't want to add `org:myorg` search
-term to every command then set `GITHUB_ORGANIZATION` environment variable to the name of your organization.
+term to every command then set `PIERROT_ORGANIZATION` environment variable to the name of your organization.
 
 == Common Parameters
 
@@ -27,7 +27,7 @@ The following parameters can be use with any command:
 
 [source,bash]
 ----
-      --github-token=<token> The GitHub token
+      --token=<token> The GitHub token
   -h, --help                 Show this help message and exit.
   -s, --stacktrace           Print stack traces
   -V, --version              Print version information and exit.
