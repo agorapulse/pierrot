@@ -51,18 +51,23 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      @Override
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          System.out.printf(<span class="jxr_string">"Pushing changes from %s%n"</span>, workspace.getWorkspace());
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>          Workspace ws = <strong class="jxr_keyword">new</strong> Workspace(workspace.getWorkspace());
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          ws.visitRepositories(r -&gt;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>              project.addToProject(service, pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -&gt; {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  AtomicBoolean changed = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>                  r.visitFiles(f -&gt; changed.set(ghr.writeFile(branch, message, f.getPath(), f.getText()) || changed.get()));
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>                  <strong class="jxr_keyword">return</strong> changed.get();
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              })));
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          System.out.printf(<span class="jxr_string">"Opened %d pull requests%n"</span>, pullRequest.getPullRequestsCreated());
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          <em class="jxr_comment">// init from the pierrot.yml</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          workspace.asPullRequestSource().ifPresent(pullRequest::defaultsFrom);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          workspace.readProjectName().ifPresent(p -&gt; project.setProjectName(p));
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          System.out.printf(<span class="jxr_string">"Pushing changes from %s%n"</span>, workspace.getWorkspace());
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          Workspace ws = <strong class="jxr_keyword">new</strong> Workspace(workspace.getWorkspace());
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          ws.visitRepositories(r -&gt;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>              project.addToProject(service, pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -&gt; {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  AtomicBoolean changed = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  r.visitFiles(f -&gt; changed.set(ghr.writeFile(branch, message, f.getPath(), f.getText()) || changed.get()));
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                  <strong class="jxr_keyword">return</strong> changed.get();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>              })));
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          System.out.printf(<span class="jxr_string">"Opened %d pull requests%n"</span>, pullRequest.getPullRequestsCreated());
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  }
 </pre>
 <hr/>
 <div id="footer"></div>

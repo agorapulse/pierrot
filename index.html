@@ -107,7 +107,7 @@ $(addBlockSwitches);
 <h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.9.9</span>
+<span id="revnumber">version 0.9.10</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -133,40 +133,46 @@ $(addBlockSwitches);
 <li><a href="#_full_syntax">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_create">3.2.2. Create Command</a>
+<li><a href="#_init">3.2.2. Init Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_2">Examples</a></li>
 <li><a href="#_full_syntax_2">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_delete">3.2.3. Delete Command</a>
+<li><a href="#_create">3.2.3. Create Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_3">Examples</a></li>
 <li><a href="#_full_syntax_3">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_pull">3.2.4. Pull Command</a>
+<li><a href="#_delete">3.2.4. Delete Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_4">Examples</a></li>
 <li><a href="#_full_syntax_4">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_push">3.2.5. Push Command</a>
+<li><a href="#_pull">3.2.5. Pull Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_5">Examples</a></li>
 <li><a href="#_full_syntax_5">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_replace">3.2.6. Replace Command</a>
+<li><a href="#_push">3.2.6. Push Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_6">Examples</a></li>
 <li><a href="#_full_syntax_6">Full Syntax</a></li>
 </ul>
 </li>
-<li><a href="#_status">3.2.7. Status Command</a>
+<li><a href="#_replace">3.2.7. Replace Command</a>
 <ul class="sectlevel4">
 <li><a href="#_examples_7">Examples</a></li>
 <li><a href="#_full_syntax_7">Full Syntax</a></li>
+</ul>
+</li>
+<li><a href="#_status">3.2.8. Status Command</a>
+<ul class="sectlevel4">
+<li><a href="#_examples_8">Examples</a></li>
+<li><a href="#_full_syntax_8">Full Syntax</a></li>
 </ul>
 </li>
 </ul>
@@ -216,14 +222,11 @@ $(addBlockSwitches);
 <div class="paragraph">
 <p>Pierrot can be installed using <a href="https://sdkman.io/sdks#pierrot">SDKMAN!</a></p>
 </div>
-<hr>
-<div class="paragraph">
-<p>sdk update
-sdk install pierrot
----</p>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">sdk update
+sdk install pierrot</code></pre>
 </div>
-<div class="paragraph">
-<p>Alternatively Download and extract <a href="https://github.com/agorapulse/micronaut-worker/releases/latest"> the latest binaries from the release page</a> and add the <code>bin</code> folder to your <code>PATH</code>.</p>
 </div>
 <div class="paragraph">
 <p>Once installed, you should see the following message when you run the <code>pierrot</code> command:</p>
@@ -231,22 +234,22 @@ sdk install pierrot
 <div class="listingblock">
 <div class="content">
 <pre>GitHub client is not authenticated. Please, set up your GitHub token
-    GITHUB_TOKEN environment variable
-  --github-token=&lt;token&gt; command line parameter
+    PIERROT_TOKEN environment variable
+  --token=&lt;token&gt; command line parameter
 Alternatively, see other authentication options in the GitHub API docs:
 
     https://github-api.kohsuke.org
 
-Usage: pierrot [-hsV] [--github-token=&lt;token&gt;] [COMMAND]
+Usage: pierrot [-hsV] [--token=&lt;token&gt;] [COMMAND]
 The GitHub cross-repository governance tool
-      --github-token=&lt;token&gt;
-                     The GitHub token
-  -h, --help         Show this help message and exit.
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.
+  -h, --help            Show this help message and exit.
+  -s, --stacktrace      Print stack traces
+      --token=&lt;token&gt;   The GitHub token
+  -V, --version         Print version information and exit.
 Commands:
   create   creates a file in a matching repositories and creates PRs
   delete   creates PRs to delete files
+  init     initializes new workspace
   pull     pulls the matching files locally
   push     pushes the the local changes and creates PRs
   replace  replaces content in the files and creates PRs
@@ -261,7 +264,19 @@ Commands:
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can run <code>xattr -d com.apple.quarantine pierrot</code> to remove quarantine from the downloaded file on macOS.
+If you plan to use Pierrot from Github Actions then you can use <a href="https://github.com/agorapulse/setup-pierrot">Setup Pierrot Action</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Alternatively you can download and extract <a href="https://github.com/agorapulse/pierrot/releases/latest"> the latest binaries from the release page</a> and add the <code>bin</code> folder to your <code>PATH</code>. Run <code>xattr -d com.apple.quarantine pierrot</code> to remove quarantine from the downloaded file on macOS.
 </td>
 </tr>
 </table>
@@ -272,21 +287,21 @@ You can run <code>xattr -d com.apple.quarantine pierrot</code> to remove quarant
 <h2 id="_usage"><a class="anchor" href="#_usage"></a>3. Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Pierrot provides various command to batch-manipulate code in the GitHub repositories. You can see the list
+<p>Pierrot provides various command to batch-manipulate code in the GitHub repositories.You can see the list
 of available commands when you run the <code>pierrot</code> command without any parameters:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot [-hsV] [--github-token=&lt;token&gt;] [COMMAND]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot [-hsV] [--token=&lt;token&gt;] [COMMAND]
 The GitHub cross-repository governance tool
-      --github-token=&lt;token&gt;
-                     The GitHub token
-  -h, --help         Show this help message and exit.
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.
+  -h, --help            Show this help message and exit.
+  -s, --stacktrace      Print stack traces
+      --token=&lt;token&gt;   The GitHub token
+  -V, --version         Print version information and exit.
 Commands:
   create   creates a file in a matching repositories and creates PRs
   delete   creates PRs to delete files
+  init     initializes new workspace
   pull     pulls the matching files locally
   push     pushes the the local changes and creates PRs
   replace  replaces content in the files and creates PRs
@@ -295,13 +310,13 @@ Commands:
 </div>
 </div>
 <div class="paragraph">
-<p>Pierrot requires being authenticated to GitHub. You can either set up <code>GITHUB_TOKEN</code> or pass the token as <code>--github-token</code> parameter.
+<p>Pierrot requires being authenticated to GitHub.You can either set up <code>PIERROT_TOKEN</code> or pass the token as <code>--token</code> parameter.
 Alternatively, see other authentication options in <a href="https://github-api.kohsuke.org">the GitHub API for Java documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>All the commands are based on <a href="https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax">GitHub search syntax</a>.
-Pierrot works the best if you constrain the searches to an organization. If you don&#8217;t want to add <code>org:myorg</code> search
-term to every command then set <code>GITHUB_ORGANIZATION</code> environment variable to the name of your organization.</p>
+Pierrot works the best if you constrain the searches to an organization.If you don&#8217;t want to add <code>org:myorg</code> search
+term to every command then set <code>PIERROT_ORGANIZATION</code> environment variable to the name of your organization.</p>
 </div>
 <div class="sect2">
 <h3 id="_common_parameters"><a class="anchor" href="#_common_parameters"></a>3.1. Common Parameters</h3>
@@ -315,7 +330,7 @@ term to every command then set <code>GITHUB_ORGANIZATION</code> environment vari
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">      --github-token=&lt;token&gt; The GitHub token
+<pre class="prettyprint highlight"><code data-lang="bash">      --token=&lt;token&gt; The GitHub token
   -h, --help                 Show this help message and exit.
   -s, --stacktrace           Print stack traces
   -V, --version              Print version information and exit.</code></pre>
@@ -338,7 +353,7 @@ term to every command then set <code>GITHUB_ORGANIZATION</code> environment vari
 <div class="sect3">
 <h4 id="_pull_request_parameters"><a class="anchor" href="#_pull_request_parameters"></a>3.1.3. Pull Request Parameters</h4>
 <div class="paragraph">
-<p>Pull request parameters will be used to create new pull requests in the affected repositories. If the values are not
+<p>Pull request parameters will be used to create new pull requests in the affected repositories.If the values are not
 provided in the form of command line argument then the user will be prompted to enter them first time they are requested.
 The pull request message is also the message for the individual commits and can be also read from file using <code>--mesage-from</code> parameter.</p>
 </div>
@@ -350,12 +365,24 @@ The pull request message is also the message for the individual commits and can 
   -t, --title=&lt;title&gt;        The pull request title</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Pull request parameters can be stored in <code>pierrot.yml</code> file.See <a href="#_init">Init Command</a> and <a href="#_workspace_parameter">Workspace Parameter</a>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_project_parameters"><a class="anchor" href="#_project_parameters"></a>3.1.4. Project Parameters</h4>
 <div class="paragraph">
 <p>The commands that can create pull request or searches pull requests such as <code>status</code> command can add the pull requests to the
-GitHub Project (board) once <code>--project</code> parameter is provided. The other parameters are optional. The board is created if it does not exist
+GitHub Project (board) once <code>--project</code> parameter is provided.The other parameters are optional.The board is created if it does not exist
 but the automation must be set up manually.</p>
 </div>
 <div class="listingblock">
@@ -369,6 +396,18 @@ but the automation must be set up manually.</p>
                              The name of the 'To do' column in the project</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Pull request parameters can be stored in <code>pierrot.yml</code> file.See <a href="#_init">Init Command</a> and <a href="#_workspace_parameter">Workspace Parameter</a>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_workspace_parameter"><a class="anchor" href="#_workspace_parameter"></a>3.1.5. Workspace Parameter</h4>
@@ -380,6 +419,9 @@ but the automation must be set up manually.</p>
 <pre class="prettyprint highlight"><code data-lang="bash">  -w, --workspace=&lt;workspace&gt;
                      The working directory to pull found files</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can store <a href="#_pull_request_parameters">Pull Request Parameters</a> and <a href="#_project_parameters">Project Parameters</a> inside the workspace in <code>pierrot.yml</code> file. See <a href="#_init">Init Command</a>.</p>
 </div>
 </div>
 </div>
@@ -408,24 +450,96 @@ This is usually the first command you will run to verify the search terms.</p>
 <h5 id="_full_syntax"><a class="anchor" href="#_full_syntax"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot search [-aghPsV] [--github-token=&lt;token&gt;] QUERY...
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot search [-aghPsV] [--token=&lt;token&gt;] QUERY...
 searches GitHub and prints the matching files
-      QUERY...       The search term such as 'org:agorapulse filename:build.
-                       gradle'
-  -a, --all          Include archived and closed
-  -g, --global       Do not constrain search to current organization
-      --github-token=&lt;token&gt;
-                     The GitHub token
-  -h, --help         Show this help message and exit.
-  -P, --no-page      Do not wait after each result
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.</code></pre>
+      QUERY...          The search term such as 'org:agorapulse filename:build.
+                          gradle'
+  -a, --all             Include archived and closed
+  -g, --global          Do not constrain search to current organization
+  -h, --help            Show this help message and exit.
+  -P, --no-page         Do not wait after each result
+  -s, --stacktrace      Print stack traces
+      --token=&lt;token&gt;   The GitHub token
+  -V, --version         Print version information and exit.</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_create"><a class="anchor" href="#_create"></a>3.2.2. Create Command</h4>
+<h4 id="_init"><a class="anchor" href="#_init"></a>3.2.2. Init Command</h4>
+<div class="paragraph">
+<p>The <code>init</code> command allows to store and manage <a href="#_pull_request_parameters">Pull Request Parameters</a> and <a href="#_project_parameters">Project Parameters</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="_examples_2"><a class="anchor" href="#_examples_2"></a>Examples</h5>
+<div class="listingblock">
+<div class="title">Set up the Pull Request and Project Defaults</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">pierrot init \
+  --project='Micronaut Upgrade' \
+  --branch=chore/upgrade-micronaut \
+  --title="Upgraded Micronaut to 3.1.x" \
+  --message="Upgraded Micronaut to the latest version 3.1.x" \
+  --workspace=micronaut-upgrade-3.1.x</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command will generate the new folder <code>micronaut-upgrade-3.1.x</code> with a file <code>pierrot.yaml</code> with the following content</p>
+</div>
+<div class="listingblock">
+<div class="title">pierrot.yml</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="yaml">project: Micronaut Upgrade
+branch: chore/upgrade-micronaut
+title: Upgraded Micronaut to 3.1.x
+message: Upgraded Micronaut to the latest version 3.1.x</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>pierrot</code> command is executed within <code>micronaut-upgrade-3.1.x</code> folder or with <code>--workspace</code> pointing to that folder then the values from the <code>pierrot.yml</code> file will be used as default values for given parameters. For example running the following command from <code>micronaut-upgrade-3.1.x</code> will not prompt for the pull request details and will automatically include the pull requests into <code>Micornaut Upgrade</code> project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">pierrot replace \
+  --pattern='micronautVersion = (.*)' \
+  --replacement='micronautVersion = 3.1.0'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_full_syntax_2"><a class="anchor" href="#_full_syntax_2"></a>Full Syntax</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot init [-hsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
+                    [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
+                    [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
+                    [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                    [-w=&lt;workspace&gt;]
+initializes new workspace
+  -b, --branch=&lt;branch&gt;     The pull request branch
+      --done-column=&lt;doneColumn&gt;
+                            The name of the 'Done' column in the project
+  -h, --help                Show this help message and exit.
+  -m, --message=&lt;message&gt;   The pull request message
+      --message-from=&lt;messageFrom&gt;
+                            The file containing the pull request message
+      --progress-column=&lt;progressColumn&gt;
+                            The name of the 'In progress' column in the project
+      --project=&lt;project&gt;   The name of the project (board)
+  -s, --stacktrace          Print stack traces
+  -t, --title=&lt;title&gt;       The pull request title
+      --todo-column=&lt;todoColumn&gt;
+                            The name of the 'To do' column in the project
+      --token=&lt;token&gt;       The GitHub token
+  -V, --version             Print version information and exit.
+  -w, --workspace=&lt;workspace&gt;
+                            The workspace directory</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create"><a class="anchor" href="#_create"></a>3.2.3. Create Command</h4>
 <div class="paragraph">
 <p>The <code>create</code> command allows crate files in a repositories that contains files that matches a given search query.
 You have to specify the <code>path</code> within the repository, and you need to specify the content either on the command line as <code>--content</code> parameter or
@@ -442,7 +556,7 @@ You have to specify the <code>path</code> within the repository, and you need to
 </div>
 </div>
 <div class="sect4">
-<h5 id="_examples_2"><a class="anchor" href="#_examples_2"></a>Examples</h5>
+<h5 id="_examples_3"><a class="anchor" href="#_examples_3"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Create AsciiDoc Configuration File for Better IntelliJ Support</div>
 <div class="content">
@@ -460,16 +574,16 @@ You have to specify the <code>path</code> within the repository, and you need to
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_2"><a class="anchor" href="#_full_syntax_2"></a>Full Syntax</h5>
+<h5 id="_full_syntax_3"><a class="anchor" href="#_full_syntax_3"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot create [-aghPsV] [-b=&lt;branch&gt;] [-c=&lt;content&gt;]
                       [--done-column=&lt;doneColumn&gt;] [--from=&lt;contentFrom&gt;]
-                      [--github-token=&lt;token&gt;] [-m=&lt;message&gt;]
-                      [--message-from=&lt;messageFrom&gt;] [-p=&lt;path&gt;]
+                      [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;] [-p=&lt;path&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
                       [--project=&lt;project&gt;] [-t=&lt;title&gt;]
-                      [--todo-column=&lt;todoColumn&gt;] QUERY...
+                      [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                      [-w=&lt;workspace&gt;] QUERY...
 creates a file in a matching repositories and creates PRs
       QUERY...               The search term such as 'org:agorapulse filename:
                                build.gradle'
@@ -480,7 +594,6 @@ creates a file in a matching repositories and creates PRs
                              The name of the 'Done' column in the project
       --from=&lt;contentFrom&gt;   The file to be uploaded to the repositories
   -g, --global               Do not constrain search to current organization
-      --github-token=&lt;token&gt; The GitHub token
   -h, --help                 Show this help message and exit.
   -m, --message=&lt;message&gt;    The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -494,13 +607,16 @@ creates a file in a matching repositories and creates PRs
   -t, --title=&lt;title&gt;        The pull request title
       --todo-column=&lt;todoColumn&gt;
                              The name of the 'To do' column in the project
-  -V, --version              Print version information and exit.</code></pre>
+      --token=&lt;token&gt;        The GitHub token
+  -V, --version              Print version information and exit.
+  -w, --workspace=&lt;workspace&gt;
+                             The workspace directory</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete"><a class="anchor" href="#_delete"></a>3.2.3. Delete Command</h4>
+<h4 id="_delete"><a class="anchor" href="#_delete"></a>3.2.4. Delete Command</h4>
 <div class="paragraph">
 <p>The <code>delete</code> command allows you to delete all files that match the given search query.</p>
 </div>
@@ -508,7 +624,7 @@ creates a file in a matching repositories and creates PRs
 <p>New pull request are created with a specified changes.</p>
 </div>
 <div class="sect4">
-<h5 id="_examples_3"><a class="anchor" href="#_examples_3"></a>Examples</h5>
+<h5 id="_examples_4"><a class="anchor" href="#_examples_4"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Delete All Travis CI Configuration File</div>
 <div class="content">
@@ -524,15 +640,15 @@ creates a file in a matching repositories and creates PRs
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_3"><a class="anchor" href="#_full_syntax_3"></a>Full Syntax</h5>
+<h5 id="_full_syntax_4"><a class="anchor" href="#_full_syntax_4"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot delete [-aghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
-                      [--github-token=&lt;token&gt;] [-m=&lt;message&gt;]
-                      [--message-from=&lt;messageFrom&gt;]
+                      [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
                       [--project=&lt;project&gt;] [-t=&lt;title&gt;]
-                      [--todo-column=&lt;todoColumn&gt;] QUERY...
+                      [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                      [-w=&lt;workspace&gt;] QUERY...
 creates PRs to delete files
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -541,8 +657,6 @@ creates PRs to delete files
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=&lt;token&gt;
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -555,13 +669,16 @@ creates PRs to delete files
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
-  -V, --version             Print version information and exit.</code></pre>
+      --token=&lt;token&gt;       The GitHub token
+  -V, --version             Print version information and exit.
+  -w, --workspace=&lt;workspace&gt;
+                            The workspace directory</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pull"><a class="anchor" href="#_pull"></a>3.2.4. Pull Command</h4>
+<h4 id="_pull"><a class="anchor" href="#_pull"></a>3.2.5. Pull Command</h4>
 <div class="paragraph">
 <p>The <code>pull</code> command pulls the files from multiple repositories into a workspace. You can then make local changes and
 use <code>push</code> command to create new pull requests for changes.</p>
@@ -590,7 +707,7 @@ use <code>push</code> command to create new pull requests for changes.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_examples_4"><a class="anchor" href="#_examples_4"></a>Examples</h5>
+<h5 id="_examples_5"><a class="anchor" href="#_examples_5"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Find All Usages of JCenter Repository within Gradle&#8217;s Build Files and Pull the Files Locally</div>
 <div class="content">
@@ -602,32 +719,30 @@ use <code>push</code> command to create new pull requests for changes.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_4"><a class="anchor" href="#_full_syntax_4"></a>Full Syntax</h5>
+<h5 id="_full_syntax_5"><a class="anchor" href="#_full_syntax_5"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghoPsV] [--github-token=&lt;token&gt;] [-w=&lt;workspace&gt;]
-                    QUERY...
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghoPsV] [--token=&lt;token&gt;] [-w=&lt;workspace&gt;] QUERY...
 pulls the matching files locally
-      QUERY...       The search term such as 'org:agorapulse filename:build.
-                       gradle'
-  -a, --all          Include archived and closed
-  -g, --global       Do not constrain search to current organization
-      --github-token=&lt;token&gt;
-                     The GitHub token
-  -h, --help         Show this help message and exit.
+      QUERY...          The search term such as 'org:agorapulse filename:build.
+                          gradle'
+  -a, --all             Include archived and closed
+  -g, --global          Do not constrain search to current organization
+  -h, --help            Show this help message and exit.
   -o, --workspace-repositories-only
-                     Search only within the existing workspace repositories
-  -P, --no-page      Do not wait after each result
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.
+                        Search only within the existing workspace repositories
+  -P, --no-page         Do not wait after each result
+  -s, --stacktrace      Print stack traces
+      --token=&lt;token&gt;   The GitHub token
+  -V, --version         Print version information and exit.
   -w, --workspace=&lt;workspace&gt;
-                     The working directory to pull found files</code></pre>
+                        The workspace directory</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_push"><a class="anchor" href="#_push"></a>3.2.5. Push Command</h4>
+<h4 id="_push"><a class="anchor" href="#_push"></a>3.2.6. Push Command</h4>
 <div class="paragraph">
 <p>The <code>push</code> command creates new pull requests for changes performed in a local workspace.</p>
 </div>
@@ -646,7 +761,7 @@ pulls the matching files locally
 </div>
 </div>
 <div class="sect4">
-<h5 id="_examples_5"><a class="anchor" href="#_examples_5"></a>Examples</h5>
+<h5 id="_examples_6"><a class="anchor" href="#_examples_6"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Push Local Changes to GitHub</div>
 <div class="content">
@@ -661,20 +776,18 @@ pulls the matching files locally
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_5"><a class="anchor" href="#_full_syntax_5"></a>Full Syntax</h5>
+<h5 id="_full_syntax_6"><a class="anchor" href="#_full_syntax_6"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot push [-hsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
-                    [--github-token=&lt;token&gt;] [-m=&lt;message&gt;]
-                    [--message-from=&lt;messageFrom&gt;]
+                    [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                     [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
-                    [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [-w=&lt;workspace&gt;]
+                    [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                    [-w=&lt;workspace&gt;]
 pushes the the local changes and creates PRs
   -b, --branch=&lt;branch&gt;     The pull request branch
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
-      --github-token=&lt;token&gt;
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -686,15 +799,16 @@ pushes the the local changes and creates PRs
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
+      --token=&lt;token&gt;       The GitHub token
   -V, --version             Print version information and exit.
   -w, --workspace=&lt;workspace&gt;
-                            The working directory to pull found files</code></pre>
+                            The workspace directory</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_replace"><a class="anchor" href="#_replace"></a>3.2.6. Replace Command</h4>
+<h4 id="_replace"><a class="anchor" href="#_replace"></a>3.2.7. Replace Command</h4>
 <div class="paragraph">
 <p>The <code>replace</code> command allows you to find and replace text in the all files that match the given search query.</p>
 </div>
@@ -713,11 +827,11 @@ pushes the the local changes and creates PRs
 </div>
 </div>
 <div class="sect4">
-<h5 id="_examples_6"><a class="anchor" href="#_examples_6"></a>Examples</h5>
+<h5 id="_examples_7"><a class="anchor" href="#_examples_7"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Update Micronaut Version</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">pierrot delete \
+<pre class="prettyprint highlight"><code data-lang="bash">pierrot replace \
   --pattern='micronautVersion = (.*)' \
   --replacement='micronautVersion = 3.1.0' \
   --branch=chore/upgrade-micronaut \
@@ -731,15 +845,15 @@ pushes the the local changes and creates PRs
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_6"><a class="anchor" href="#_full_syntax_6"></a>Full Syntax</h5>
+<h5 id="_full_syntax_7"><a class="anchor" href="#_full_syntax_7"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot replace [-aghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
-                       [--github-token=&lt;token&gt;] [-m=&lt;message&gt;]
-                       [--message-from=&lt;messageFrom&gt;] -p=&lt;pattern&gt;
-                       [--progress-column=&lt;progressColumn&gt;]
+                       [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
+                       -p=&lt;pattern&gt; [--progress-column=&lt;progressColumn&gt;]
                        [--project=&lt;project&gt;] -r=&lt;replacement&gt; [-t=&lt;title&gt;]
-                       [--todo-column=&lt;todoColumn&gt;] QUERY...
+                       [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                       [-w=&lt;workspace&gt;] QUERY...
 replaces content in the files and creates PRs
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -748,8 +862,6 @@ replaces content in the files and creates PRs
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=&lt;token&gt;
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -766,13 +878,16 @@ replaces content in the files and creates PRs
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
-  -V, --version             Print version information and exit.</code></pre>
+      --token=&lt;token&gt;       The GitHub token
+  -V, --version             Print version information and exit.
+  -w, --workspace=&lt;workspace&gt;
+                            The workspace directory</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_status"><a class="anchor" href="#_status"></a>3.2.7. Status Command</h4>
+<h4 id="_status"><a class="anchor" href="#_status"></a>3.2.8. Status Command</h4>
 <div class="paragraph">
 <p>The <code>status</code> command allows search pull requests and display their status. If the project name is defined using <code>--project</code> then the PRs are
 also added from the given project.</p>
@@ -788,7 +903,7 @@ flags. If the project name is defined using <code>--project</code> then the PRs 
 </div>
 </div>
 <div class="sect4">
-<h5 id="_examples_7"><a class="anchor" href="#_examples_7"></a>Examples</h5>
+<h5 id="_examples_8"><a class="anchor" href="#_examples_8"></a>Examples</h5>
 <div class="listingblock">
 <div class="title">Display Update Micronaut Version Pull Requests and Assign Them to the Project</div>
 <div class="content">
@@ -803,14 +918,13 @@ flags. If the project name is defined using <code>--project</code> then the PRs 
 </div>
 </div>
 <div class="sect4">
-<h5 id="_full_syntax_7"><a class="anchor" href="#_full_syntax_7"></a>Full Syntax</h5>
+<h5 id="_full_syntax_8"><a class="anchor" href="#_full_syntax_8"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot status [-acdghPsV] [--done-column=&lt;doneColumn&gt;]
-                      [--github-token=&lt;token&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
                       [--project=&lt;project&gt;] [--todo-column=&lt;todoColumn&gt;]
-                      QUERY...
+                      [--token=&lt;token&gt;] QUERY...
 searches GitHub Pull Requests and prints their statuses
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -820,8 +934,6 @@ searches GitHub Pull Requests and prints their statuses
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=&lt;token&gt;
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -P, --no-page             Do not wait after each result
       --progress-column=&lt;progressColumn&gt;
@@ -830,6 +942,7 @@ searches GitHub Pull Requests and prints their statuses
   -s, --stacktrace          Print stack traces
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
+      --token=&lt;token&gt;       The GitHub token
   -V, --version             Print version information and exit.</code></pre>
 </div>
 </div>
@@ -841,8 +954,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.9.9<br>
-Last updated 2021-11-16 12:30:39 UTC
+Version 0.9.10<br>
+Last updated 2021-11-23 11:53:25 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
