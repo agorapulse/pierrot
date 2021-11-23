@@ -43,7 +43,12 @@ public class PushCommand implements Runnable {
 
     @Override
     public void run() {
+        // init from the pierrot.yml
+        workspace.asPullRequestSource().ifPresent(pullRequest::defaultsFrom);
+        workspace.readProjectName().ifPresent(p -> project.setProjectName(p));
+
         System.out.printf("Pushing changes from %s%n", workspace.getWorkspace());
+
         Workspace ws = new Workspace(workspace.getWorkspace());
         ws.visitRepositories(r ->
             project.addToProject(service, pullRequest.createPullRequest(service, r.getName(), (ghr, branch, message) -> {

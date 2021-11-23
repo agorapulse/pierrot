@@ -1,9 +1,9 @@
-Usage: pierrot push [-hsV] [-b=<branch>] [--done-column=<doneColumn>]
+Usage: pierrot init [-hsV] [-b=<branch>] [--done-column=<doneColumn>]
                     [-m=<message>] [--message-from=<messageFrom>]
                     [--progress-column=<progressColumn>] [--project=<project>]
                     [-t=<title>] [--todo-column=<todoColumn>] [--token=<token>]
                     [-w=<workspace>]
-pushes the the local changes and creates PRs
+initializes new workspace
   -b, --branch=<branch>     The pull request branch
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project

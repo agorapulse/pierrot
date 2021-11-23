@@ -484,7 +484,7 @@ public class DefaultGitHubService implements GitHubService {
         }
 
         if (StringUtils.isEmpty(configuration.getOrganization())) {
-            LOGGER.warn("Organization is not set. You are searching the whole GitHub. Use GITHUB_ORGANIZATION environment variable or use 'org:myorg' in the search");
+            LOGGER.warn("Organization is not set. You are searching the whole GitHub. Use PIERROT_ORGANIZATION environment variable or use 'org:myorg' in the search");
             return query;
         }
 

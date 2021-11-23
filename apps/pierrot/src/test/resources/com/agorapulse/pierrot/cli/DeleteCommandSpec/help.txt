@@ -1,9 +1,9 @@
 Usage: pierrot delete [-aghPsV] [-b=<branch>] [--done-column=<doneColumn>]
-                      [--github-token=<token>] [-m=<message>]
-                      [--message-from=<messageFrom>]
+                      [-m=<message>] [--message-from=<messageFrom>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [-t=<title>]
-                      [--todo-column=<todoColumn>] QUERY...
+                      [--todo-column=<todoColumn>] [--token=<token>]
+                      [-w=<workspace>] QUERY...
 creates PRs to delete files
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -12,8 +12,6 @@ creates PRs to delete files
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=<token>
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message
       --message-from=<messageFrom>
@@ -26,4 +24,7 @@ creates PRs to delete files
   -t, --title=<title>       The pull request title
       --todo-column=<todoColumn>
                             The name of the 'To do' column in the project
+      --token=<token>       The GitHub token
   -V, --version             Print version information and exit.
+  -w, --workspace=<workspace>
+                            The workspace directory

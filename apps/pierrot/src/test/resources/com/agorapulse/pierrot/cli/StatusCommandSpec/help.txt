@@ -1,8 +1,7 @@
 Usage: pierrot status [-acdghPsV] [--done-column=<doneColumn>]
-                      [--github-token=<token>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [--todo-column=<todoColumn>]
-                      QUERY...
+                      [--token=<token>] QUERY...
 searches GitHub Pull Requests and prints their statuses
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -12,8 +11,6 @@ searches GitHub Pull Requests and prints their statuses
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --github-token=<token>
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -P, --no-page             Do not wait after each result
       --progress-column=<progressColumn>
@@ -22,4 +19,5 @@ searches GitHub Pull Requests and prints their statuses
   -s, --stacktrace          Print stack traces
       --todo-column=<todoColumn>
                             The name of the 'To do' column in the project
+      --token=<token>       The GitHub token
   -V, --version             Print version information and exit.

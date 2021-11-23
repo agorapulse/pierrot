@@ -18,10 +18,7 @@
 package com.agorapulse.pierrot.cli;
 
 import com.agorapulse.pierrot.api.GitHubService;
-import com.agorapulse.pierrot.cli.mixin.FileMixin;
-import com.agorapulse.pierrot.cli.mixin.ProjectMixin;
-import com.agorapulse.pierrot.cli.mixin.PullRequestMixin;
-import com.agorapulse.pierrot.cli.mixin.SearchMixin;
+import com.agorapulse.pierrot.cli.mixin.*;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -40,11 +37,16 @@ public class CreateCommand implements Runnable {
     @Mixin SearchMixin search;
     @Mixin FileMixin file;
     @Mixin ProjectMixin project;
+    @Mixin WorkspaceMixin workspace;
 
     @Inject GitHubService service;
 
     @Override
     public void run() {
+        // init from the pierrot.yml
+        workspace.asPullRequestSource().ifPresent(pullRequest::defaultsFrom);
+        workspace.readProjectName().ifPresent(p -> project.setProjectName(p));
+
         final Set<String> processed = new LinkedHashSet<>();
         search.searchContent(service, found ->
             project.addToProject(service, pullRequest.createPullRequest(service, found.getRepository().getFullName(),

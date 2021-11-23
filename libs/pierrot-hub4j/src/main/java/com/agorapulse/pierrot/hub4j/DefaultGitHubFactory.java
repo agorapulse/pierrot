@@ -50,8 +50,8 @@ public class DefaultGitHubFactory {
 
     private void printMissingTokenMessage() {
         LOGGER.error("GitHub client is not authenticated. Please, set up your GitHub token");
-        LOGGER.error("    GITHUB_TOKEN environment variable");
-        LOGGER.error("  --github-token=<token> command line parameter");
+        LOGGER.error("    PIERROT_TOKEN environment variable");
+        LOGGER.error("  --token=<token> command line parameter");
         LOGGER.error("Alternatively, see other authentication options in the GitHub API docs:");
         LOGGER.error("\n    https://github-api.kohsuke.org\n");
     }

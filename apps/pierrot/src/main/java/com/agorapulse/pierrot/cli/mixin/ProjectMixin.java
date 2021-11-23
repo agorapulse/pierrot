@@ -29,6 +29,10 @@ import java.util.Optional;
 
 public class ProjectMixin implements ProjectSource {
 
+    public static final String COLUMN_TO_DO = "To do";
+    public static final String COLUMN_IN_PROGRESS = "In progress";
+    public static final String COLUMN_DONE = "Done";
+
     private static final List<String> IN_PROGRESS_MERGEABLE_STATES = List.of(
         // The merge is blocked.
         "blocked",
@@ -51,25 +55,61 @@ public class ProjectMixin implements ProjectSource {
     @CommandLine.Option(
         names = {"--todo-column"},
         description = "The name of the 'To do' column in the project",
-        defaultValue = "To do"
+        defaultValue = COLUMN_TO_DO
     )
     String todoColumn;
 
     @CommandLine.Option(
         names = {"--progress-column"},
         description = "The name of the 'In progress' column in the project",
-        defaultValue = "In progress"
+        defaultValue = COLUMN_IN_PROGRESS
     )
     String progressColumn;
 
     @CommandLine.Option(
         names = {"--done-column"},
         description = "The name of the 'Done' column in the project",
-        defaultValue = "Done"
+        defaultValue = COLUMN_DONE
     )
     String doneColumn;
 
     private Project board;
+
+    public void defaultsFrom(WorkspaceDescriptor other) {
+        if (StringUtils.isEmpty(project)) {
+            project = other.getProject();
+        }
+
+        if (StringUtils.isEmpty(todoColumn)) {
+            todoColumn = other.getTodoColumn();
+        }
+
+        if (StringUtils.isEmpty(progressColumn)) {
+            progressColumn = other.getProgressColumn();
+        }
+
+        if (StringUtils.isEmpty(doneColumn)) {
+            doneColumn = other.getDoneColumn();
+        }
+    }
+
+    public void storeInto(WorkspaceDescriptor other) {
+        if (StringUtils.isNotEmpty(project)) {
+            other.setProject(project);
+        }
+
+        if (StringUtils.isNotEmpty(todoColumn)) {
+            other.setTodoColumn(todoColumn);
+        }
+
+        if (StringUtils.isNotEmpty(progressColumn)) {
+            other.setProgressColumn(progressColumn);
+        }
+
+        if (StringUtils.isNotEmpty(doneColumn)) {
+            other.setDoneColumn(doneColumn);
+        }
+    }
 
     public Optional<PullRequest> addToProject(GitHubService service, Optional<PullRequest> pullRequest) {
         if (StringUtils.isEmpty(project)) {
@@ -124,4 +164,9 @@ public class ProjectMixin implements ProjectSource {
     public boolean hasProject() {
         return StringUtils.isNotEmpty(project);
     }
+
+    public void setProjectName(String project) {
+        this.project = project;
+    }
+
 }

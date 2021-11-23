@@ -2,7 +2,7 @@
 [[_usage]]
 = Usage
 
-Pierrot provides various command to batch-manipulate code in the GitHub repositories. You can see the list
+Pierrot provides various command to batch-manipulate code in the GitHub repositories.You can see the list
 of available commands when you run the `pierrot` command without any parameters:
 
 [source,bash]
@@ -10,12 +10,12 @@ of available commands when you run the `pierrot` command without any parameters:
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help.txt[]
 ----
 
-Pierrot requires being authenticated to GitHub. You can either set up `GITHUB_TOKEN` or pass the token as `--github-token` parameter.
+Pierrot requires being authenticated to GitHub.You can either set up `PIERROT_TOKEN` or pass the token as `--token` parameter.
 Alternatively, see other authentication options in https://github-api.kohsuke.org[the GitHub API for Java documentation].
 
 All the commands are based on https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax[GitHub search syntax].
-Pierrot works the best if you constrain the searches to an organization. If you don't want to add `org:myorg` search
-term to every command then set `GITHUB_ORGANIZATION` environment variable to the name of your organization.
+Pierrot works the best if you constrain the searches to an organization.If you don't want to add `org:myorg` search
+term to every command then set `PIERROT_ORGANIZATION` environment variable to the name of your organization.
 
 == Common Parameters
 
@@ -27,7 +27,7 @@ The following parameters can be use with any command:
 
 [source,bash]
 ----
-      --github-token=<token> The GitHub token
+      --token=<token> The GitHub token
   -h, --help                 Show this help message and exit.
   -s, --stacktrace           Print stack traces
   -V, --version              Print version information and exit.
@@ -44,9 +44,10 @@ Search parameters allows you to tune the search scope and pagination of the resu
   -P, --no-page      Do not wait after each result
 ----
 
+[#_pull_request_parameters]
 === Pull Request Parameters
 
-Pull request parameters will be used to create new pull requests in the affected repositories. If the values are not
+Pull request parameters will be used to create new pull requests in the affected repositories.If the values are not
 provided in the form of command line argument then the user will be prompted to enter them first time they are requested.
 The pull request message is also the message for the individual commits and can be also read from file using `--mesage-from` parameter.
 
@@ -58,10 +59,13 @@ The pull request message is also the message for the individual commits and can 
   -t, --title=<title>        The pull request title
 ----
 
+TIP: Pull request parameters can be stored in `pierrot.yml` file.See <<_init>> and <<Workspace Parameter>>.
+
+[#_project_parameters]
 === Project Parameters
 
 The commands that can create pull request or searches pull requests such as `status` command can add the pull requests to the
-GitHub Project (board) once `--project` parameter is provided. The other parameters are optional. The board is created if it does not exist
+GitHub Project (board) once `--project` parameter is provided.The other parameters are optional.The board is created if it does not exist
 but the automation must be set up manually.
 
 [source,bash]
@@ -75,6 +79,8 @@ but the automation must be set up manually.
                              The name of the 'To do' column in the project
 ----
 
+TIP: Pull request parameters can be stored in `pierrot.yml` file.See <<_init>> and <<Workspace Parameter>>.
+
 === Workspace Parameter
 
 Command working with workspaces such as `pull` and `push` can point to a different directory then the current one that is the default one.
@@ -84,6 +90,8 @@ Command working with workspaces such as `pull` and `push` can point to a differe
   -w, --workspace=<workspace>
                      The working directory to pull found files
 ----
+
+You can store <<Pull Request Parameters>> and <<Project Parameters>> inside the workspace in `pierrot.yml` file. See <<_init>>.
 
 [[_commands]]
 
@@ -112,6 +120,52 @@ JCenter has been shut down so if you still have a references in the build files 
 ----
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/SearchCommandSpec/help.txt[]
 ----
+
+[[_init]]
+=== Init Command
+
+The `init` command allows to store and manage <<_pull_request_parameters>> and <<_project_parameters>>.
+
+==== Examples
+
+[source,bash]
+.Set up the Pull Request and Project Defaults
+----
+pierrot init \
+  --project='Micronaut Upgrade' \
+  --branch=chore/upgrade-micronaut \
+  --title="Upgraded Micronaut to 3.1.x" \
+  --message="Upgraded Micronaut to the latest version 3.1.x" \
+  --workspace=micronaut-upgrade-3.1.x
+----
+
+The command will generate the new folder `micronaut-upgrade-3.1.x` with a file `pierrot.yaml` with the following content
+
+[source,yaml]
+.pierrot.yml
+----
+project: Micronaut Upgrade
+branch: chore/upgrade-micronaut
+title: Upgraded Micronaut to 3.1.x
+message: Upgraded Micronaut to the latest version 3.1.x
+----
+
+If `pierrot` command is executed within `micronaut-upgrade-3.1.x` folder or with `--workspace` pointing to that folder then the values from the `pierrot.yml` file will be used as default values for given parameters. For example running the following command from `micronaut-upgrade-3.1.x` will not prompt for the pull request details and will automatically include the pull requests into `Micornaut Upgrade` project:
+
+[source,bash]
+----
+pierrot replace \
+  --pattern='micronautVersion = (.*)' \
+  --replacement='micronautVersion = 3.1.0'
+----
+
+==== Full Syntax
+
+[source,bash]
+----
+include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/InitCommandSpec/help.txt[]
+----
+
 
 [[_create]]
 === Create Command
@@ -281,7 +335,7 @@ New pull request are created with a specified changes.
 [source,bash]
 .Update Micronaut Version
 ----
-pierrot delete \
+pierrot replace \
   --pattern='micronautVersion = (.*)' \
   --replacement='micronautVersion = 3.1.0' \
   --branch=chore/upgrade-micronaut \

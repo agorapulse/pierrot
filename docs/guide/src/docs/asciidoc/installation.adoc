@@ -4,14 +4,11 @@
 
 Pierrot can be installed using https://sdkman.io/sdks#pierrot[SDKMAN!]
 
----
+[source,bash]
+----
 sdk update
 sdk install pierrot
----
-
-
-Alternatively Download and extract https://github.com/agorapulse/pierrot/releases/latest[the latest binaries from the release page] and add the `bin` folder to your `PATH`.
-
+----
 
 Once installed, you should see the following message when you run the `pierrot` command:
 
@@ -19,4 +16,7 @@ Once installed, you should see the following message when you run the `pierrot` 
 include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help-no-token.txt[]
 ----
 
-TIP: You can run `xattr -d com.apple.quarantine pierrot` to remove quarantine from the downloaded file on macOS.
+TIP: If you plan to use Pierrot from Github Actions then you can use https://github.com/agorapulse/setup-pierrot[Setup Pierrot Action]
+
+
+NOTE: Alternatively you can download and extract https://github.com/agorapulse/pierrot/releases/latest[ the latest binaries from the release page] and add the `bin` folder to your `PATH`. Run `xattr -d com.apple.quarantine pierrot` to remove quarantine from the downloaded file on macOS.

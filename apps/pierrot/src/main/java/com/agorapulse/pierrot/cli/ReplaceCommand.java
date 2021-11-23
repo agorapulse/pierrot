@@ -21,6 +21,7 @@ import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.cli.mixin.ProjectMixin;
 import com.agorapulse.pierrot.cli.mixin.PullRequestMixin;
 import com.agorapulse.pierrot.cli.mixin.SearchMixin;
+import com.agorapulse.pierrot.cli.mixin.WorkspaceMixin;
 import jakarta.inject.Inject;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -36,6 +37,7 @@ public class ReplaceCommand implements Runnable {
     @Mixin SearchMixin search;
     @Mixin PullRequestMixin pullRequest;
     @Mixin ProjectMixin project;
+    @Mixin WorkspaceMixin workspace;
 
     @Inject GitHubService service;
 
@@ -55,6 +57,10 @@ public class ReplaceCommand implements Runnable {
 
     @Override
     public void run() {
+        // init from the pierrot.yml
+        workspace.asPullRequestSource().ifPresent(pullRequest::defaultsFrom);
+        workspace.readProjectName().ifPresent(p -> project.setProjectName(p));
+
         search.searchContent(service, content -> project.addToProject(service, pullRequest.createPullRequest(service, content.getRepository().getFullName(), (repository, branch, message) -> {
             System.out.printf("Replacing %s/%s%n", content.getRepository().getFullName(), content.getPath());
 
