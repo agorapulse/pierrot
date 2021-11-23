@@ -55,6 +55,14 @@ jobs:
         run: |
           ./pierrot search repo:agorapulse/pierrot filename:.testfile
           ./pierrot status repo:agorapulse/pierrot author:musketyr
+          ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project"
+          cat pierrot.yml
+          grep -q branch pierrot.yml
+          grep -q testbranch pierrot.yml
+          grep -q title pierrot.yml
+          grep -q message pierrot.yml
+          grep -q project pierrot.yml
+          ./pierrot push
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
