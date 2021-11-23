@@ -10,7 +10,7 @@ sdk install pierrot
 ---
 
 
-Alternatively Download and extract https://github.com/agorapulse/micronaut-worker/releases/latest[ the latest binaries from the release page] and add the `bin` folder to your `PATH`.
+Alternatively Download and extract https://github.com/agorapulse/pierrot/releases/latest[the latest binaries from the release page] and add the `bin` folder to your `PATH`.
 
 
 Once installed, you should see the following message when you run the `pierrot` command:
