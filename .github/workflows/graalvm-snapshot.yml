@@ -48,21 +48,23 @@ jobs:
           ./gradlew :pierrot:shadowJar --no-daemon
           native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Verify Binary
-        if: ${{ runner.os == 'Linux' }}
+        if: ${{ runner.os == 'Linux' || runner.os == 'macOS'}}
         env:
           GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
           GITHUB_ORG: agorapulse
         run: |
           ./pierrot search repo:agorapulse/pierrot filename:.testfile
           ./pierrot status repo:agorapulse/pierrot author:musketyr
-          ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project"
+          ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project" --workspace testws
+          cd testws
           cat pierrot.yml
           grep -q branch pierrot.yml
           grep -q testbranch pierrot.yml
           grep -q title pierrot.yml
           grep -q message pierrot.yml
           grep -q project pierrot.yml
-          ./pierrot push
+          cd ..
+          ./pierrot push --workspace testws
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
