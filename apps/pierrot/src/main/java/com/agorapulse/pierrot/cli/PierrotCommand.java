@@ -24,10 +24,13 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.CommandLinePropertySource;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.MapPropertySource;
+import io.micronaut.core.annotation.TypeHint;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import java.util.Map;
+
+import static io.micronaut.core.annotation.TypeHint.AccessType.*;
 
 @Command(
     name = "pierrot",
@@ -42,6 +45,20 @@ import java.util.Map;
         ReplaceCommand.class,
         SearchCommand.class,
         StatusCommand.class,
+    }
+)
+@TypeHint(
+    typeNames = {
+        "com.agorapulse.pierrot.cli.mixin.WorkspaceDescriptor"
+    },
+    accessType = {
+        ALL_PUBLIC,
+        ALL_DECLARED_CONSTRUCTORS,
+        ALL_PUBLIC_CONSTRUCTORS,
+        ALL_DECLARED_METHODS,
+        ALL_DECLARED_FIELDS,
+        ALL_PUBLIC_METHODS,
+        ALL_PUBLIC_FIELDS
     }
 )
 public class PierrotCommand implements Runnable {
