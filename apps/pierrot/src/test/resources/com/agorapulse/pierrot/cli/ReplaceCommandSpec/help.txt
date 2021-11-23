@@ -1,9 +1,9 @@
 Usage: pierrot replace [-aghPsV] [-b=<branch>] [--done-column=<doneColumn>]
-                       [--token=<token>] [-m=<message>]
-                       [--message-from=<messageFrom>] -p=<pattern>
-                       [--progress-column=<progressColumn>]
+                       [-m=<message>] [--message-from=<messageFrom>]
+                       -p=<pattern> [--progress-column=<progressColumn>]
                        [--project=<project>] -r=<replacement> [-t=<title>]
-                       [--todo-column=<todoColumn>] QUERY...
+                       [--todo-column=<todoColumn>] [--token=<token>]
+                       [-w=<workspace>] QUERY...
 replaces content in the files and creates PRs
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -12,8 +12,6 @@ replaces content in the files and creates PRs
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
   -g, --global              Do not constrain search to current organization
-      --token=<token>
-                            The GitHub token
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message
       --message-from=<messageFrom>
@@ -30,4 +28,7 @@ replaces content in the files and creates PRs
   -t, --title=<title>       The pull request title
       --todo-column=<todoColumn>
                             The name of the 'To do' column in the project
+      --token=<token>       The GitHub token
   -V, --version             Print version information and exit.
+  -w, --workspace=<workspace>
+                            The workspace directory

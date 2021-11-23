@@ -20,8 +20,10 @@ package com.agorapulse.pierrot.cli.mixin;
 import com.agorapulse.pierrot.api.source.ProjectSource;
 import com.agorapulse.pierrot.api.source.PullRequestSource;
 import com.agorapulse.pierrot.api.source.WorkspaceSource;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import picocli.CommandLine.Option;
 
 import java.io.File;
@@ -52,9 +54,7 @@ public class WorkspaceMixin implements WorkspaceSource {
         }
 
         try {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            WorkspaceDescriptor descriptor = mapper.readValue(workplaceFile, WorkspaceDescriptor.class);
-            return Optional.of(descriptor);
+            return Optional.of(createYamlMapper().readValue(workplaceFile, WorkspaceDescriptor.class));
         } catch (IOException e) {
             System.err.println("Cannot read workspace file " + workplaceFile.getAbsolutePath());
             e.printStackTrace();
@@ -71,9 +71,7 @@ public class WorkspaceMixin implements WorkspaceSource {
         }
 
         try {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            WorkspaceDescriptor descriptor = mapper.readValue(workplaceFile, WorkspaceDescriptor.class);
-            return Optional.ofNullable(descriptor.getProject());
+            return Optional.ofNullable(createYamlMapper().readValue(workplaceFile, WorkspaceDescriptor.class).getProject());
         } catch (IOException e) {
             System.err.println("Cannot read workspace file " + workplaceFile.getAbsolutePath());
             e.printStackTrace();
@@ -96,12 +94,17 @@ public class WorkspaceMixin implements WorkspaceSource {
 
 
         try {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            mapper.writeValue(workplaceFile, descriptor);
+            createYamlMapper().writeValue(workplaceFile, descriptor);
         } catch (IOException e) {
             System.err.println("Cannot write workspace file " + workplaceFile.getAbsolutePath());
             e.printStackTrace();
         }
+    }
+
+    private ObjectMapper createYamlMapper() {
+        return new ObjectMapper(
+            new YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+        ).setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
 }

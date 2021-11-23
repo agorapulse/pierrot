@@ -1,12 +1,11 @@
 Usage: pierrot search [-aghPsV] [--token=<token>] QUERY...
 searches GitHub and prints the matching files
-      QUERY...       The search term such as 'org:agorapulse filename:build.
-                       gradle'
-  -a, --all          Include archived and closed
-  -g, --global       Do not constrain search to current organization
-      --token=<token>
-                     The GitHub token
-  -h, --help         Show this help message and exit.
-  -P, --no-page      Do not wait after each result
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.
+      QUERY...          The search term such as 'org:agorapulse filename:build.
+                          gradle'
+  -a, --all             Include archived and closed
+  -g, --global          Do not constrain search to current organization
+  -h, --help            Show this help message and exit.
+  -P, --no-page         Do not wait after each result
+  -s, --stacktrace      Print stack traces
+      --token=<token>   The GitHub token
+  -V, --version         Print version information and exit.

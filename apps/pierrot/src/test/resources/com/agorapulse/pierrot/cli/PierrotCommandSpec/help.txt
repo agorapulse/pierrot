@@ -1,13 +1,13 @@
 Usage: pierrot [-hsV] [--token=<token>] [COMMAND]
 The GitHub cross-repository governance tool
-      --token=<token>
-                     The GitHub token
-  -h, --help         Show this help message and exit.
-  -s, --stacktrace   Print stack traces
-  -V, --version      Print version information and exit.
+  -h, --help            Show this help message and exit.
+  -s, --stacktrace      Print stack traces
+      --token=<token>   The GitHub token
+  -V, --version         Print version information and exit.
 Commands:
   create   creates a file in a matching repositories and creates PRs
   delete   creates PRs to delete files
+  init     initializes new workspace
   pull     pulls the matching files locally
   push     pushes the the local changes and creates PRs
   replace  replaces content in the files and creates PRs

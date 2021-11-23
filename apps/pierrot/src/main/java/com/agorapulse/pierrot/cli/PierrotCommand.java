@@ -24,7 +24,6 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.CommandLinePropertySource;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.MapPropertySource;
-import io.micronaut.context.env.yaml.YamlPropertySourceLoader;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
