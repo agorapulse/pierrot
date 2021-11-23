@@ -29,23 +29,25 @@ class PierrotCommandSpec extends AbstractCommandSpec {
     ]
 
     void 'run main'() {
+        given:
+            List<String> testArgs = ['--help', '--token=token', '-s']
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.execute('--help', '--token=token', '-s')
+                PierrotCommand.execute(testArgs as String[])
             }
 
         then:
-            console.out == fixt.readText('help.txt')
+            compareOutput('help.txt', console, testArgs)
     }
 
     void 'run main without token'() {
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.execute('--help')
+                PierrotCommand.execute(helpArgs as String[])
             }
 
         then:
-            console.out == fixt.readText('help-no-token.txt')
+            compareOutput('help-no-token.txt', console, helpArgs)
     }
 
 }

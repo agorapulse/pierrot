@@ -203,7 +203,6 @@ abstract class AbstractCommandSpec extends Specification {
         return runCommand(referenceFileName, input, args) { }
     }
 
-    @SuppressWarnings(['ConstantAssertExpression', 'Println'])
     protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args, Runnable additionalChecks) {
         TestConsole console = TestConsole.capture(input.join(System.lineSeparator())) {
             PicocliRunner.run(PierrotCommand, context, args as String[])
@@ -211,6 +210,15 @@ abstract class AbstractCommandSpec extends Specification {
 
         assert !console.err
 
+        compareOutput(referenceFileName, console, args)
+
+        additionalChecks()
+
+        return true
+    }
+
+    @SuppressWarnings(['Println', 'ConstantAssertExpression'])
+    protected void compareOutput(String referenceFileName, TestConsole console, List<String> args) {
         String content = fixt.readText(referenceFileName)
 
         if (!content) {
@@ -226,10 +234,6 @@ abstract class AbstractCommandSpec extends Specification {
         println console.out
 
         assert console.out == expandFile(content)
-
-        additionalChecks()
-
-        return true
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])
