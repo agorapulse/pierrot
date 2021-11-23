@@ -17,7 +17,6 @@
  */
 package com.agorapulse.pierrot.cli.mixin;
 
-import com.agorapulse.pierrot.api.source.ProjectSource;
 import com.agorapulse.pierrot.api.source.PullRequestSource;
 import com.agorapulse.pierrot.api.source.WorkspaceSource;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -79,14 +78,14 @@ public class WorkspaceMixin implements WorkspaceSource {
         }
     }
 
-    public void initWorkspaceFiles(PullRequestSource pullRequestSource, ProjectSource projectSource) {
+    public void initWorkspaceFiles(PullRequestSource pullRequestSource, ProjectMixin projectSource) {
         File workplaceFile = new File(workspace, WORKPLACE_FILE_NAME);
         workplaceFile.getParentFile().mkdirs();
 
         WorkspaceDescriptor descriptor = new WorkspaceDescriptor();
 
 
-        projectSource.getProject().ifPresent(p -> descriptor.setProject(p.getName()));
+        projectSource.storeInto(descriptor);
 
         descriptor.setBranch(pullRequestSource.readBranch());
         descriptor.setTitle(pullRequestSource.readTitle());

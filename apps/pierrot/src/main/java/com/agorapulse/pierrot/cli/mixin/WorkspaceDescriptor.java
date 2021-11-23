@@ -18,15 +18,22 @@
 package com.agorapulse.pierrot.cli.mixin;
 
 import com.agorapulse.pierrot.api.source.PullRequestSource;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.micronaut.core.annotation.Introspected;
 
 @Introspected
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class WorkspaceDescriptor implements PullRequestSource {
 
     private String project = "";
+
     private String branch = "";
     private String title = "";
     private String message = "";
+
+    private String todoColumn = ProjectMixin.COLUMN_TO_DO;
+    private String progressColumn = ProjectMixin.COLUMN_IN_PROGRESS;
+    private String doneColumn = ProjectMixin.COLUMN_DONE;
 
     public String getProject() {
         return project;
@@ -75,4 +82,27 @@ public class WorkspaceDescriptor implements PullRequestSource {
         return message;
     }
 
+    public String getTodoColumn() {
+        return todoColumn;
+    }
+
+    public void setTodoColumn(String todoColumn) {
+        this.todoColumn = todoColumn;
+    }
+
+    public String getProgressColumn() {
+        return progressColumn;
+    }
+
+    public void setProgressColumn(String progressColumn) {
+        this.progressColumn = progressColumn;
+    }
+
+    public String getDoneColumn() {
+        return doneColumn;
+    }
+
+    public void setDoneColumn(String doneColumn) {
+        this.doneColumn = doneColumn;
+    }
 }
