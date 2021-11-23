@@ -203,7 +203,7 @@ abstract class AbstractCommandSpec extends Specification {
         return runCommand(referenceFileName, input, args) { }
     }
 
-    @SuppressWarnings('ConstantAssertExpression')
+    @SuppressWarnings(['ConstantAssertExpression', 'Println'])
     protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args, Runnable additionalChecks) {
         TestConsole console = TestConsole.capture(input.join(System.lineSeparator())) {
             PicocliRunner.run(PierrotCommand, context, args as String[])
@@ -217,6 +217,11 @@ abstract class AbstractCommandSpec extends Specification {
             fixt.writeText(referenceFileName, console.out)
             assert false, "New file $referenceFileName has been generated. Please, run the test again!"
         }
+
+        println('=' * 100)
+        println "EXPECTED:\n$content"
+        println('-' * 100)
+        println "ACTUAL:\n$console.out"
 
         assert console.out == expandFile(content)
 
