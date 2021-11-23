@@ -219,9 +219,11 @@ abstract class AbstractCommandSpec extends Specification {
         }
 
         println('=' * 100)
-        println "EXPECTED:\n$content"
-        println('-' * 100)
-        println "ACTUAL:\n$console.out"
+        println('| ' + "pierrot ${args.join()}".center(96, ' ') + ' |')
+        println('=' * 100)
+        println content
+        println(' ACTUAL '.center(100, '-'))
+        println console.out
 
         assert console.out == expandFile(content)
 
