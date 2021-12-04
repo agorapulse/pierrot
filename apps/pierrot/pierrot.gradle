@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id 'io.sdkman.vendors' version '3.0.0'
-}
-
 micronaut {
     testRuntime('spock2')
     processing {
@@ -52,30 +48,3 @@ dependencies {
 application {
     mainClass.set('com.agorapulse.pierrot.cli.PierrotCommand')
 }
-
-dockerBuild {
-    images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
-}
-
-dockerBuildNative {
-    images = [
-        "${System.env.DOCKER_IMAGE ?: project.name}:$project.version",
-        "${System.env.DOCKER_IMAGE ?: project.name}:latest",
-    ]
-}
-
-dockerfileNative {
-    baseImage('gcr.io/distroless/cc-debian10')
-}
-
-sdkman {
-    candidate = 'pierrot'
-    version =  project.version
-    platforms = [
-        MAC_OSX: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-darwin-amd64-v${project.version}.zip",
-        WINDOWS_64: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-windows-amd64-v${project.version}.zip",
-        LINUX_64: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-linux-amd64-v${project.version}.zip",
-    ]
-    hashtag = 'PierrotCLI'
-}
-
