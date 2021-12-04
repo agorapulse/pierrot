@@ -21,6 +21,8 @@ plugins {
     id 'org.kordamp.gradle.codenarc'
     id 'org.kordamp.gradle.coveralls'
     id 'io.github.gradle-nexus.publish-plugin'
+    id 'org.jreleaser'
+    id 'com.google.osdetector'
 }
 
 if (!project.hasProperty('ossrhUsername'))      ext.ossrhUsername       = System.getenv('SONATYPE_USERNAME') ?: '**UNDEFINED**'
@@ -33,9 +35,10 @@ config {
     release = (rootProject.findProperty('release') ?: false).toBoolean()
 
     info {
-        name        = 'Pierrot'
-        vendor      = 'Agorapulse'
-        description = 'Pierrot - Multi-repository GitHub Governance Tool'
+        name          = 'Pierrot'
+        vendor        = 'Agorapulse'
+        description   = 'Pierrot - Multi-repository GitHub Governance Tool'
+        inceptionYear = '2021'
 
         links {
             website      = 'https://github.com/' + slug
@@ -205,3 +208,75 @@ gradleProjects {
 
 
 check.dependsOn('aggregateCheckstyle', 'aggregateCodenarc', 'aggregateAllTestReports', 'coveralls')
+
+jreleaser {
+    dryrun = (rootProject.findProperty('jreleaser.dryrun') ?: false).toBoolean()
+
+    environment {
+        properties.put('artifactsDir', 'build/jreleaser/assemble/pierrot/native-image')
+    }
+
+    release {
+        github {
+            branch = 'master'
+            overwrite = true
+            tagName = '{{projectVersion}}'
+            skipTag = true
+            changelog {
+                formatted = 'ALWAYS'
+                format = '- {{commitShortHash}} {{commitTitle}}'
+                contributors {
+                    format = '- {{contributorName}}'
+                }
+            }
+        }
+    }
+
+    assemble {
+        nativeImage {
+            pierrot {
+                active = 'ALWAYS'
+                 args = ['--no-fallback',
+                    '-H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources',
+                    '-H:Class=com.agorapulse.pierrot.cli.PierrotCommand',
+                    '--trace-object-instantiation=java.io.FileDescriptor']
+                mainJar {
+                    path = 'apps/pierrot/build/libs/{{distributionName}}-{{projectVersion}}-all.jar'
+                }
+                files {
+                    pattern = 'LICENSE'
+                }
+            }
+        }
+    }
+
+    distributions {
+        pierrot {
+            distributionType = 'NATIVE_IMAGE'
+            artifact {
+                path = '{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip'
+                platform = 'osx-x86_64'
+            }
+            artifact {
+                path = '{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip'
+                platform = 'linux-x86_64'
+            }
+            artifact {
+                path = '{{artifactsDir}}/{{distributionName}}-{{projectVersion}}-windows-x86_64.zip'
+                platform = 'windows-x86_64'
+            }
+            docker {
+                active = 'ALWAYS'
+                baseImage = 'gcr.io/distroless/cc-debian10'
+                imageNames = [
+                  '{{repoOwner}}/{{distributionName}}:{{tagName}}',
+                  '{{repoOwner}}/{{distributionName}}:latest'
+                ]
+                repository {
+                    owner = 'agorapulse'
+                    name = 'pierrot-docker'
+                }
+            }
+        }
+    }
+}

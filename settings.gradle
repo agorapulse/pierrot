@@ -17,11 +17,9 @@
  */
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
     }
     dependencies {
         classpath group: 'org.kordamp.gradle',                      name: 'settings-gradle-plugin',         version: kordampPluginVersion
@@ -34,6 +32,8 @@ buildscript {
         classpath group: 'io.github.gradle-nexus',                  name: 'publish-plugin',                 version: nexusPluginVersion
         classpath group: 'io.micronaut.gradle',                     name: 'micronaut-gradle-plugin',        version: micronautPluginVersion
         classpath group: 'gradle.plugin.com.github.johnrengelman',  name: 'shadow',                         version: shadowPluginVersion
+        classpath group: 'org.jreleaser',                           name: 'jreleaser-gradle-plugin',        version: jreleaserPluginVersion
+        classpath group: 'gradle.plugin.com.google.gradle',         name: 'osdetector-gradle-plugin',       version: osdetectorPluginVersion
     }
 }
 
