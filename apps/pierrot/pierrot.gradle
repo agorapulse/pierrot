@@ -72,6 +72,8 @@ sdkman {
     candidate = 'pierrot'
     version =  project.version
     platforms = [
+        // TODO:  Once graal native-image works for arm OSX, we should switch to building and publishing a non-rosetta release (https://github.com/oracle/graal/issues/2666)
+        MAC_ARM64: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-darwin-amd64-v${project.version}.zip",
         MAC_OSX: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-darwin-amd64-v${project.version}.zip",
         WINDOWS_64: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-windows-amd64-v${project.version}.zip",
         LINUX_64: "https://github.com/agorapulse/pierrot/releases/download/${project.version}/pierrot-linux-amd64-v${project.version}.zip",
