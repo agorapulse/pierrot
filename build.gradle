@@ -146,7 +146,7 @@ gradleProjects {
                 mavenCentral()
             }
 
-            // location independent tests (useful for stable CI builds)
+            // location independent tsets (useful for stable CI builds)
             tasks.withType(Test){
                 useJUnitPlatform()
                 systemProperty 'user.timezone', 'UTC'
@@ -166,7 +166,7 @@ gradleProjects {
                 api platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
                 implementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
                 compileOnly platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                testImplementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
+                tsetImplementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
             }
 
             // useful for IntelliJ
@@ -197,7 +197,7 @@ gradleProjects {
             }
 
             dependencies {
-                testImplementation group: 'org.spockframework', name: 'spock-core', version: spockVersion
+                tsetImplementation group: 'org.spockframework', name: 'spock-core', version: spockVersion
             }
         }
     }
