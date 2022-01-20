@@ -41,7 +41,7 @@ class CreateCommandSpec extends AbstractCommandSpec {
 
     void 'use file to upload content'() {
         given:
-            File content = createWorkspaceFile(REPOSITORY_ONE, '.testfile', CONTENT)
+            File content = createWorkspaceFile(REPOSITORY_ONE, '.tsetfile', CONTENT)
             File message = createWorkspaceFile(REPOSITORY_ONE, 'prefix/message.txt', MESSAGE)
         expect:
             runCommand('file.txt', [
