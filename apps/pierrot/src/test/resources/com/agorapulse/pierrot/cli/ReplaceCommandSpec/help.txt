@@ -1,4 +1,4 @@
-Usage: pierrot replace [-aghPsV] [-b=<branch>] [--done-column=<doneColumn>]
+Usage: pierrot replace [-afghPsV] [-b=<branch>] [--done-column=<doneColumn>]
                        [-m=<message>] [--message-from=<messageFrom>]
                        -p=<pattern> [--progress-column=<progressColumn>]
                        [--project=<project>] -r=<replacement> [-t=<title>]
@@ -11,6 +11,7 @@ replaces content in the files and creates PRs
   -b, --branch=<branch>     The pull request branch
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -g, --global              Do not constrain search to current organization
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message

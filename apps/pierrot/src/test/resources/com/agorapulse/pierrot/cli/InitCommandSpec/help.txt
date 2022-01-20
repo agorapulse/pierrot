@@ -1,4 +1,4 @@
-Usage: pierrot init [-hsV] [-b=<branch>] [--done-column=<doneColumn>]
+Usage: pierrot init [-fhsV] [-b=<branch>] [--done-column=<doneColumn>]
                     [-m=<message>] [--message-from=<messageFrom>]
                     [--progress-column=<progressColumn>] [--project=<project>]
                     [-t=<title>] [--todo-column=<todoColumn>] [--token=<token>]
@@ -7,6 +7,7 @@ initializes new workspace
   -b, --branch=<branch>     The pull request branch
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message
       --message-from=<messageFrom>

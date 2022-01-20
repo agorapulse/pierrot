@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021 Vladimir Orany.
+ * Copyright 2021-2022 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,6 +79,12 @@ public class PullRequestMixin implements PullRequestSource {
     )
     File messageFrom;
 
+    @CommandLine.Option(
+        names = {"-f", "--force"},
+        description = "Deletes existing branch before pushing changes"
+    )
+    boolean force;
+
     private int pullRequestsCreated;
 
     public int getPullRequestsCreated() {
@@ -119,7 +125,7 @@ public class PullRequestMixin implements PullRequestSource {
             return Optional.empty();
         }
 
-        ghr.createBranch(readBranch());
+        ghr.createBranch(readBranch(), false);
 
         if (withRepository.perform(ghr, readBranch(), readMessage())) {
             pullRequestsCreated++;

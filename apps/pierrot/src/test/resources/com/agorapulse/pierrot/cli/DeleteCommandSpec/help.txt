@@ -1,4 +1,4 @@
-Usage: pierrot delete [-aghPsV] [-b=<branch>] [--done-column=<doneColumn>]
+Usage: pierrot delete [-afghPsV] [-b=<branch>] [--done-column=<doneColumn>]
                       [-m=<message>] [--message-from=<messageFrom>]
                       [--progress-column=<progressColumn>]
                       [--project=<project>] [-t=<title>]
@@ -11,6 +11,7 @@ creates PRs to delete files
   -b, --branch=<branch>     The pull request branch
       --done-column=<doneColumn>
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -g, --global              Do not constrain search to current organization
   -h, --help                Show this help message and exit.
   -m, --message=<message>   The pull request message

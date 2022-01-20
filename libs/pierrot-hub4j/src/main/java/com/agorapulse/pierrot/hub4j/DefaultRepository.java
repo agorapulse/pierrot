@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021 Vladimir Orany.
+ * Copyright 2021-2022 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,10 +86,13 @@ public class DefaultRepository implements Repository {
     }
 
     @Override
-    public boolean createBranch(String name) {
+    public boolean createBranch(String name, boolean force) {
         if (hasBranch(name)) {
             LOGGER.info("Branch {} already exists in repository {}", name, getFullName());
-            return false;
+            if (!force) {
+                return false;
+            }
+            deleteBranch(name);
         }
 
         try {
@@ -149,6 +152,14 @@ public class DefaultRepository implements Repository {
         } catch (IOException e) {
             LOGGER.error("Exception writing file " + path, e);
             return false;
+        }
+    }
+
+    private void deleteBranch(String name) {
+        try {
+            repository.getRef("heads/" + name).delete();
+        } catch (IOException e) {
+            LOGGER.error("Exception deleting branch " + name + " in " + getName(), e);
         }
     }
 

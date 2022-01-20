@@ -1,4 +1,4 @@
-Usage: pierrot create [-aghPsV] [-b=<branch>] [-c=<content>]
+Usage: pierrot create [-afghPsV] [-b=<branch>] [-c=<content>]
                       [--done-column=<doneColumn>] [--from=<contentFrom>]
                       [-m=<message>] [--message-from=<messageFrom>] [-p=<path>]
                       [--progress-column=<progressColumn>]
@@ -13,6 +13,7 @@ creates a file in a matching repositories and creates PRs
   -c, --content=<content>    The inline content of the newly created file
       --done-column=<doneColumn>
                              The name of the 'Done' column in the project
+  -f, --force                Deletes existing branch before pushing changes
       --from=<contentFrom>   The file to be uploaded to the repositories
   -g, --global               Do not constrain search to current organization
   -h, --help                 Show this help message and exit.
