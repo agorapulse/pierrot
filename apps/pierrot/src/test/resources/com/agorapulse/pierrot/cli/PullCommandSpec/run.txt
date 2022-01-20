@@ -1,5 +1,5 @@
-Searching content for 'org:agorapulse filename:.testfile "hello world"'!
-Fetched agorapulse/pierrot/.testfile
-Ignoring agorapulse/oss/.testfile as the repository is not pulled
-Ignoring agorapulse/oss/prefix/.testfile as the repository is not pulled
+Searching content for 'org:agorapulse filename:.tsetfile "hello world"'!
+Fetched agorapulse/pierrot/.tsetfile
+Ignoring agorapulse/oss/.tsetfile as the repository is not pulled
+Ignoring agorapulse/oss/prefix/.tsetfile as the repository is not pulled
 Found 3 results!
