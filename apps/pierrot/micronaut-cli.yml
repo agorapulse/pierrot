@@ -1,6 +1,6 @@
 applicationType: cli
 defaultPackage: com.example
-testFramework: spock
+tsetFramework: spock
 sourceLanguage: java
 buildTool: gradle
 features: [annotation-api, app-name, github-workflow-graal-docker-registry, graalvm, gradle, java, logback, picocli, picocli-java-application, picocli-spock, readme, shade, spock, yaml]
