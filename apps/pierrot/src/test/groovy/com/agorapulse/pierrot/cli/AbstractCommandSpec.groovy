@@ -23,7 +23,7 @@ import com.agorapulse.pierrot.api.GitHubService
 import com.agorapulse.pierrot.api.Project
 import com.agorapulse.pierrot.api.PullRequest
 import com.agorapulse.pierrot.api.Repository
-import com.agorapulse.testing.fixt.Fixt
+import com.agorapulse.tseting.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
@@ -39,14 +39,14 @@ abstract class AbstractCommandSpec extends Specification {
 
     public static final String OWNER = 'agorapulse'
     public static final String CONTENT_SEARCH_TERM_1 = 'org:agorapulse'
-    public static final String CONTENT_SEARCH_TERM_2 = 'filename:.testfile'
+    public static final String CONTENT_SEARCH_TERM_2 = 'filename:.tsetfile'
     public static final String CONTENT_SEARCH_TERM_3 = 'hello world'
     public static final String CONTENT_SEARCH_TERM_EXPECTED = "$CONTENT_SEARCH_TERM_1 $CONTENT_SEARCH_TERM_2 \"$CONTENT_SEARCH_TERM_3\""
-    public static final String BRANCH = 'chore/test'
+    public static final String BRANCH = 'chore/tset'
     public static final String TITLE = 'Test Title'
     public static final String MESSAGE = 'Test Message'
     public static final String CONTENT = 'Test Content'
-    public static final String PATH = '.testfile'
+    public static final String PATH = '.tsetfile'
     public static final String PROJECT = 'Pierrot'
     public static final String REPOSITORY_ONE = 'agorapulse/pierrot'
     public static final String REPOSITORY_TWO = 'agorapulse/oss'
@@ -223,7 +223,7 @@ abstract class AbstractCommandSpec extends Specification {
 
         if (!content) {
             fixt.writeText(referenceFileName, console.out)
-            assert false, "New file $referenceFileName has been generated. Please, run the test again!"
+            assert false, "New file $referenceFileName has been generated. Please, run the tset again!"
         }
 
         println('=' * 100)
