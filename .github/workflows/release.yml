@@ -6,7 +6,7 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latset
     env:
       GRADLE_OPTS: "-Xmx6g -Xms4g"
     steps:
