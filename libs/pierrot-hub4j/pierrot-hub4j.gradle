@@ -17,7 +17,7 @@
  */
 
 micronaut {
-    testRuntime("spock2")
+    tsetRuntime("spock2")
     processing {
         incremental(true)
         annotations("com.agorapulse.pierrot.*")
@@ -37,5 +37,5 @@ dependencies {
 
     implementation("io.micronaut:micronaut-validation")
 
-    testImplementation 'org.reflections:reflections:0.10.2'
+    tsetImplementation 'org.reflections:reflections:0.10.2'
 }
