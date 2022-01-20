@@ -1,9 +1,9 @@
-Searching content for 'org:agorapulse filename:.testfile "hello world"'!
-Replacing agorapulse/pierrot/.testfile
-Replaced agorapulse/pierrot/.testfile
+Searching content for 'org:agorapulse filename:.tsetfile "hello world"'!
+Replacing agorapulse/pierrot/.tsetfile
+Replaced agorapulse/pierrot/.tsetfile
 PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pulls/1
-Replacing agorapulse/oss/.testfile
-Replaced agorapulse/oss/.testfile
+Replacing agorapulse/oss/.tsetfile
+Replaced agorapulse/oss/.tsetfile
 PR for agorapulse/oss available at https://example.com/agorapulse/oss/pulls/1
-Replacing agorapulse/oss/prefix/.testfile
+Replacing agorapulse/oss/prefix/.tsetfile
 Replaced text in 2 files
