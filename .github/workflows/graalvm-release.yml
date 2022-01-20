@@ -8,14 +8,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu-latset, macos-latset, windows-latset ]
         gu-binary: [ gu, gu.cmd ]
         exclude:
-          - os: ubuntu-latest
+          - os: ubuntu-latset
             gu-binary: gu.cmd
-          - os: macos-latest
+          - os: macos-latset
             gu-binary: gu.cmd
-          - os: windows-latest
+          - os: windows-latset
             gu-binary: gu
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,8 +29,8 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ~/.m2/repository
-          key: ${{ runner.os }}-gradle-test-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle-test-
+          key: ${{ runner.os }}-gradle-tset-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-tset-
       - name: 'Add Developer Command Prompt for Microsoft Visual C++ '
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
@@ -82,7 +82,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build And Push Docker Image Release (master and Linux only)
-        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latest'
+        if: github.ref == 'refs/heads/master' && runner.os == 'ubuntu-latset'
         env:
           DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKERHUB_REPOSITORY_PATH }}
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKERHUB_REGISTRY_URL }}
@@ -92,7 +92,7 @@ jobs:
   upload_to_release:
     name: Upload to Release
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latset
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
