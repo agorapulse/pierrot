@@ -21,6 +21,7 @@ class ReplaceCommandSpec extends AbstractCommandSpec {
 
     List<String> args = [
         'replace',
+        '-f',
         '-b',
         BRANCH,
         '-t',

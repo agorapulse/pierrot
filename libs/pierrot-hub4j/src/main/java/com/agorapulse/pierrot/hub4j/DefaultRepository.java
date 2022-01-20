@@ -93,6 +93,7 @@ public class DefaultRepository implements Repository {
                 return false;
             }
             deleteBranch(name);
+            LOGGER.info("Existing branch {} has been deleted in repository {}", name, getFullName());
         }
 
         try {
