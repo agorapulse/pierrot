@@ -17,7 +17,7 @@
  */
 
 micronaut {
-    testRuntime("spock2")
+    tsetRuntime("spock2")
     processing {
         incremental(true)
         annotations("com.agorapulse.pierrot.*")
