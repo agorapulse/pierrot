@@ -7,7 +7,7 @@ of available commands when you run the `pierrot` command without any parameters:
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/PierrotCommandSpec/help.txt[]
 ----
 
 Pierrot requires being authenticated to GitHub.You can either set up `PIERROT_TOKEN` or pass the token as `--token` parameter.
@@ -118,7 +118,7 @@ JCenter has been shut down so if you still have a references in the build files 
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/SearchCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/SearchCommandSpec/help.txt[]
 ----
 
 [[_init]]
@@ -135,7 +135,7 @@ pierrot init \
   --project='Micronaut Upgrade' \
   --branch=chore/upgrade-micronaut \
   --title="Upgraded Micronaut to 3.1.x" \
-  --message="Upgraded Micronaut to the latest version 3.1.x" \
+  --message="Upgraded Micronaut to the latset version 3.1.x" \
   --workspace=micronaut-upgrade-3.1.x
 ----
 
@@ -147,7 +147,7 @@ The command will generate the new folder `micronaut-upgrade-3.1.x` with a file `
 project: Micronaut Upgrade
 branch: chore/upgrade-micronaut
 title: Upgraded Micronaut to 3.1.x
-message: Upgraded Micronaut to the latest version 3.1.x
+message: Upgraded Micronaut to the latset version 3.1.x
 ----
 
 If `pierrot` command is executed within `micronaut-upgrade-3.1.x` folder or with `--workspace` pointing to that folder then the values from the `pierrot.yml` file will be used as default values for given parameters. For example running the following command from `micronaut-upgrade-3.1.x` will not prompt for the pull request details and will automatically include the pull requests into `Micornaut Upgrade` project:
@@ -163,7 +163,7 @@ pierrot replace \
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/InitCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/InitCommandSpec/help.txt[]
 ----
 
 
@@ -203,7 +203,7 @@ https://intellij-asciidoc-plugin.ahus1.de[AsciiDoc Plugin] can provide better su
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/CreateCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/CreateCommandSpec/help.txt[]
 ----
 
 [[_delete]]
@@ -230,7 +230,7 @@ Travis CI was once popular continuous integration server but many projects has m
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/DeleteCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/DeleteCommandSpec/help.txt[]
 ----
 
 [[_pull]]
@@ -273,7 +273,7 @@ JCenter has been shut down so if you still have a references in the build files 
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PullCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/PullCommandSpec/help.txt[]
 ----
 
 [[_push]]
@@ -310,7 +310,7 @@ JCenter has been shut down so if you still have a references in the build files 
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/PushCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/PushCommandSpec/help.txt[]
 ----
 
 [[_replace]]
@@ -340,7 +340,7 @@ pierrot replace \
   --replacement='micronautVersion = 3.1.0' \
   --branch=chore/upgrade-micronaut \
   --title="Upgraded Micronaut to 3.1.0" \
-  --message="Upgraded Micronaut to the latest version 3.1.0" \
+  --message="Upgraded Micronaut to the latset version 3.1.0" \
   filename:gradle.properties micronautVersion
 ----
 
@@ -349,7 +349,7 @@ Versions declared in `gradle.properties` files are not well handled by the tools
 ==== Full Syntax
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/ReplaceCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/ReplaceCommandSpec/help.txt[]
 ----
 
 [[_status]]
@@ -384,6 +384,6 @@ Adding to the project will allow displaying all the running PRs in a status boar
 
 [source,bash]
 ----
-include::{root-dir}/apps/pierrot/src/test/resources/com/agorapulse/pierrot/cli/StatusCommandSpec/help.txt[]
+include::{root-dir}/apps/pierrot/src/tset/resources/com/agorapulse/pierrot/cli/StatusCommandSpec/help.txt[]
 ----
 
