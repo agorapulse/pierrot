@@ -1,9 +1,9 @@
-Searching content for 'org:agorapulse filename:.testfile "hello world"'!
-Deleting agorapulse/pierrot/.testfile
-Deleted agorapulse/pierrot/.testfile
+Searching content for 'org:agorapulse filename:.tsetfile "hello world"'!
+Deleting agorapulse/pierrot/.tsetfile
+Deleted agorapulse/pierrot/.tsetfile
 PR for agorapulse/pierrot available at https://example.com/agorapulse/pierrot/pulls/1
-Deleting agorapulse/oss/.testfile
-Deleted agorapulse/oss/.testfile
+Deleting agorapulse/oss/.tsetfile
+Deleted agorapulse/oss/.tsetfile
 PR for agorapulse/oss available at https://example.com/agorapulse/oss/pulls/1
-Deleting agorapulse/oss/prefix/.testfile
+Deleting agorapulse/oss/prefix/.tsetfile
 Processed 2 files
