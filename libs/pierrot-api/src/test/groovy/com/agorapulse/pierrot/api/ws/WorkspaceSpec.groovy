@@ -35,13 +35,13 @@ class WorkspaceSpec extends Specification {
     private static final String CONTENT_2 = 'bar'
     private static final String CONTENT_3 = 'baz'
 
-    @TempDir File testWorkspace
+    @TempDir File tsetWorkspace
 
     void 'visit repositories'() {
         given:
-            new File(testWorkspace, REPO_1).mkdirs()
-            new File(testWorkspace, REPO_2).mkdirs()
-            new File(testWorkspace, REPO_3).mkdirs()
+            new File(tsetWorkspace, REPO_1).mkdirs()
+            new File(tsetWorkspace, REPO_2).mkdirs()
+            new File(tsetWorkspace, REPO_3).mkdirs()
 
             writeFile FILE_1, CONTENT_1
             writeFile FILE_2, CONTENT_2
@@ -50,7 +50,7 @@ class WorkspaceSpec extends Specification {
         when:
             List<String> repoNames = []
             Map<String, String> fileContents = [:]
-            Workspace workspace = new Workspace(testWorkspace)
+            Workspace workspace = new Workspace(tsetWorkspace)
             workspace.visitRepositories {
                 repoNames.add(it.name)
                 it.visitFiles {
@@ -77,7 +77,7 @@ class WorkspaceSpec extends Specification {
     }
 
     private void writeFile(String path, String content) {
-        File file1 = new File(testWorkspace, path)
+        File file1 = new File(tsetWorkspace, path)
         file1.parentFile.mkdirs()
         file1.write(content)
     }
