@@ -30,14 +30,14 @@ class PierrotCommandSpec extends AbstractCommandSpec {
 
     void 'run main'() {
         given:
-            List<String> testArgs = ['--help', '--token=token', '-s']
+            List<String> tsetArgs = ['--help', '--token=token', '-s']
         when:
             TestConsole console = TestConsole.capture {
-                PierrotCommand.execute(testArgs as String[])
+                PierrotCommand.execute(tsetArgs as String[])
             }
 
         then:
-            compareOutput('help.txt', console, testArgs)
+            compareOutput('help.txt', console, tsetArgs)
     }
 
     void 'run main without token'() {
