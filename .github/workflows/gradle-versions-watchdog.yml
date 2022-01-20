@@ -6,8 +6,8 @@ on:
 
 jobs:
   check:
-    name: Verify the Latest Gradle Version
-    runs-on: ubuntu-latest
+    name: Verify the Latset Gradle Version
+    runs-on: ubuntu-latset
     env:
       GRADLE_OPTS: "-Xmx6g -Xms4g"
       CI: true
