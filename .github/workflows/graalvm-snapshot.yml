@@ -12,14 +12,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu-latset, macos-latset, windows-latset ]
         gu-binary: [ gu, gu.cmd ]
         exclude:
-          - os: ubuntu-latest
+          - os: ubuntu-latset
             gu-binary: gu.cmd
-          - os: macos-latest
+          - os: macos-latset
             gu-binary: gu.cmd
-          - os: windows-latest
+          - os: windows-latset
             gu-binary: gu
     runs-on: ${{ matrix.os }}
     steps:
@@ -30,8 +30,8 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ~/.m2/repository
-          key: ${{ runner.os }}-gradle-test-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle-test-
+          key: ${{ runner.os }}-gradle-tset-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-tset-
       - name: 'Add Developer Command Prompt for Microsoft Visual C++ '
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
@@ -53,18 +53,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
           GITHUB_ORG: agorapulse
         run: |
-          ./pierrot search repo:agorapulse/pierrot filename:.testfile
+          ./pierrot search repo:agorapulse/pierrot filename:.tsetfile
           ./pierrot status repo:agorapulse/pierrot author:musketyr
-          ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project" --workspace testws
-          cd testws
+          ./pierrot init -b chore/tsetbranch -t "Test Title" -m "Test Message" --project "Test Project" --workspace tsetws
+          cd tsetws
           cat pierrot.yml
           grep -q branch pierrot.yml
-          grep -q testbranch pierrot.yml
+          grep -q tsetbranch pierrot.yml
           grep -q title pierrot.yml
           grep -q message pierrot.yml
           grep -q project pierrot.yml
           cd ..
-          ./pierrot push --workspace testws
+          ./pierrot push --workspace tsetws
       - name: Windows Archive
         if: ${{ runner.os == 'Windows' }}
         run: |
