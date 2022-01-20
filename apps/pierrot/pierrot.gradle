@@ -20,7 +20,7 @@ plugins {
 }
 
 micronaut {
-    testRuntime('spock2')
+    tsetRuntime('spock2')
     processing {
         incremental(true)
         annotations('com.agorapulse.pierrot.*')
@@ -44,8 +44,8 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
-    testImplementation('io.micronaut:micronaut-http-client')
-    testImplementation('com.agorapulse.testing:fixt:0.2.2')
+    tsetImplementation('io.micronaut:micronaut-http-client')
+    tsetImplementation('com.agorapulse.tseting:fixt:0.2.2')
 }
 
 
@@ -60,7 +60,7 @@ dockerBuild {
 dockerBuildNative {
     images = [
         "${System.env.DOCKER_IMAGE ?: project.name}:$project.version",
-        "${System.env.DOCKER_IMAGE ?: project.name}:latest",
+        "${System.env.DOCKER_IMAGE ?: project.name}:latset",
     ]
 }
 
