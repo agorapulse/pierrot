@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021 Vladimir Orany.
+ * Copyright 2021-2022 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public interface Repository {
     String getOwnerName();
     boolean isArchived();
     boolean canWrite();
-    boolean createBranch(String name);
+    boolean createBranch(String name, boolean force);
     Optional<PullRequest> createPullRequest(String branch, String title, String message);
     boolean writeFile(String branch, String message, String path, String text);
 }

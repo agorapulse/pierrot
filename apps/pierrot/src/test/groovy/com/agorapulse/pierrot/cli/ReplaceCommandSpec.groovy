@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021 Vladimir Orany.
+ * Copyright 2021-2022 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ class ReplaceCommandSpec extends AbstractCommandSpec {
 
     List<String> args = [
         'replace',
+        '-f',
         '-b',
         BRANCH,
         '-t',

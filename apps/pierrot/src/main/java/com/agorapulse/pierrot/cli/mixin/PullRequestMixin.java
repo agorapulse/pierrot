@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021 Vladimir Orany.
+ * Copyright 2021-2022 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -79,6 +81,13 @@ public class PullRequestMixin implements PullRequestSource {
     )
     File messageFrom;
 
+    @CommandLine.Option(
+        names = {"-f", "--force"},
+        description = "Deletes existing branch before pushing changes"
+    )
+    boolean force;
+
+    private final Set<String> branchesForceCreatedFor = new HashSet<>();
     private int pullRequestsCreated;
 
     public int getPullRequestsCreated() {
@@ -119,7 +128,9 @@ public class PullRequestMixin implements PullRequestSource {
             return Optional.empty();
         }
 
-        ghr.createBranch(readBranch());
+        if (ghr.createBranch(readBranch(), force && !branchesForceCreatedFor.contains(ghr.getFullName()))) {
+            branchesForceCreatedFor.add(ghr.getFullName());
+        }
 
         if (withRepository.perform(ghr, readBranch(), readMessage())) {
             pullRequestsCreated++;
