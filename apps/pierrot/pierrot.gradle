@@ -69,6 +69,8 @@ dockerfileNative {
 }
 
 sdkman {
+    consumerKey = System.env.SDKMAN_KEY ?: ''
+    consumerToken = System.env.SDKMAN_TOKEN ?: ''
     candidate = 'pierrot'
     version =  project.version
     platforms = [
