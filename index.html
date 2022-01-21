@@ -107,7 +107,7 @@ $(addBlockSwitches);
 <h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.9.12</span>
+<span id="revnumber">version 0.9.13</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -510,7 +510,7 @@ message: Upgraded Micronaut to the latest version 3.1.x</code></pre>
 <h5 id="_full_syntax_2"><a class="anchor" href="#_full_syntax_2"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot init [-hsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot init [-fhsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                     [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                     [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
                     [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
@@ -519,6 +519,7 @@ initializes new workspace
   -b, --branch=&lt;branch&gt;     The pull request branch
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -577,7 +578,7 @@ You have to specify the <code>path</code> within the repository, and you need to
 <h5 id="_full_syntax_3"><a class="anchor" href="#_full_syntax_3"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot create [-aghPsV] [-b=&lt;branch&gt;] [-c=&lt;content&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot create [-afghPsV] [-b=&lt;branch&gt;] [-c=&lt;content&gt;]
                       [--done-column=&lt;doneColumn&gt;] [--from=&lt;contentFrom&gt;]
                       [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;] [-p=&lt;path&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
@@ -592,6 +593,7 @@ creates a file in a matching repositories and creates PRs
   -c, --content=&lt;content&gt;    The inline content of the newly created file
       --done-column=&lt;doneColumn&gt;
                              The name of the 'Done' column in the project
+  -f, --force                Deletes existing branch before pushing changes
       --from=&lt;contentFrom&gt;   The file to be uploaded to the repositories
   -g, --global               Do not constrain search to current organization
   -h, --help                 Show this help message and exit.
@@ -643,7 +645,7 @@ creates a file in a matching repositories and creates PRs
 <h5 id="_full_syntax_4"><a class="anchor" href="#_full_syntax_4"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot delete [-aghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot delete [-afghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                       [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
                       [--project=&lt;project&gt;] [-t=&lt;title&gt;]
@@ -656,6 +658,7 @@ creates PRs to delete files
   -b, --branch=&lt;branch&gt;     The pull request branch
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -g, --global              Do not constrain search to current organization
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
@@ -779,7 +782,7 @@ pulls the matching files locally
 <h5 id="_full_syntax_6"><a class="anchor" href="#_full_syntax_6"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot push [-hsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot push [-fhsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                     [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                     [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
                     [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
@@ -788,6 +791,7 @@ pushes the the local changes and creates PRs
   -b, --branch=&lt;branch&gt;     The pull request branch
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
       --message-from=&lt;messageFrom&gt;
@@ -848,7 +852,7 @@ pushes the the local changes and creates PRs
 <h5 id="_full_syntax_7"><a class="anchor" href="#_full_syntax_7"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot replace [-aghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot replace [-afghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                        [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                        -p=&lt;pattern&gt; [--progress-column=&lt;progressColumn&gt;]
                        [--project=&lt;project&gt;] -r=&lt;replacement&gt; [-t=&lt;title&gt;]
@@ -861,6 +865,7 @@ replaces content in the files and creates PRs
   -b, --branch=&lt;branch&gt;     The pull request branch
       --done-column=&lt;doneColumn&gt;
                             The name of the 'Done' column in the project
+  -f, --force               Deletes existing branch before pushing changes
   -g, --global              Do not constrain search to current organization
   -h, --help                Show this help message and exit.
   -m, --message=&lt;message&gt;   The pull request message
@@ -954,8 +959,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.9.12<br>
-Last updated 2021-11-24 14:17:47 UTC
+Version 0.9.13<br>
+Last updated 2022-01-21 10:31:03 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
