@@ -31,7 +31,7 @@ jobs:
           ${{ runner.os }}-gradle-
     - uses: eskatos/gradle-command-action@v1
       with:
-        arguments: check coveralls --stacktrace
+        arguments: check coveralls -x :pierrot:testNativeImage --stacktrace
     - name: Show Reports
       uses: actions/upload-artifact@v1
       if: failure()
