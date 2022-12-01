@@ -22,6 +22,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Setup GraalVM CE
+      uses: DeLaGuardo/setup-graalvm@3.1
+      with:
+        graalvm-version: 22.3.0.java11
+    - name: Install Native Image
+      run: gu install native-image
     - uses: gradle/gradle-command-action@v2
       with:
         arguments: check coveralls --stacktrace
