@@ -68,7 +68,7 @@ jobs:
         if: ${{ runner.os == 'macOS' }}
         run: |
           mkdir -p pierrot-darwin-amd64/bin
-          mv ./pierrot pierrot-darwin-amd64/bin
+          mv ./apps/pierrot/build/native/nativeCompile/pierrot pierrot-darwin-amd64/bin
           cp ./LICENSE pierrot-darwin-amd64/
           cp ./docs/guide/build/html2text/README pierrot-darwin-amd64/README
           zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
