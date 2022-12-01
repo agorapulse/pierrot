@@ -59,7 +59,6 @@ projects {
         dir('apps') {
             plugins {
                 id 'groovy'
-                id 'java-library'
                 id 'com.github.johnrengelman.shadow'
                 id 'io.micronaut.application'
             }

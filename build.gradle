@@ -165,7 +165,6 @@ gradleProjects {
             }
 
             dependencies {
-                api platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
                 implementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
                 compileOnly platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
                 testImplementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")

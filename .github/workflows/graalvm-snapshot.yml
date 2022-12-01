@@ -24,35 +24,29 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.m2/repository
-          key: ${{ runner.os }}-gradle-test-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle-test-
       - name: 'Add Developer Command Prompt for Microsoft Visual C++ '
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Setup GraalVM CE
         uses: DeLaGuardo/setup-graalvm@3.1
         with:
-          graalvm-version: 21.2.0.java11
+          graalvm-version: 22.3.0.java11
       - name: Install Native Image
         run: ${{ matrix.gu-binary }} install native-image
-      - name: Build Native Image Snapshot
-        run: |
-          ./gradlew :guide:html2text
-          ./gradlew :pierrot:buildLayers --no-daemon
-          ./gradlew :pierrot:shadowJar --no-daemon
-          native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
+      - uses: gradle/gradle-command-action@v2
+        with:
+          arguments: :pierrot:nativeDistZip
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pierrot-${{ matrix.os }}.zip
+          path: apps/pierrot/build/distributions/pierrot-*.zip
       - name: Verify Binary
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS'}}
         env:
           GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
           GITHUB_ORG: agorapulse
         run: |
+          cd apps/pierrot/build/native/nativeCompile
           ./pierrot search repo:agorapulse/pierrot filename:.testfile
           ./pierrot status repo:agorapulse/pierrot author:musketyr
           ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project" --workspace testws
@@ -65,34 +59,6 @@ jobs:
           grep -q project pierrot.yml
           cd ..
           ./pierrot push --workspace testws
-      - name: Windows Archive
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
-          Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64/bin"
-          Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
-          Copy-Item "./docs/guide/build/html2text/README" -Destination "./pierrot-win-amd64/README"
-          Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
-      - name: macOS Archive
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          mkdir -p pierrot-darwin-amd64/bin
-          mv ./pierrot pierrot-darwin-amd64/bin
-          cp ./LICENSE pierrot-darwin-amd64/
-          cp ./docs/guide/build/html2text/README pierrot-darwin-amd64/README
-          zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
-      - name: Linux Archive
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          mkdir -p pierrot-linux-amd64/bin
-          mv ./pierrot pierrot-linux-amd64/bin
-          cp ./LICENSE pierrot-linux-amd64/
-          cp ./docs/guide/build/html2text/README pierrot-linux-amd64/README
-          zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: pierrot-${{ matrix.os }}.zip
-          path: pierrot-*.zip
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
         uses: docker/login-action@v1
@@ -107,4 +73,4 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
         run: |
           export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew :pierrot:dockerPushNative --no-daemon
+          ./gradlew :pierrot:dockerPushNative
