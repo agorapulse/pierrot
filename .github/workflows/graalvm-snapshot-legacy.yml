@@ -36,14 +36,15 @@ jobs:
       - name: Build Native Image Snapshot
         run: |
           ./gradlew :guide:html2text
-          ./gradlew :pierrot:nativeCompile
+          ./gradlew :pierrot:buildLayers --no-daemon
+          ./gradlew :pierrot:shadowJar --no-daemon
+          native-image --no-fallback -H:ConfigurationFileDirectories=apps/pierrot/build/docker/layers/resources -cp apps/pierrot/build/libs/pierrot-*-all.jar -H:Class=com.agorapulse.pierrot.cli.PierrotCommand -H:Name=pierrot --trace-object-instantiation=java.io.FileDescriptor
       - name: Verify Binary
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS'}}
         env:
           GITHUB_TOKEN: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
           GITHUB_ORG: agorapulse
         run: |
-          cd apps/pierrot/build/native/nativeCompile
           ./pierrot search repo:agorapulse/pierrot filename:.testfile
           ./pierrot status repo:agorapulse/pierrot author:musketyr
           ./pierrot init -b chore/testbranch -t "Test Title" -m "Test Message" --project "Test Project" --workspace testws
@@ -60,7 +61,7 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         run: |
           New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
-          Move-Item -Path ./apps/pierrot/build/native/nativeCompile/pierrot.exe -Destination "./pierrot-win-amd64/bin"
+          Move-Item -Path ./pierrot.exe -Destination "./pierrot-win-amd64/bin"
           Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
           Copy-Item "./docs/guide/build/html2text/README" -Destination "./pierrot-win-amd64/README"
           Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
@@ -76,7 +77,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: |
           mkdir -p pierrot-linux-amd64/bin
-          mv ./apps/pierrot/build/native/nativeCompile/pierrot pierrot-linux-amd64/bin
+          mv ./pierrot pierrot-linux-amd64/bin
           cp ./LICENSE pierrot-linux-amd64/
           cp ./docs/guide/build/html2text/README pierrot-linux-amd64/README
           zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
