@@ -36,6 +36,10 @@ jobs:
       - uses: gradle/gradle-command-action@v2
         with:
           arguments: :pierrot:nativeCompile
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pierrot-${{ matrix.os }}.zip
+          path: apps/pierrot/build/distributions/pierrot-*.zip
       - name: Verify Binary
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS'}}
         env:
@@ -55,10 +59,6 @@ jobs:
           grep -q project pierrot.yml
           cd ..
           ./pierrot push --workspace testws
-      - uses: actions/upload-artifact@v2
-        with:
-          name: pierrot-${{ matrix.os }}.zip
-          path: apps/pierrot/build/distributions/pierrot-*.zip
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
         uses: docker/login-action@v1
