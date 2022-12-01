@@ -34,7 +34,7 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - uses: gradle/gradle-command-action@v2
         with:
-          arguments: :pierrot:nativeCompile
+          arguments: :pierrot:nativeDistZip
       - uses: actions/upload-artifact@v2
         with:
           name: pierrot-${{ matrix.os }}
