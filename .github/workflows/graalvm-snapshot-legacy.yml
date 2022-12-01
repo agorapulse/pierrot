@@ -8,7 +8,7 @@ on:
   pull_request:
 jobs:
   build:
-    name: 'Build with Graal on ${{ matrix.os }}'
+    name: 'Legacy snapshot build with Graal on ${{ matrix.os }}'
     strategy:
       fail-fast: false
       matrix:

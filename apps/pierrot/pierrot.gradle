@@ -57,6 +57,16 @@ dockerBuild {
     images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
 }
 
+distributions {
+    register("native") {
+        contents {
+            from(tasks.named("nativeCompile"))
+            from(project(':guide').tasks.named('html2text'))
+            from(rootProject.file('LICENSE'))
+        }
+    }
+}
+
 dockerBuildNative {
     images = [
         "${System.env.DOCKER_IMAGE ?: project.name}:$project.version",
