@@ -71,7 +71,7 @@ if (os.linux) {
     filename += 'win'
 }
 
-filename += "-amd64"
+filename += "-amd64-v$version"
 
 distributions {
     register("native") {
