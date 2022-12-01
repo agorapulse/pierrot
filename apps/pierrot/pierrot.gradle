@@ -15,6 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'io.sdkman.vendors' version '3.0.0'
 }
@@ -57,14 +59,34 @@ dockerBuild {
     images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
 }
 
+
+String filename = 'pierrot-'
+OperatingSystem os = OperatingSystem.current()
+
+if (os.linux) {
+    filename += 'linux'
+} else if (os.macOsX) {
+    filename += 'darwin'
+} else if (os.windows) {
+    filename += 'win'
+}
+
+filename += "-amd64"
+
 distributions {
     register("native") {
         contents {
-            from(tasks.named("nativeCompile"))
-            from(project(':guide').tasks.named('html2text'))
-            from(rootProject.file('LICENSE'))
+            into (filename) {
+                from(tasks.named("nativeCompile"))
+                from(project(':guide').tasks.named('html2text'))
+                from(rootProject.file('LICENSE'))
+            }
         }
     }
+}
+
+nativeDistZip {
+    archiveFileName.set(filename + '.zip')
 }
 
 dockerBuildNative {

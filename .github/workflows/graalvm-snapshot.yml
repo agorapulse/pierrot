@@ -33,10 +33,9 @@ jobs:
           graalvm-version: 22.3.0.java11
       - name: Install Native Image
         run: ${{ matrix.gu-binary }} install native-image
-      - name: Build Native Image Snapshot
-        run: |
-          ./gradlew :guide:html2text
-          ./gradlew :pierrot:nativeCompile
+      - uses: gradle/gradle-command-action@v2
+        with:
+          arguments: :pierrot:nativeCompile
       - name: Verify Binary
         if: ${{ runner.os == 'Linux' || runner.os == 'macOS'}}
         env:
@@ -56,34 +55,10 @@ jobs:
           grep -q project pierrot.yml
           cd ..
           ./pierrot push --workspace testws
-      - name: Windows Archive
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          New-Item "./pierrot-win-amd64/bin" -ItemType Directory -ea 0
-          Move-Item -Path ./apps/pierrot/build/native/nativeCompile/pierrot.exe -Destination "./pierrot-win-amd64/bin"
-          Copy-Item "./LICENSE" -Destination "./pierrot-win-amd64"
-          Copy-Item "./docs/guide/build/html2text/README" -Destination "./pierrot-win-amd64/README"
-          Compress-Archive -Path "./pierrot-win-amd64" -Update -DestinationPath ./pierrot-win-amd64.zip
-      - name: macOS Archive
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          mkdir -p pierrot-darwin-amd64/bin
-          mv ./apps/pierrot/build/native/nativeCompile/pierrot pierrot-darwin-amd64/bin
-          cp ./LICENSE pierrot-darwin-amd64/
-          cp ./docs/guide/build/html2text/README pierrot-darwin-amd64/README
-          zip -r pierrot-darwin-amd64.zip ./pierrot-darwin-amd64 -x '*.DS_Store*' -x '__MAC_OSX'
-      - name: Linux Archive
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          mkdir -p pierrot-linux-amd64/bin
-          mv ./apps/pierrot/build/native/nativeCompile/pierrot pierrot-linux-amd64/bin
-          cp ./LICENSE pierrot-linux-amd64/
-          cp ./docs/guide/build/html2text/README pierrot-linux-amd64/README
-          zip -r pierrot-linux-amd64.zip ./pierrot-linux-amd64
       - uses: actions/upload-artifact@v2
         with:
           name: pierrot-${{ matrix.os }}.zip
-          path: pierrot-*.zip
+          path: apps/pierrot/build/distributions/pierrot-*.zip
       - name: Docker login (master and Linux only)
         if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
         uses: docker/login-action@v1
@@ -98,4 +73,4 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
         run: |
           export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew :pierrot:dockerPushNative --no-daemon
+          ./gradlew :pierrot:dockerPushNative
