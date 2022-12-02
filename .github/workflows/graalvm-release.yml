@@ -53,7 +53,7 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKERHUB_REGISTRY_URL }}
         run: |
           export DOCKER_IMAGE=`echo "${DOCKERHUB_REGISTRY_URL}/${DOCKERHUB_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew :pierrot:dockerPushNative --no-daemon -Pversion="${{ steps.version.outputs.tag }}" -Prelease=true
+          ./gradlew :pierrot:dockerPushNative --no-daemon -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
   upload_to_release:
     name: Upload to Release
     needs: [build]
@@ -76,7 +76,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Sleep 10 seconds until the reelases are available
+    - name: Sleep 10 seconds until the releases are available
       run: sleep 10
     - uses: gradle/gradle-command-action@v2
       env:
@@ -85,7 +85,7 @@ jobs:
       with:
         # skip announce while under active development
         # change to sdkMajorRelease once stabilized
-        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion -Pversion="${{ steps.version.outputs.tag }}"
+        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion -Pversion=${{ steps.version.outputs.tag }}
     - uses: sdkman/sdkman-action@master
       with:
         candidate: pierrot
