@@ -77,9 +77,11 @@ distributions {
     register("native") {
         contents {
             into (filename) {
-                from(tasks.named("nativeCompile"))
                 from(project(':guide').tasks.named('html2text'))
                 from(rootProject.file('LICENSE'))
+            }
+            into ("$filename/bin") {
+                from(tasks.named("nativeCompile"))
             }
         }
     }
