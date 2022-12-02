@@ -37,7 +37,7 @@ jobs:
           arguments: :pierrot:nativeDistZip -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
       - uses: actions/upload-artifact@v2
         with:
-          name: pierrot-${{ matrix.os }}.zip
+          name: pierrot-${{ matrix.os }}
           path: apps/pierrot/build/distributions/pierrot-*.zip
       - name: Docker login (Linux only)
         if: ${{ runner.os == 'Linux' }}
