@@ -1,3 +1,10 @@
+GitHub client is not authenticated. Please, set up your GitHub token
+    PIERROT_TOKEN environment variable
+  --token=<token> command line parameter
+Alternatively, see other authentication options in the GitHub API docs:
+
+    https://github-api.kohsuke.org
+
 Usage: pierrot [-hsV] [--summary-file=<summaryFile>] [--token=<token>] [COMMAND]
 The GitHub cross-repository governance tool
   -h, --help            Show this help message and exit.
