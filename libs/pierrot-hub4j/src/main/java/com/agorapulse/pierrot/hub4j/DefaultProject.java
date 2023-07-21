@@ -19,7 +19,9 @@ package com.agorapulse.pierrot.hub4j;
 
 import com.agorapulse.pierrot.api.Project;
 import com.agorapulse.pierrot.api.PullRequest;
+import com.agorapulse.pierrot.api.event.PullRequestAddedToProjectEvent;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import org.kohsuke.github.GHProject;
 import org.kohsuke.github.HttpException;
 import org.slf4j.Logger;
@@ -36,9 +38,11 @@ public class DefaultProject implements Project {
     private static final Logger LOGGER = LoggerWithOptionalStacktrace.create(DefaultProject.class);
 
     private final GHProject project;
+    private final ApplicationEventPublisher publisher;
 
-    public DefaultProject(GHProject project) {
+    public DefaultProject(GHProject project, ApplicationEventPublisher publisher) {
         this.project = project;
+        this.publisher = publisher;
     }
 
     @Override
@@ -59,6 +63,7 @@ public class DefaultProject implements Project {
                     if (pr instanceof DefaultPullRequest) {
                         try {
                             col.createCard(((DefaultPullRequest) pr).getNativePullRequest());
+                            publisher.publishEvent(new PullRequestAddedToProjectEvent(this, pr));
                         } catch (HttpException e) {
                             if (e.getResponseCode() != 422) {
                                 LOGGER.error(String.format("Exception while adding PR to the column %s in project %s", column, project.getName()), e);

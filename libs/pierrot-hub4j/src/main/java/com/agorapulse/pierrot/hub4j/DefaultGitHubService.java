@@ -434,7 +434,7 @@ public class DefaultGitHubService implements GitHubService {
             return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
                 .filter(p -> project.equals(p.getName()))
                 .findFirst()
-                .map(DefaultProject::new);
+                .map(p -> new DefaultProject(p, publisher));
         } catch (IOException e) {
             LOGGER.error("Exception fetching organization " + org, e);
             return Optional.empty();
@@ -457,7 +457,7 @@ public class DefaultGitHubService implements GitHubService {
 
                     LOGGER.info("New project created, you will need set up column automation yourself!");
                     LOGGER.info("    {}", newProject.getHtmlUrl());
-                    DefaultProject projectWrapper = new DefaultProject(newProject);
+                    DefaultProject projectWrapper = new DefaultProject(newProject, publisher);
                     publisher.publishEvent(new ProjectCreatedEvent(projectWrapper));
                     return Optional.of(projectWrapper);
                 } catch (IOException e) {

@@ -18,16 +18,23 @@
 package com.agorapulse.pierrot.cli;
 
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import com.agorapulse.pierrot.api.summary.SummaryCollector;
+import com.agorapulse.pierrot.cli.summary.SummaryWriter;
 import io.micronaut.configuration.picocli.MicronautFactory;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.CommandLinePropertySource;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.MapPropertySource;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.annotation.TypeHint;
+import jakarta.inject.Inject;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static io.micronaut.core.annotation.TypeHint.AccessType.*;
@@ -66,6 +73,10 @@ public class PierrotCommand implements Runnable {
     private static final String GITHUB_TOKEN_NAME = "token";
     private static final String GITHUB_TOKEN_PARAMETER = "--" + GITHUB_TOKEN_NAME;
 
+    private static final String SUMMARY_TOKEN_NAME = "summary-file";
+
+    private static final String SUMMARY_TOKEN_PARAMETER = "--" + SUMMARY_TOKEN_NAME;
+
     @CommandLine.Option(
         names = {"-s", "--stacktrace"},
         description = "Print stack traces",
@@ -84,25 +95,46 @@ public class PierrotCommand implements Runnable {
     )
     String token;
 
+    @CommandLine.Option(
+        names = {SUMMARY_TOKEN_PARAMETER},
+        description = "Markdown summary file path",
+        scope = CommandLine.ScopeType.INHERIT
+    )
+    File summaryFile;
+
+    @Inject @Nullable
+    SummaryCollector summaryCollector;
+
     public static void main(String[] args) {
         System.exit(execute(args));
     }
 
     static int execute(String[] args) {
         if (args.length == 0) {
-            args = new String[] {"--help"};
+            args = new String[]{"--help"};
         }
 
         io.micronaut.core.cli.CommandLine commandLine = io.micronaut.core.cli.CommandLine.parse(args);
 
         CommandLinePropertySource commandLinePropertySource = new CommandLinePropertySource(commandLine);
 
-        Map<String, Object> map = commandLine.getUndeclaredOptions().containsKey(GITHUB_TOKEN_NAME)
-            ? Map.of("pierrot.token", commandLine.getUndeclaredOptions().get(GITHUB_TOKEN_NAME))
-            : Map.of();
+        Map<String, Object> map = new HashMap<>();
 
+        if (commandLine.getUndeclaredOptions().containsKey(GITHUB_TOKEN_NAME)) {
+            map.put("pierrot.token", commandLine.getUndeclaredOptions().get(GITHUB_TOKEN_NAME));
+        }
 
-        MapPropertySource mapSource = MapPropertySource.of("token-from-command-line", map);
+        if (commandLine.getUndeclaredOptions().containsKey(SUMMARY_TOKEN_NAME)) {
+            try {
+                map.put("summary.file", ((File) commandLine.getUndeclaredOptions().get(SUMMARY_TOKEN_NAME)).getCanonicalPath());
+            } catch (IOException e) {
+                System.out.println("Cannot get canonical path for " + commandLine.getUndeclaredOptions().get(SUMMARY_TOKEN_NAME) + ": " + e.getMessage());
+            }
+        } else if (System.getenv("GITHUB_STEP_SUMMARY") != null) {
+            map.put("summary.file", System.getenv("GITHUB_STEP_SUMMARY"));
+        }
+
+        MapPropertySource mapSource = MapPropertySource.of("command-line-properties", map);
 
         ApplicationContextBuilder builder = ApplicationContext
             .builder(PierrotCommand.class, Environment.CLI)
@@ -112,8 +144,14 @@ public class PierrotCommand implements Runnable {
 
         try (ApplicationContext ctx = builder.start()) {
             CommandLine cmd = new CommandLine(PierrotCommand.class, new MicronautFactory(ctx));
+            if (ctx.containsBean(SummaryWriter.class)) {
+                File summaryFileLocation = ctx.getBean(SummaryWriter.class).write();
+                System.out.println("Summary file written to " + summaryFileLocation);
+            }
             exitCode = cmd.execute(args);
         }
+
+
         return exitCode;
     }
 

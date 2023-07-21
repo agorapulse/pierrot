@@ -1,24 +1,23 @@
 package com.agorapulse.pierrot.api.event;
 
 import com.agorapulse.pierrot.api.Content;
-import com.agorapulse.pierrot.api.Repository;
 
 public class ContentUpdatedEvent {
 
     private final Content content;
-    private final UpdateType changeType;
+    private final UpdateType updateType;
 
-    public ContentUpdatedEvent(Content content, UpdateType changeType) {
+    public ContentUpdatedEvent(Content content, UpdateType updateType) {
         this.content = content;
-        this.changeType = changeType;
+        this.updateType = updateType;
     }
 
     public Content getContent() {
         return content;
     }
 
-    public UpdateType getChangeType() {
-        return changeType;
+    public UpdateType getUpdateType() {
+        return updateType;
     }
 
 }

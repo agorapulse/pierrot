@@ -2,9 +2,9 @@ Usage: pierrot create [-afghPsV] [-b=<branch>] [-c=<content>]
                       [--done-column=<doneColumn>] [--from=<contentFrom>]
                       [-m=<message>] [--message-from=<messageFrom>] [-p=<path>]
                       [--progress-column=<progressColumn>]
-                      [--project=<project>] [-t=<title>]
-                      [--todo-column=<todoColumn>] [--token=<token>]
-                      [-w=<workspace>] QUERY...
+                      [--project=<project>] [--summary-file=<summaryFile>]
+                      [-t=<title>] [--todo-column=<todoColumn>]
+                      [--token=<token>] [-w=<workspace>] QUERY...
 creates a file in a matching repositories and creates PRs
       QUERY...               The search term such as 'org:agorapulse filename:
                                build.gradle'
@@ -26,6 +26,8 @@ creates a file in a matching repositories and creates PRs
                              The name of the 'In progress' column in the project
       --project=<project>    The name of the project (board)
   -s, --stacktrace           Print stack traces
+      --summary-file=<summaryFile>
+                             Markdown summary file path
   -t, --title=<title>        The pull request title
       --todo-column=<todoColumn>
                              The name of the 'To do' column in the project

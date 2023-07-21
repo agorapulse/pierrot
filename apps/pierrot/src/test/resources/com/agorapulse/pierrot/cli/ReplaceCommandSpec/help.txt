@@ -1,7 +1,8 @@
 Usage: pierrot replace [-afghPsV] [-b=<branch>] [--done-column=<doneColumn>]
                        [-m=<message>] [--message-from=<messageFrom>]
                        -p=<pattern> [--progress-column=<progressColumn>]
-                       [--project=<project>] -r=<replacement> [-t=<title>]
+                       [--project=<project>] -r=<replacement>
+                       [--summary-file=<summaryFile>] [-t=<title>]
                        [--todo-column=<todoColumn>] [--token=<token>]
                        [-w=<workspace>] QUERY...
 replaces content in the files and creates PRs
@@ -26,6 +27,8 @@ replaces content in the files and creates PRs
   -r, --replacement=<replacement>
                             The Java-style regular expression replacement
   -s, --stacktrace          Print stack traces
+      --summary-file=<summaryFile>
+                            Markdown summary file path
   -t, --title=<title>       The pull request title
       --todo-column=<todoColumn>
                             The name of the 'To do' column in the project

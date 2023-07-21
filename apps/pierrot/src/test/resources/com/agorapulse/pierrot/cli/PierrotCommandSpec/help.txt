@@ -1,7 +1,9 @@
-Usage: pierrot [-hsV] [--token=<token>] [COMMAND]
+Usage: pierrot [-hsV] [--summary-file=<summaryFile>] [--token=<token>] [COMMAND]
 The GitHub cross-repository governance tool
   -h, --help            Show this help message and exit.
   -s, --stacktrace      Print stack traces
+      --summary-file=<summaryFile>
+                        Markdown summary file path
       --token=<token>   The GitHub token
   -V, --version         Print version information and exit.
 Commands:
