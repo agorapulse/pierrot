@@ -20,7 +20,10 @@ package com.agorapulse.pierrot.hub4j;
 import com.agorapulse.pierrot.api.Content;
 import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.event.ContentUpdatedEvent;
+import com.agorapulse.pierrot.api.event.UpdateType;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.http.client.HttpClient;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHFileNotFoundException;
@@ -38,10 +41,12 @@ public class DefaultContent implements Content {
 
     private final GHContent content;
     private final Repository repositoryWrapper;
+    private final ApplicationEventPublisher publisher;
 
-    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
+    public DefaultContent(GHContent content, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client, ApplicationEventPublisher publisher) {
         this.content = content;
-        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration, client);
+        this.publisher = publisher;
+        this.repositoryWrapper = new DefaultRepository(repository, myself, configuration, client, publisher);
     }
 
     @Override
@@ -93,6 +98,7 @@ public class DefaultContent implements Content {
     public boolean delete(String branchName, String message) {
         try {
             content.delete(message, branchName);
+            publisher.publishEvent(new ContentUpdatedEvent(this, UpdateType.DELETED));
             return true;
         } catch (GHFileNotFoundException e) {
             LOGGER.info("File {}/{} no longer exists", getRepository().getFullName(), getPath());
@@ -115,6 +121,7 @@ public class DefaultContent implements Content {
             }
 
             content.update(newText, message, branchName);
+            publisher.publishEvent(new ContentUpdatedEvent(this, UpdateType.UPDATED));
             return true;
         } catch (IOException e) {
             LOGGER.error("Exception updating " + getRepository().getFullName() + "/" + getPath(), e);

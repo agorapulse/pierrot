@@ -22,6 +22,7 @@ import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MutableHttpRequest;
@@ -48,18 +49,20 @@ public class DefaultPullRequest implements PullRequest {
     private final GHUser myself;
     private final GitHubConfiguration configuration;
     private final HttpClient client;
+    private final ApplicationEventPublisher publisher;
 
-    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
+    public DefaultPullRequest(GHPullRequest pr, GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client, ApplicationEventPublisher publisher) {
         this.pr = pr;
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
         this.client = client;
+        this.publisher = publisher;
     }
 
     @Override
     public Repository getRepository() {
-        return new DefaultRepository(repository, myself, configuration, client);
+        return new DefaultRepository(repository, myself, configuration, client, publisher);
     }
 
     @Override
