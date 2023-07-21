@@ -30,7 +30,7 @@ jobs:
       run: gu install native-image
     - uses: gradle/gradle-command-action@v2
       with:
-        arguments: check coveralls --stacktrace
+        arguments: check coveralls --stacktrace --scan
     - name: Show Reports
       uses: actions/upload-artifact@v1
       if: failure()
