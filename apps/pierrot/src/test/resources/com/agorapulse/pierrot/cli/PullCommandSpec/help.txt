@@ -1,4 +1,5 @@
-Usage: pierrot pull [-aghoPsV] [--token=<token>] [-w=<workspace>] QUERY...
+Usage: pierrot pull [-aghoPsV] [--summary-file=<summaryFile>] [--token=<token>]
+                    [-w=<workspace>] QUERY...
 pulls the matching files locally
       QUERY...          The search term such as 'org:agorapulse filename:build.
                           gradle'
@@ -9,6 +10,8 @@ pulls the matching files locally
                         Search only within the existing workspace repositories
   -P, --no-page         Do not wait after each result
   -s, --stacktrace      Print stack traces
+      --summary-file=<summaryFile>
+                        Markdown summary file path
       --token=<token>   The GitHub token
   -V, --version         Print version information and exit.
   -w, --workspace=<workspace>

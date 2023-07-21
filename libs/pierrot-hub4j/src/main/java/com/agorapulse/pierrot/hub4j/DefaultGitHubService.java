@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021-2022 Vladimir Orany.
+ * Copyright 2021-2023 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.api.Project;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.event.ProjectCreatedEvent;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.client.HttpClient;
@@ -376,26 +378,28 @@ public class DefaultGitHubService implements GitHubService {
     private final GitHubConfiguration configuration;
     private final GitHub client;
     private final HttpClient httpClient;
+    private final ApplicationEventPublisher publisher;
 
     private GHMyself myself;
 
-    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client, HttpClient httpClient) {
+    public DefaultGitHubService(GitHubConfiguration configuration, GitHub client, HttpClient httpClient, ApplicationEventPublisher publisher) {
         this.configuration = configuration;
         this.client = client;
         this.httpClient = httpClient;
+        this.publisher = publisher;
     }
 
     @Override
     public Stream<Content> searchContent(String query, boolean global) {
         return StreamSupport.stream(client.searchContent().q(addOrg(query, global)).list().spliterator(), false).map((GHContent content) ->
-            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient)
+            new DefaultContent(content, content.getOwner(), getMyself(), configuration, httpClient, publisher)
         );
     }
 
     @Override
     public Optional<Repository> getRepository(String repositoryFullName) {
         try {
-            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient));
+            return Optional.of(client.getRepository(repositoryFullName)).map((GHRepository repository) -> new DefaultRepository(repository, getMyself(), configuration, httpClient, publisher));
         } catch (IOException e) {
             LOGGER.error("Exception fetching repository " + repositoryFullName, e);
             return Optional.empty();
@@ -415,7 +419,7 @@ public class DefaultGitHubService implements GitHubService {
                     String repoFullName = url.substring(PR_URL_REPO_PREFIX.length(), url.lastIndexOf(PR_URL_REPO_SUFFIX));
                     GHRepository repository = client.getRepository(repoFullName);
                     GHPullRequest pullRequest = repository.getPullRequest(issue.getNumber());
-                    return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient);
+                    return new DefaultPullRequest(pullRequest, repository, myself, configuration, httpClient, publisher);
                 } catch (IOException e) {
                     LOGGER.error("Exception fetching pull request " + issue.getPullRequest().getUrl(),  e);
                     return null;
@@ -430,7 +434,7 @@ public class DefaultGitHubService implements GitHubService {
             return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
                 .filter(p -> project.equals(p.getName()))
                 .findFirst()
-                .map(DefaultProject::new);
+                .map(p -> new DefaultProject(p, publisher));
         } catch (IOException e) {
             LOGGER.error("Exception fetching organization " + org, e);
             return Optional.empty();
@@ -453,7 +457,9 @@ public class DefaultGitHubService implements GitHubService {
 
                     LOGGER.info("New project created, you will need set up column automation yourself!");
                     LOGGER.info("    {}", newProject.getHtmlUrl());
-                    return Optional.of(new DefaultProject(newProject));
+                    DefaultProject projectWrapper = new DefaultProject(newProject, publisher);
+                    publisher.publishEvent(new ProjectCreatedEvent(projectWrapper));
+                    return Optional.of(projectWrapper);
                 } catch (IOException e) {
                     LOGGER.error("Exception creating project " + project + " in organization " + org, e);
                     return Optional.empty();

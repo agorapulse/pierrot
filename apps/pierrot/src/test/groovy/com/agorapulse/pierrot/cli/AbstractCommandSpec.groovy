@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021-2022 Vladimir Orany.
+ * Copyright 2021-2023 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,17 @@ import com.agorapulse.pierrot.api.GitHubService
 import com.agorapulse.pierrot.api.Project
 import com.agorapulse.pierrot.api.PullRequest
 import com.agorapulse.pierrot.api.Repository
+import com.agorapulse.pierrot.api.event.ContentUpdatedEvent
+import com.agorapulse.pierrot.api.event.ProjectCreatedEvent
+import com.agorapulse.pierrot.api.event.PullRequestAddedToProjectEvent
+import com.agorapulse.pierrot.api.event.PullRequestCreatedEvent
+import com.agorapulse.pierrot.api.event.UpdateType
+import com.agorapulse.pierrot.cli.summary.SummaryWriter
 import com.agorapulse.testing.fixt.Fixt
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
+import io.micronaut.context.event.ApplicationEventPublisher
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
@@ -61,6 +68,8 @@ abstract class AbstractCommandSpec extends Specification {
     @AutoCleanup ApplicationContext context
 
     abstract List<String> getArgs()
+
+    List<Object> events = []
 
     Project project = Mock {
         getName() >> PROJECT
@@ -108,8 +117,15 @@ abstract class AbstractCommandSpec extends Specification {
     Repository repository1 = Mock {
         getFullName() >> REPOSITORY_ONE
         canWrite() >> true
-        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> true
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest1)
+        writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> {
+            events << new ContentUpdatedEvent(content1, UpdateType.CREATED)
+            true
+        }
+        createPullRequest(BRANCH, TITLE, MESSAGE) >> {
+            events << new PullRequestCreatedEvent(pullRequest1)
+            events << new PullRequestAddedToProjectEvent(project, pullRequest1)
+            Optional.of(pullRequest1)
+        }
         getOwnerName() >> OWNER
     }
 
@@ -118,14 +134,24 @@ abstract class AbstractCommandSpec extends Specification {
         canWrite() >> true
         writeFile(BRANCH, MESSAGE, PATH, CONTENT) >> false
         writeFile(BRANCH, MESSAGE, PATH, CONTENT.reverse()) >> false
-        createPullRequest(BRANCH, TITLE, MESSAGE) >> Optional.of(pullRequest2)
+        createPullRequest(BRANCH, TITLE, MESSAGE) >> {
+            events << new PullRequestCreatedEvent(pullRequest2)
+            events << new PullRequestAddedToProjectEvent(project, pullRequest2)
+            Optional.of(pullRequest2)
+        }
         getOwnerName() >> OWNER
     }
 
     Content content1 = Mock {
         getRepository() >> repository1
-        delete(BRANCH, MESSAGE) >> true
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        delete(BRANCH, MESSAGE) >> {
+            events << new ContentUpdatedEvent(content1, UpdateType.DELETED)
+            true
+        }
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> {
+            events << new ContentUpdatedEvent(content1, UpdateType.UPDATED)
+            true
+        }
         getPath() >> PATH
         getHtmlUrl() >> "https://example.com/$REPOSITORY_ONE/$PATH"
         getTextContent() >> CONTENT
@@ -138,8 +164,14 @@ abstract class AbstractCommandSpec extends Specification {
 
     Content content2 = Mock {
         getRepository() >> repository2
-        delete(BRANCH, MESSAGE) >> true
-        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> true
+        delete(BRANCH, MESSAGE) >> {
+            events << new ContentUpdatedEvent(content2, UpdateType.DELETED)
+            true
+        }
+        replace(BRANCH, MESSAGE, PATTERN, REPLACEMENT) >> {
+            events << new ContentUpdatedEvent(content2, UpdateType.UPDATED)
+            true
+        }
         getPath() >> PATH
         getHtmlUrl() >> "https://example.com/$REPOSITORY_TWO/$PATH"
         getTextContent() >> CONTENT.reverse()
@@ -176,12 +208,23 @@ abstract class AbstractCommandSpec extends Specification {
             Stream.of(pullRequest1, pullRequest2)
         }
 
-        findOrCreateProject(OWNER, PROJECT, _ as String) >> Optional.of(project)
-        findProject(OWNER, PROJECT) >> Optional.of(project)
+        findOrCreateProject(OWNER, PROJECT, _ as String) >> {
+            events << new ProjectCreatedEvent(project)
+            Optional.of(project)
+        }
+        findProject(OWNER, PROJECT) >> {
+            events << new ProjectCreatedEvent(project)
+            Optional.of(project)
+        }
     }
 
     void setup() {
-        context = ApplicationContext.builder(Environment.CLI, Environment.TEST).build()
+        context = ApplicationContext
+            .builder(Environment.CLI, Environment.TEST)
+            .properties(
+                'summary.file': new File(workspace, 'summary.txt').canonicalPath
+            )
+            .build()
         context.registerSingleton(GitHubService, service)
         context.start()
 
@@ -197,6 +240,14 @@ abstract class AbstractCommandSpec extends Specification {
     void 'run command'() {
         expect:
             runCommand('run.txt', args) { additionalChecks() }
+
+        when:
+            events.forEach { event ->
+                context.getBean(ApplicationEventPublisher).publishEvent(event)
+            }
+            context.getBean(SummaryWriter).write()
+        then:
+            compareOutput('summary.txt', new File(workspace, 'summary.txt').text, args)
     }
 
     protected boolean runCommand(String referenceFileName, List<String> input = [], List<String> args) {
@@ -219,10 +270,15 @@ abstract class AbstractCommandSpec extends Specification {
 
     @SuppressWarnings(['Println', 'ConstantAssertExpression'])
     protected void compareOutput(String referenceFileName, TestConsole console, List<String> args) {
+        compareOutput(referenceFileName, console.out, args)
+    }
+
+    @SuppressWarnings(['Println', 'ConstantAssertExpression'])
+    protected void compareOutput(String referenceFileName, String text, List<String> args) {
         String content = fixt.readText(referenceFileName)
 
         if (!content) {
-            fixt.writeText(referenceFileName, console.out)
+            fixt.writeText(referenceFileName, text)
             assert false, "New file $referenceFileName has been generated. Please, run the test again!"
         }
 
@@ -231,9 +287,9 @@ abstract class AbstractCommandSpec extends Specification {
         println('=' * 100)
         println content
         println(' ACTUAL '.center(100, '-'))
-        println console.out
+        println text
 
-        assert console.out == expandFile(content)
+        assert text == expandFile(content)
     }
 
     @SuppressWarnings(['BuilderMethodWithSideEffects', 'FactoryMethodName'])

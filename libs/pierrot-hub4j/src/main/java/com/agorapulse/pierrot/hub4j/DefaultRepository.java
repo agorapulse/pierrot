@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021-2022 Vladimir Orany.
+ * Copyright 2021-2023 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ import com.agorapulse.pierrot.api.Content;
 import com.agorapulse.pierrot.api.GitHubConfiguration;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
+import com.agorapulse.pierrot.api.event.ContentUpdatedEvent;
+import com.agorapulse.pierrot.api.event.PullRequestCreatedEvent;
+import com.agorapulse.pierrot.api.event.UpdateType;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
+import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.http.client.HttpClient;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentBuilder;
@@ -47,12 +51,14 @@ public class DefaultRepository implements Repository {
     private final GHUser myself;
     private final GitHubConfiguration configuration;
     private final HttpClient client;
+    private final ApplicationEventPublisher publisher;
 
-    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client) {
+    public DefaultRepository(GHRepository repository, GHUser myself, GitHubConfiguration configuration, HttpClient client, ApplicationEventPublisher publisher) {
         this.repository = repository;
         this.myself = myself;
         this.configuration = configuration;
         this.client = client;
+        this.publisher = publisher;
     }
 
     @Override
@@ -120,14 +126,20 @@ public class DefaultRepository implements Repository {
                     repository,
                     myself,
                     configuration,
-                    client));
+                    client,
+                    publisher)
+                );
             }
-            return Optional.of(new DefaultPullRequest(
+            DefaultPullRequest pullRequest = new DefaultPullRequest(
                 repository.createPullRequest(title, branch, getDefaultBranch(), message),
                 repository,
                 myself,
                 configuration,
-                client));
+                client,
+                publisher);
+            publisher.publishEvent(new PullRequestCreatedEvent(pullRequest));
+            return Optional.of(pullRequest
+            );
         } catch (IOException e) {
             LOGGER.error("Exception creating pull request " + title, e);
             return Optional.empty();
@@ -148,6 +160,7 @@ public class DefaultRepository implements Repository {
                 builder.sha(content.getSha());
             }
             builder.commit();
+            getFile(branch, path).ifPresent(c -> publisher.publishEvent(new ContentUpdatedEvent(c, UpdateType.CREATED)));
             LOGGER.info("File {} pushed to branch {} of repository {}", path, branch, getFullName());
             return true;
         } catch (IOException e) {
@@ -167,7 +180,7 @@ public class DefaultRepository implements Repository {
     private Optional<Content> getFile(String branch, String path) {
         try {
             GHContent fileContent = repository.getFileContent(path, branch);
-            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration, client));
+            return Optional.of(new DefaultContent(fileContent, repository, myself, configuration, client, publisher));
         } catch (IOException e) {
             LOGGER.error("Exception fetching file " + path, e);
             return Optional.empty();
