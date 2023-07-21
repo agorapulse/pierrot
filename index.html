@@ -107,7 +107,7 @@ $(addBlockSwitches);
 <h1>Pierrot - Multi-repository GitHub Governance Tool</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 0.10.7</span>
+<span id="revnumber">version 1.0.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -240,10 +240,12 @@ Alternatively, see other authentication options in the GitHub API docs:
 
     https://github-api.kohsuke.org
 
-Usage: pierrot [-hsV] [--token=&lt;token&gt;] [COMMAND]
+Usage: pierrot [-hsV] [--summary-file=&lt;summaryFile&gt;] [--token=&lt;token&gt;] [COMMAND]
 The GitHub cross-repository governance tool
   -h, --help            Show this help message and exit.
   -s, --stacktrace      Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                        Markdown summary file path
       --token=&lt;token&gt;   The GitHub token
   -V, --version         Print version information and exit.
 Commands:
@@ -292,10 +294,12 @@ of available commands when you run the <code>pierrot</code> command without any 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot [-hsV] [--token=&lt;token&gt;] [COMMAND]
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot [-hsV] [--summary-file=&lt;summaryFile&gt;] [--token=&lt;token&gt;] [COMMAND]
 The GitHub cross-repository governance tool
   -h, --help            Show this help message and exit.
   -s, --stacktrace      Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                        Markdown summary file path
       --token=&lt;token&gt;   The GitHub token
   -V, --version         Print version information and exit.
 Commands:
@@ -331,10 +335,24 @@ term to every command then set <code>PIERROT_ORGANIZATION</code> environment var
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">      --token=&lt;token&gt; The GitHub token
+      --summary-file=&lt;summaryFile&gt;
+                        Markdown summary file path
   -h, --help                 Show this help message and exit.
   -s, --stacktrace           Print stack traces
   -V, --version              Print version information and exit.</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The Markdown summary is generated automatically for GitHub Actions.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -450,7 +468,8 @@ This is usually the first command you will run to verify the search terms.</p>
 <h5 id="_full_syntax"><a class="anchor" href="#_full_syntax"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot search [-aghPsV] [--token=&lt;token&gt;] QUERY...
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot search [-aghPsV] [--summary-file=&lt;summaryFile&gt;]
+                      [--token=&lt;token&gt;] QUERY...
 searches GitHub and prints the matching files
       QUERY...          The search term such as 'org:agorapulse filename:build.
                           gradle'
@@ -459,6 +478,8 @@ searches GitHub and prints the matching files
   -h, --help            Show this help message and exit.
   -P, --no-page         Do not wait after each result
   -s, --stacktrace      Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                        Markdown summary file path
       --token=&lt;token&gt;   The GitHub token
   -V, --version         Print version information and exit.</code></pre>
 </div>
@@ -513,7 +534,8 @@ message: Upgraded Micronaut to the latest version 3.1.x</code></pre>
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot init [-fhsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                     [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                     [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
-                    [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                    [--summary-file=&lt;summaryFile&gt;] [-t=&lt;title&gt;]
+                    [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
                     [-w=&lt;workspace&gt;]
 initializes new workspace
   -b, --branch=&lt;branch&gt;     The pull request branch
@@ -528,6 +550,8 @@ initializes new workspace
                             The name of the 'In progress' column in the project
       --project=&lt;project&gt;   The name of the project (board)
   -s, --stacktrace          Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                            Markdown summary file path
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
@@ -582,9 +606,9 @@ You have to specify the <code>path</code> within the repository, and you need to
                       [--done-column=&lt;doneColumn&gt;] [--from=&lt;contentFrom&gt;]
                       [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;] [-p=&lt;path&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
-                      [--project=&lt;project&gt;] [-t=&lt;title&gt;]
-                      [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
-                      [-w=&lt;workspace&gt;] QUERY...
+                      [--project=&lt;project&gt;] [--summary-file=&lt;summaryFile&gt;]
+                      [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;]
+                      [--token=&lt;token&gt;] [-w=&lt;workspace&gt;] QUERY...
 creates a file in a matching repositories and creates PRs
       QUERY...               The search term such as 'org:agorapulse filename:
                                build.gradle'
@@ -606,6 +630,8 @@ creates a file in a matching repositories and creates PRs
                              The name of the 'In progress' column in the project
       --project=&lt;project&gt;    The name of the project (board)
   -s, --stacktrace           Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                             Markdown summary file path
   -t, --title=&lt;title&gt;        The pull request title
       --todo-column=&lt;todoColumn&gt;
                              The name of the 'To do' column in the project
@@ -648,9 +674,9 @@ creates a file in a matching repositories and creates PRs
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot delete [-afghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                       [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
-                      [--project=&lt;project&gt;] [-t=&lt;title&gt;]
-                      [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
-                      [-w=&lt;workspace&gt;] QUERY...
+                      [--project=&lt;project&gt;] [--summary-file=&lt;summaryFile&gt;]
+                      [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;]
+                      [--token=&lt;token&gt;] [-w=&lt;workspace&gt;] QUERY...
 creates PRs to delete files
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -669,6 +695,8 @@ creates PRs to delete files
                             The name of the 'In progress' column in the project
       --project=&lt;project&gt;   The name of the project (board)
   -s, --stacktrace          Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                            Markdown summary file path
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
@@ -725,7 +753,8 @@ use <code>push</code> command to create new pull requests for changes.</p>
 <h5 id="_full_syntax_5"><a class="anchor" href="#_full_syntax_5"></a>Full Syntax</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghoPsV] [--token=&lt;token&gt;] [-w=&lt;workspace&gt;] QUERY...
+<pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot pull [-aghoPsV] [--summary-file=&lt;summaryFile&gt;] [--token=&lt;token&gt;]
+                    [-w=&lt;workspace&gt;] QUERY...
 pulls the matching files locally
       QUERY...          The search term such as 'org:agorapulse filename:build.
                           gradle'
@@ -736,6 +765,8 @@ pulls the matching files locally
                         Search only within the existing workspace repositories
   -P, --no-page         Do not wait after each result
   -s, --stacktrace      Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                        Markdown summary file path
       --token=&lt;token&gt;   The GitHub token
   -V, --version         Print version information and exit.
   -w, --workspace=&lt;workspace&gt;
@@ -785,7 +816,8 @@ pulls the matching files locally
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot push [-fhsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                     [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                     [--progress-column=&lt;progressColumn&gt;] [--project=&lt;project&gt;]
-                    [-t=&lt;title&gt;] [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
+                    [--summary-file=&lt;summaryFile&gt;] [-t=&lt;title&gt;]
+                    [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
                     [-w=&lt;workspace&gt;]
 pushes the the local changes and creates PRs
   -b, --branch=&lt;branch&gt;     The pull request branch
@@ -800,6 +832,8 @@ pushes the the local changes and creates PRs
                             The name of the 'In progress' column in the project
       --project=&lt;project&gt;   The name of the project (board)
   -s, --stacktrace          Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                            Markdown summary file path
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
@@ -855,7 +889,8 @@ pushes the the local changes and creates PRs
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot replace [-afghPsV] [-b=&lt;branch&gt;] [--done-column=&lt;doneColumn&gt;]
                        [-m=&lt;message&gt;] [--message-from=&lt;messageFrom&gt;]
                        -p=&lt;pattern&gt; [--progress-column=&lt;progressColumn&gt;]
-                       [--project=&lt;project&gt;] -r=&lt;replacement&gt; [-t=&lt;title&gt;]
+                       [--project=&lt;project&gt;] -r=&lt;replacement&gt;
+                       [--summary-file=&lt;summaryFile&gt;] [-t=&lt;title&gt;]
                        [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;]
                        [-w=&lt;workspace&gt;] QUERY...
 replaces content in the files and creates PRs
@@ -880,6 +915,8 @@ replaces content in the files and creates PRs
   -r, --replacement=&lt;replacement&gt;
                             The Java-style regular expression replacement
   -s, --stacktrace          Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                            Markdown summary file path
   -t, --title=&lt;title&gt;       The pull request title
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
@@ -928,8 +965,8 @@ flags. If the project name is defined using <code>--project</code> then the PRs 
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">Usage: pierrot status [-acdghPsV] [--done-column=&lt;doneColumn&gt;]
                       [--progress-column=&lt;progressColumn&gt;]
-                      [--project=&lt;project&gt;] [--todo-column=&lt;todoColumn&gt;]
-                      [--token=&lt;token&gt;] QUERY...
+                      [--project=&lt;project&gt;] [--summary-file=&lt;summaryFile&gt;]
+                      [--todo-column=&lt;todoColumn&gt;] [--token=&lt;token&gt;] QUERY...
 searches GitHub Pull Requests and prints their statuses
       QUERY...              The search term such as 'org:agorapulse filename:
                               build.gradle'
@@ -945,6 +982,8 @@ searches GitHub Pull Requests and prints their statuses
                             The name of the 'In progress' column in the project
       --project=&lt;project&gt;   The name of the project (board)
   -s, --stacktrace          Print stack traces
+      --summary-file=&lt;summaryFile&gt;
+                            Markdown summary file path
       --todo-column=&lt;todoColumn&gt;
                             The name of the 'To do' column in the project
       --token=&lt;token&gt;       The GitHub token
@@ -959,8 +998,8 @@ searches GitHub Pull Requests and prints their statuses
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.10.7<br>
-Last updated 2022-12-02 12:36:19 UTC
+Version 1.0.0<br>
+Last updated 2023-07-21 11:35:22 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

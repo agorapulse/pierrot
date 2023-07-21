@@ -1,7 +1,10 @@
 com.agorapulse.pierrot.api
+com.agorapulse.pierrot.api.event
 com.agorapulse.pierrot.api.source
+com.agorapulse.pierrot.api.summary
 com.agorapulse.pierrot.api.util
 com.agorapulse.pierrot.api.ws
 com.agorapulse.pierrot.cli
 com.agorapulse.pierrot.cli.mixin
+com.agorapulse.pierrot.cli.summary
 com.agorapulse.pierrot.hub4j
