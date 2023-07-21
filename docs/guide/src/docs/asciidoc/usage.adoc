@@ -28,10 +28,14 @@ The following parameters can be use with any command:
 [source,bash]
 ----
       --token=<token> The GitHub token
+      --summary-file=<summaryFile>
+                        Markdown summary file path
   -h, --help                 Show this help message and exit.
   -s, --stacktrace           Print stack traces
   -V, --version              Print version information and exit.
 ----
+
+TIP: The Markdown summary is generated automatically for GitHub Actions.
 
 === Search Parameters
 
