@@ -50,7 +50,7 @@ public class DefaultSummaryCollector implements SummaryCollector {
         StringBuilder builder = new StringBuilder("### Pierrot Summary\n\n");
 
         if (project != null) {
-            builder.append("Project: [").append(project.getName()).append("](").append (project.getHttpUrl()).append(")\n\n");
+            builder.append("Project: [").append(project.getName()).append("](").append(project.getHttpUrl()).append(")\n\n");
         }
 
         if (!updatedRepositories.isEmpty()) {
