@@ -47,7 +47,7 @@ public class DefaultSummaryCollector implements SummaryCollector {
 
     @Override
     public String getSummary() {
-        StringBuilder builder = new StringBuilder("## Pierrot Summary\n\n");
+        StringBuilder builder = new StringBuilder("### Pierrot Summary\n\n");
 
         if (project != null) {
             builder.append("Project: [").append(project.getName()).append("](").append (project.getHttpUrl()).append(")\n\n");
@@ -55,7 +55,7 @@ public class DefaultSummaryCollector implements SummaryCollector {
 
         if (!updatedRepositories.isEmpty()) {
             updatedRepositories.stream().sorted(Comparator.comparing(Repository::getFullName)).forEach(r -> {
-                builder.append("### [").append(r.getFullName()).append("](").append("https://github.com/").append(r.getFullName()).append(")\n\n");
+                builder.append("#### [").append(r.getFullName()).append("](").append("https://github.com/").append(r.getFullName()).append(")\n\n");
                 if (createdPullRequests.containsKey(r.getFullName())) {
                     PullRequest pr = createdPullRequests.get(r.getFullName());
                     builder.append("New pull request: [").append(pr.getTitle()).append("](").append(pr.getHtmlUrl()).append(")\n\n");

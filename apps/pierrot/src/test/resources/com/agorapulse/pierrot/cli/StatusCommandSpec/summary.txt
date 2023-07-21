@@ -1,4 +1,4 @@
-## Pierrot Summary
+### Pierrot Summary
 
 Project: [Pierrot](https://example.com/agorapulse/projects/1)
 

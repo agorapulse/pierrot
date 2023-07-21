@@ -115,3 +115,7 @@ sdkman {
     hashtag = 'PierrotCLI'
 }
 
+tasks.withType(Test).configureEach { Test test ->
+    test.environment('GITHUB_STEP_SUMMARY', System.getenv('GITHUB_STEP_SUMMARY') ?: new File(buildDir, 'step-summary.txt').canonicalPath)
+}
+

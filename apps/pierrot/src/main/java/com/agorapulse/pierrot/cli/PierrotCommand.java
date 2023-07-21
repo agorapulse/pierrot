@@ -34,6 +34,7 @@ import picocli.CommandLine.Command;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,11 +145,11 @@ public class PierrotCommand implements Runnable {
 
         try (ApplicationContext ctx = builder.start()) {
             CommandLine cmd = new CommandLine(PierrotCommand.class, new MicronautFactory(ctx));
-            if (ctx.containsBean(SummaryWriter.class)) {
+            exitCode = cmd.execute(args);
+            if (ctx.containsBean(SummaryWriter.class) && !Arrays.asList(args).contains("--help")) {
                 File summaryFileLocation = ctx.getBean(SummaryWriter.class).write();
                 System.out.println("Summary file written to " + summaryFileLocation);
             }
-            exitCode = cmd.execute(args);
         }
 
 
