@@ -23,7 +23,6 @@ import com.agorapulse.pierrot.api.GitHubService;
 import com.agorapulse.pierrot.api.Project;
 import com.agorapulse.pierrot.api.PullRequest;
 import com.agorapulse.pierrot.api.Repository;
-import com.agorapulse.pierrot.api.event.ProjectCreatedEvent;
 import com.agorapulse.pierrot.api.util.LoggerWithOptionalStacktrace;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.TypeHint;
@@ -32,7 +31,6 @@ import io.micronaut.http.client.HttpClient;
 import jakarta.inject.Singleton;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHMyself;
-import org.kohsuke.github.GHProject;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
@@ -553,41 +551,14 @@ public class DefaultGitHubService implements GitHubService {
 
     @Override
     public Optional<Project> findProject(String org, String project) {
-        try {
-            return StreamSupport.stream(client.getOrganization(org).listProjects().spliterator(), false)
-                .filter(p -> project.equals(p.getName()))
-                .findFirst()
-                .map(p -> new DefaultProject(p, publisher));
-        } catch (IOException e) {
-            LOGGER.error("Exception fetching organization " + org, e);
-            return Optional.empty();
-        }
+        LOGGER.error("Finding project is no longer supported");
+        return Optional.empty();
     }
 
     @Override
     public Optional<Project> findOrCreateProject(String org, String project, String column) {
-        return findProject(org, project)
-            .or(() -> {
-                try {
-                    GHProject newProject = client.getOrganization(org).createProject(project, "Created by Pierrot");
-                    for (String newColumn : configuration.getProjectColumns()) {
-                        newProject.createColumn(newColumn);
-                    }
-
-                    if (!configuration.getProjectColumns().contains(column)) {
-                        newProject.createColumn(column);
-                    }
-
-                    LOGGER.info("New project created, you will need set up column automation yourself!");
-                    LOGGER.info("    {}", newProject.getHtmlUrl());
-                    DefaultProject projectWrapper = new DefaultProject(newProject, publisher);
-                    publisher.publishEvent(new ProjectCreatedEvent(projectWrapper));
-                    return Optional.of(projectWrapper);
-                } catch (IOException e) {
-                    LOGGER.error("Exception creating project " + project + " in organization " + org, e);
-                    return Optional.empty();
-                }
-            });
+        LOGGER.error("Finding or creating project is no longer supported");
+        return Optional.empty();
     }
 
     private GHUser getMyself() {
