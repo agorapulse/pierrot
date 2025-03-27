@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021-2023 Vladimir Orany.
+ * Copyright 2021-2025 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import spock.lang.Specification
 
 class GraalVMCompatibilitySpec extends Specification {
 
+    @SuppressWarnings('ClassForName')
     void 'scan all github model classes'() {
         when:
             Collection<URL> urls = fixUrls(ClasspathHelper.forResource('org/kohsuke/github'))
@@ -36,7 +37,7 @@ class GraalVMCompatibilitySpec extends Specification {
                         urls
                     )
                     .filterInputsBy(type -> type.startsWith('org.kohsuke.github'))
-                    .addScanners(Scanners.SubTypes.filterResultsBy {true })
+                    .addScanners(Scanners.SubTypes.filterResultsBy { true })
             )
 
             List<String> classes = reflections.allTypes.findAll {
@@ -58,16 +59,7 @@ class GraalVMCompatibilitySpec extends Specification {
             missing.size() == 0
     }
 
-    private List<String> getAllClasses(Class<?> clazz) {
-        List<String> ret = [clazz.name]
-        ret.addAll(
-            clazz.declaredClasses.collectMany { Class<?> declared ->
-                getAllClasses(declared)
-            }
-        )
-        return ret
-    }
-
+    @SuppressWarnings('Println')
     private static void printAnnotation(String headline, Iterable<String> classes) {
         println()
         println headline
@@ -97,6 +89,16 @@ class GraalVMCompatibilitySpec extends Specification {
                 url
             }
         }
+    }
+
+    private List<String> getAllClasses(Class<?> clazz) {
+        List<String> ret = [clazz.name]
+        ret.addAll(
+            clazz.declaredClasses.collectMany { Class<?> declared ->
+                getAllClasses(declared)
+            }
+        )
+        return ret
     }
 
 }
