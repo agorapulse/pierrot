@@ -17,6 +17,8 @@ All the commands are based on https://docs.github.com/en/search-github/getting-s
 Pierrot works the best if you constrain the searches to an organization.If you don't want to add `org:myorg` search
 term to every command then set `PIERROT_ORGANIZATION` environment variable to the name of your organization.
 
+WARNING: Working with projects are no longer supported. The command is left there for backward compatibility but it will be removed in the future.
+
 == Common Parameters
 
 The commands share common parameters depending on the action their perform.

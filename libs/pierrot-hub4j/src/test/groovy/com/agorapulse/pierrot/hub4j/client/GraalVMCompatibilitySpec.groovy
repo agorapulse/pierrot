@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2021-2023 Vladimir Orany.
+ * Copyright 2021-2025 Vladimir Orany.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,18 +21,23 @@ import com.agorapulse.pierrot.hub4j.DefaultGitHubService
 import io.micronaut.core.annotation.TypeHint
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
+import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder
 import spock.lang.Specification
 
 class GraalVMCompatibilitySpec extends Specification {
 
+    @SuppressWarnings('ClassForName')
     void 'scan all github model classes'() {
         when:
+            Collection<URL> urls = fixUrls(ClasspathHelper.forResource('org/kohsuke/github'))
             Reflections reflections = new Reflections(
                 new ConfigurationBuilder()
-                    .forPackage('org.kohsuke.github')
+                    .addUrls(
+                        urls
+                    )
                     .filterInputsBy(type -> type.startsWith('org.kohsuke.github'))
-                    .addScanners(Scanners.SubTypes.filterResultsBy {true })
+                    .addScanners(Scanners.SubTypes.filterResultsBy { true })
             )
 
             List<String> classes = reflections.allTypes.findAll {
@@ -54,16 +59,7 @@ class GraalVMCompatibilitySpec extends Specification {
             missing.size() == 0
     }
 
-    private List<String> getAllClasses(Class<?> clazz) {
-        List<String> ret = [clazz.name]
-        ret.addAll(
-            clazz.declaredClasses.collectMany { Class<?> declared ->
-                getAllClasses(declared)
-            }
-        )
-        return ret
-    }
-
+    @SuppressWarnings('Println')
     private static void printAnnotation(String headline, Iterable<String> classes) {
         println()
         println headline
@@ -82,6 +78,27 @@ class GraalVMCompatibilitySpec extends Specification {
                 }
             )
             """.stripIndent()
+    }
+
+    private static Collection<URL> fixUrls(Collection<URL> urls) {
+        // if the URL contains META-INF then it should return the parent URL of the META-iNF
+        return urls.collect { URL url ->
+            if (url.toString().contains('META-INF')) {
+                new URL(url.toString().replaceFirst('META-INF.*', ''))
+            } else {
+                url
+            }
+        }
+    }
+
+    private List<String> getAllClasses(Class<?> clazz) {
+        List<String> ret = [clazz.name]
+        ret.addAll(
+            clazz.declaredClasses.collectMany { Class<?> declared ->
+                getAllClasses(declared)
+            }
+        )
+        return ret
     }
 
 }
