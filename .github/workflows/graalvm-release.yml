@@ -35,7 +35,7 @@ jobs:
       - uses: gradle/gradle-command-action@v2
         with:
           arguments: :pierrot:nativeDistZip -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: pierrot-${{ matrix.os }}
           path: apps/pierrot/build/distributions/pierrot-*.zip
