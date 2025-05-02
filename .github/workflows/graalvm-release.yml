@@ -19,10 +19,7 @@ jobs:
             gu-binary: gu
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Semantic Version
-        id: version
-        uses: ncipollo/semantic-version-action@v1
+      - uses: actions/checkout@v4
       - name: 'Add Developer Command Prompt for Microsoft Visual C++ '
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
@@ -34,7 +31,7 @@ jobs:
         run: ${{ matrix.gu-binary }} install native-image
       - uses: gradle/gradle-command-action@v2
         with:
-          arguments: :pierrot:nativeDistZip -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
+          arguments: :pierrot:nativeDistZip -Pversion=${{ github.ref_name }} -Prelease=true
       - uses: actions/upload-artifact@v4
         with:
           name: pierrot-${{ matrix.os }}
@@ -53,22 +50,19 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKERHUB_REGISTRY_URL }}
         run: |
           export DOCKER_IMAGE=`echo "${DOCKERHUB_REGISTRY_URL}/${DOCKERHUB_REPOSITORY_PATH}/pierrot" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew :pierrot:dockerPushNative --no-daemon -Pversion=${{ steps.version.outputs.tag }} -Prelease=true
+          ./gradlew :pierrot:dockerPushNative --no-daemon -Pversion=${{ github.ref_name }} -Prelease=true
   upload_to_release:
     name: Upload to Release
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       id: download
-    - name: Semantic Version
-      id: version
-      uses: ncipollo/semantic-version-action@v1
     - name: Release Script
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_VERSION: ${{ steps.version.outputs.tag }}
+        RELEASE_VERSION: ${{ github.ref_name }}
         UPLOAD_URL: https://uploads.github.com/repos/${{ github.event.repository.full_name }}/releases/${{ github.event.release.id }}/assets
         ARTIFACT_DIRECTORY:  ${{steps.download.outputs.download-path}}
       run: .github/workflows/upload_to_release.sh
@@ -86,9 +80,9 @@ jobs:
       with:
         # skip announce while under active development
         # change to sdkMajorRelease once stabilized
-        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion -Pversion=${{ steps.version.outputs.tag }}
+        arguments: :pierrot:sdkReleaseVersion :pierrot:sdkDefaultVersion -Pversion=${{ github.ref_name }}
     - uses: sdkman/sdkman-action@master
       with:
         candidate: pierrot
-        version: ${{ steps.version.outputs.tag }}
+        version: ${{ github.ref_name }}
     - run: pierrot --help
